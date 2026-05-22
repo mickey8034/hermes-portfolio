@@ -460,11 +460,11 @@ footer a{color:var(--accent);text-decoration:none}
     <p>基于 Hermes Agent 深度分析生成的咨询级报告与可视化仪表板</p>
     <div class="hero-stats">
       <div class="stat">
-        <div class="stat-num" id="totalProjects">7</div>
+        <div class="stat-num" id="totalProjects">8</div>
         <div class="stat-label">项目</div>
       </div>
       <div class="stat">
-        <div class="stat-num" id="totalFiles">22</div>
+        <div class="stat-num" id="totalFiles">23</div>
         <div class="stat-label">报告文件</div>
       </div>
       <div class="stat">
@@ -631,7 +631,15 @@ const projects = [
     status: 'ready',
     versions: 1,
     filesList: [
-      {name: 'analyst_team_dashboard.html', desc: '分析师团队看板'}
+      {name:'analyst_team_dashboard.html',desc:'分析师团队看板'}
+    ]
+  },
+  {
+    id: '牛马热力指数', name: '牛马热力指数 职业压力自测', icon: '🔥', filter: 'dashboard',
+    desc: '打工人职业压力热力指数自测 — 20题5维度评测，生成诊断报告、减压小游戏、职业病防治指南。全程匿名不上传。',
+    files: 1, status: 'ready', versions: 1,
+    filesList: [
+      {name:'牛马热力指数_职业压力自测.html',desc:'职业压力自测 · 完整交互页面',uploaded:true}
     ]
   }
 ];

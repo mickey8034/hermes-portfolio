@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>牛马热力指数 · 职场健康测评</title>
+<style>
+/* ===== CSS Reset & Variables ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f7;--card:rgba(255,255,255,0.82);--card-border:rgba(255,255,255,0.5);
+  --text:#1d1d1f;--text-muted:#86868b;--accent:#0066cc;--accent-light:#e8f0fe;
+  --danger:#ff3b30;--warning:#ff9500;--success:#34c759;--moderate:#ffcc00;
+  --radius:20px;--radius-sm:12px;
+  --shadow:0 8px 40px rgba(0,0,0,0.06);
+  --tier1:#34c759;--tier2:#7dd348;--tier3:#ffcc00;--tier4:#ff9500;--tier5:#ff3b30;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-x:hidden}
+/* ===== Glass Card ===== */
+.glass{background:var(--card);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid var(--card-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;width:100%;max-width:600px;transition:all .4s cubic-bezier(.22,1,.36,1);position:relative}
+/* ===== Cover ===== */
+#cover{text-align:center;padding:48px 32px}
+#cover .emoji-icon{font-size:72px;display:block;margin-bottom:16px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+#cover h1{font-size:28px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,#0066cc,#5ac8fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#cover p{color:var(--text-muted);font-size:16px;line-height:1.6;margin-bottom:8px}
+#cover .privacy-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--accent);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;margin:16px 0}
+#cover .privacy-badge::before{content:'🔒'}
+.btn{display:inline-block;padding:14px 36px;border-radius:40px;font-size:17px;font-weight:600;border:none;cursor:pointer;transition:all .25s ease;text-decoration:none}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(0,102,204,0.3)}
+.btn-primary:hover{transform:scale(1.03);box-shadow:0 6px 24px rgba(0,102,204,0.4)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-secondary{background:var(--accent-light);color:var(--accent)}
+.btn-secondary:hover{background:#d4e6fc}
+/* ===== Questionnaire ===== */
+#quiz{display:none}
+.progress-bar{width:100%;height:4px;background:#e5e5ea;border-radius:4px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#5ac8fa);border-radius:4px;transition:width .5s cubic-bezier(.22,1,.36,1);width:0%}
+.question-count{font-size:13px;color:var(--text-muted);margin-bottom:4px;font-weight:500}
+.question-text{font-size:20px;font-weight:600;line-height:1.5;margin-bottom:24px}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{background:var(--card);border:1.5px solid #e5e5ea;border-radius:var(--radius-sm);padding:16px 20px;cursor:pointer;transition:all .2s ease;font-size:15px;line-height:1.4}
+.option:hover{border-color:var(--accent);background:var(--accent-light);transform:translateX(4px)}
+.option.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 3px rgba(0,102,204,0.15)}
+.nav-btns{display:flex;gap:12px;margin-top:28px}
+.nav-btns .btn{flex:1;text-align:center;padding:12px}
+.btn-back{background:#e5e5ea;color:var(--text)}
+.btn-back:hover{background:#d1d1d6}
+/* ===== Results ===== */
+#results{display:none;padding:24px}
+.result-header{text-align:center;margin-bottom:24px}
+.result-tier{font-size:56px;margin-bottom:8px}
+.result-score{font-size:48px;font-weight:800;line-height:1}
+.result-label{font-size:18px;font-weight:600;margin:4px 0;padding:4px 16px;border-radius:20px;display:inline-block}
+.result-desc{font-size:15px;color:var(--text-muted);margin-top:8px;line-height:1.5}
+.section-title{font-size:18px;font-weight:700;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+.radar-container{position:relative;width:100%;max-width:340px;margin:0 auto}
+#radarCanvas{width:100%;height:auto}
+.breakdown{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.breakdown-item{background:var(--card);border:1px solid #e5e5ea;border-radius:var(--radius-sm);padding:14px 16px}
+.breakdown-item .label{font-size:13px;color:var(--text-muted);margin-bottom:4px}
+.breakdown-item .value{font-size:22px;font-weight:700}
+.breakdown-item .bar{height:4px;background:#e5e5ea;border-radius:4px;margin-top:6px;overflow:hidden}
+.breakdown-item .bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.highlight-list{background:rgba(255,59,48,0.06);border-left:3px solid var(--danger);border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.6}
+/* ===== Tabs ===== */
+.tabs{display:flex;gap:4px;background:#e5e5ea;border-radius:12px;padding:4px;margin-bottom:20px;overflow-x:auto}
+.tab{flex:1;text-align:center;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--text-muted);transition:all .2s;border:none;background:none}
+.tab.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+/* ===== Health Tips ===== */
+.tip-card{background:var(--card);border:1px solid #e5e5ea;border-radius:var(--radius-sm);padding:18px;margin-bottom:12px}
+.tip-card h4{font-size:15px;font-weight:600;margin-bottom:6px}
+.tip-card p{font-size:14px;color:var(--text-muted);line-height:1.6}
+.tip-card .exercise{display:flex;gap:12px;align-items:flex-start;margin-top:8px;padding:10px 12px;background:var(--accent-light);border-radius:8px;font-size:13px;line-height:1.5}
+/* ===== Mini Games ===== */
+.game-container{background:var(--card);border:1px solid #e5e5ea;border-radius:var(--radius-sm);padding:20px;text-align:center;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.game-btn{background:var(--accent);color:#fff;border:none;padding:12px 28px;border-radius:40px;font-size:15px;font-weight:600;cursor:pointer;margin:8px;transition:all .2s}
+.game-btn:active{transform:scale(0.95)}
+.game-score{font-size:32px;font-weight:800;margin:12px 0}
+.game-hint{font-size:14px;color:var(--text-muted)}
+.alarm-area{width:100%;height:120px;background:#f0f0f0;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;user-select:none;font-size:20px;font-weight:600;transition:background .15s}
+.alarm-area.active{background:#34c759;color:#fff}
+.alarm-area.danger{background:#ff3b30;color:#fff}
+/* ===== 职业病 ===== */
+.disease-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.disease-tab{background:var(--card);border:1px solid #e5e5ea;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
+.disease-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.disease-content{display:none}
+.disease-content.active{display:block}
+.disease-card{background:var(--card);border:1px solid #e5e5ea;border-radius:var(--radius-sm);padding:18px;margin-bottom:12px}
+.disease-card h4{font-size:15px;font-weight:600;margin-bottom:8px}
+.disease-card ul{font-size:14px;line-height:1.8;padding-left:20px;color:var(--text-muted)}
+/* ===== Buttons Row ===== */
+.action-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.action-row .btn{flex:1;min-width:120px;text-align:center}
+.btn-danger{background:var(--danger);color:#fff;box-shadow:0 4px 16px rgba(255,59,48,0.3)}
+.btn-danger:hover{box-shadow:0 6px 24px rgba(255,59,48,0.4)}
+/* ===== Responsive ===== */
+@media(max-width:480px){
+  .glass{padding:20px;border-radius:16px}
+  #cover{padding:32px 16px}
+  #cover h1{font-size:24px}
+  .question-text{font-size:18px}
+  .result-score{font-size:40px}
+  .breakdown{grid-template-columns:1fr}
+  .action-row .btn{min-width:100%}
+}
+/* ===== Water Ripple Effect ===== */
+.ripple{position:absolute;border-radius:50%;background:rgba(0,102,204,0.15);transform:scale(0);animation:rippleAnim .6s ease-out;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+/* ===== Share Card ===== */
+.share-card{background:linear-gradient(135deg,#1d1d1f,#434348);border-radius:var(--radius);padding:24px;color:#fff;text-align:center;margin-top:16px}
+.share-card .big-score{font-size:64px;font-weight:800}
+.share-card .big-label{font-size:16px;opacity:.7}
+.share-card .footer{font-size:12px;opacity:.5;margin-top:12px}
+/* ===== Disclaimer ===== */
+.disclaimer{font-size:12px;color:var(--text-muted);text-align:center;margin-top:16px;line-height:1.5;padding:12px;border-top:1px solid #e5e5ea}
+/* ===== Confetti ===== */
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:2px;pointer-events:none;z-index:9999;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-10vh) rotate(0deg)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div id="cover" class="glass">
+  <span class="emoji-icon">🐂🔥</span>
+  <h1>牛马热力指数</h1>
+  <p>用 20 道题测出你的职场压迫指数<br>看看你离"血汗打工人"还有多远</p>
+  <div class="privacy-badge">全程匿名 · 数据不上传 · 只在你手机里算</div>
+  <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:12px">开始测试 · 约 3 分钟</button>
+  <p style="font-size:12px;color:var(--text-muted);margin-top:12px">测试结果仅供娱乐，不构成职业建议</p>
+</div>
+
+<!-- ============ QUIZ ============ -->
+<div id="quiz" class="glass">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="question-count" id="questionCount">第 1 / 20 题</div>
+  <div class="question-text" id="questionText"></div>
+  <div class="options" id="options"></div>
+  <div class="nav-btns">
+    <button class="btn btn-back" onclick="prevQuestion()" id="prevBtn" style="display:none">上一步</button>
+    <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display:none">下一步</button>
+  </div>
+</div>
+
+<!-- ============ RESULTS ============ -->
+<div id="results" class="glass">
+  <div class="result-header">
+    <div class="result-tier" id="resultTier"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-label" id="resultLabel"></div>
+    <div class="result-desc" id="resultDesc"></div>
+  </div>
+
+  <div class="tabs" id="resultTabs">
+    <button class="tab active" onclick="switchTab('tab-report',this)">📊 诊断报告</button>
+    <button class="tab" onclick="switchTab('tab-games',this)">🎮 减压游戏</button>
+    <button class="tab" onclick="switchTab('tab-health',this)">🏥 防治指南</button>
+  </div>
+
+  <!-- Tab: Report -->
+  <div class="tab-content active" id="tab-report">
+    <div class="section-title">📈 维度雷达</div>
+    <div class="radar-container"><canvas id="radarCanvas" width="600" height="600"></canvas></div>
+
+    <div class="section-title">📋 维度得分</div>
+    <div class="breakdown" id="breakdownContainer"></div>
+
+    <div class="section-title" style="margin-top:20px">🚨 需关注指标</div>
+    <div class="highlight-list" id="highlightList"></div>
+
+    <div class="section-title">💡 状态建议</div>
+    <div id="adviceContainer"></div>
+  </div>
+
+  <!-- Tab: Games -->
+  <div class="tab-content" id="tab-games">
+    <div class="tabs" style="margin-bottom:16px">
+      <button class="tab active" onclick="switchGame('game-alarm',this)">🚨 摸鱼警报</button>
+      <button class="tab" onclick="switchGame('game-press',this)">💪 捏捏解压</button>
+      <button class="tab" onclick="switchGame('game-pan',this)">🛡️ 甩锅大战</button>
+      <button class="tab" onclick="switchGame('game-breathe',this)">🧘 深呼吸</button>
+    </div>
+    <div id="game-alarm" class="game-container tab-content active">
+      <p style="font-weight:600;margin-bottom:8px">老板来了！快切屏！</p>
+      <div class="alarm-area" id="alarmArea" onmousedown="alarmStart()">👀 盯住这里</div>
+      <p class="game-hint" style="margin-top:8px">盯着看，变绿时快速点击！</p>
+      <div style="margin-top:8px"><span class="game-score" id="alarmScore">0</span><span style="font-size:14px;color:var(--text-muted)"> 反应分</span></div>
+      <button class="game-btn" onclick="alarmReset()">🔄 再来一次</button>
+    </div>
+    <div id="game-press" class="game-container tab-content">
+      <p style="font-weight:600;margin-bottom:8px">把你的压力捏出来！</p>
+      <button class="game-btn" onmousedown="pressStart()" onmouseup="pressEnd()" ontouchstart="pressStart()" ontouchend="pressEnd()" style="width:120px;height:120px;border-radius:60px;font-size:40px;background:#ff9500">🤏</button>
+      <div style="margin-top:12px"><span class="game-score" id="pressScore">0</span><span style="font-size:14px;color:var(--text-muted)"> 压力释放</span></div>
+      <p class="game-hint">按得越久越解压！</p>
+    </div>
+    <div id="game-pan" class="game-container tab-content">
+      <p style="font-weight:600;margin-bottom:12px">把锅甩回去！</p>
+      <div id="panArea" style="position:relative;width:100%;height:180px;background:#f0f0f0;border-radius:12px;overflow:hidden;cursor:pointer" onclick="panClick(event)">
+        <div id="panTarget" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;transition:all .3s;user-select:none">🍳</div>
+      </div>
+      <div style="margin-top:8px"><span class="game-score" id="panScore">0</span><span style="font-size:14px;color:var(--text-muted)"> 甩锅成功</span></div>
+      <button class="game-btn" onclick="panReset()">🔄 再来</button>
+    </div>
+    <div id="game-breathe" class="game-container tab-content">
+      <p style="font-weight:600;margin-bottom:12px">跟节奏深呼吸，放松一下</p>
+      <div id="breatheCircle" style="width:120px;height:120px;border-radius:60px;background:linear-gradient(135deg,#34c759,#5ac8fa);margin:12px auto;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;transition:all 4s ease-in-out">吸气</div>
+      <button class="game-btn" onclick="breatheToggle()" id="breatheBtn">开始呼吸</button>
+      <p class="game-hint" style="margin-top:8px">吸气4秒 → 屏气4秒 → 呼气6秒</p>
+    </div>
+  </div>
+
+  <!-- Tab: Health -->
+  <div class="tab-content" id="tab-health">
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;line-height:1.6">长期伏案工作的你，可能需要关注以下常见职业病。点击展开自测和工位微运动。</p>
+    <div class="disease-tabs">
+      <button class="disease-tab active" onclick="switchDisease('disease-neck',this)">🦒 颈椎</button>
+      <button class="disease-tab" onclick="switchDisease('disease-spine',this)">🔴 腰椎</button>
+      <button class="disease-tab" onclick="switchDisease('disease-wrist',this)">🖐️ 手腕</button>
+      <button class="disease-tab" onclick="switchDisease('disease-eye',this)">👁️ 眼睛</button>
+      <button class="disease-tab" onclick="switchDisease('disease-fat',this)">🍔 代谢</button>
+    </div>
+    <div id="disease-neck" class="disease-content active"></div>
+    <div id="disease-spine" class="disease-content"></div>
+    <div id="disease-wrist" class="disease-content"></div>
+    <div id="disease-eye" class="disease-content"></div>
+    <div id="disease-fat" class="disease-content"></div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn btn-secondary" onclick="restartQuiz()">🔄 重新测试</button>
+    <button class="btn btn-primary" onclick="shareResult()">📤 分享结果</button>
+  </div>
+
+  <div class="disclaimer">
+    🔒 本测试完全在浏览器内运行，不收集任何个人信息。<br>
+    测试结果仅供娱乐参考，不构成医学或职业建议。<br>
+    如有身体不适请及时就医。
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA: Questions & Scoring
+// ============================================================
+
+const CATEGORIES = {
+  work: { label:'生存压力', weight:0.20, color:'#ff3b30' },
+  mental: { label:'精神内耗', weight:0.25, color:'#ff9500' },
+  reward: { label:'收入回报', weight:0.25, color:'#007aff' },
+  health: { label:'健康损耗', weight:0.20, color:'#34c759' },
+  industry: { label:'行业系数', weight:0.10, color:'#5856d6' }
+};
+
+const QUESTIONS = [
+  // === 生存压力 ===
+  { cat:'work', q:'你每周实际工作多少小时？（含加班）', opts:['< 40h（1分）','40-45h（3分）','45-50h（5分）','50-60h（7分）','60h+（10分）'], scores:[1,3,5,7,10] },
+  { cat:'work', q:'加班是自愿还是有强制要求？', opts:['完全自愿，不加班没影响（1）','偶尔需配合项目（3）','默认加班但可请假（5）','大小周/轮班强制（7）','996或更狠（10）'], scores:[1,3,5,7,10] },
+  { cat:'work', q:'单程通勤时间多久？', opts:['< 30分钟（1）','30-60分钟（3）','60-90分钟（5）','90-120分钟（7）','120分钟+（10）'], scores:[1,3,5,7,10] },
+  { cat:'work', q:'公司对工时监控有多严格？', opts:['完全弹性上下班（1）','打卡但不严格考核（3）','按月统计工时（5）','按天统计+排名（7）','上厕所计时/精确到分钟（10）'], scores:[1,3,5,7,10] },
+  // === 精神内耗 ===
+  { cat:'mental', q:'你的KPI/OKR目标合理吗？', opts:['合理，努力能达到（1）','偏高但完成70%可接受（3）','偏高且未完成有惩罚（5）','几乎不可能完成（7）','纯属画饼/数字游戏（10）'], scores:[1,3,5,7,10] },
+  { cat:'mental', q:'你每周参加多少小时会议？', opts:['< 2h（1）','2-5h（3）','5-10h（5）','10-15h（7）','15h+，会山会海（10）'], scores:[1,3,5,7,10] },
+  { cat:'mental', q:'公司内部流程有多繁琐？', opts:['扁平高效，审批半小时内（1）','流程合理，当天可处理（3）','需2-3层审批（5）','5层以上审批+排期（7）','买个笔要总经理签+采购周期1个月（10）'], scores:[1,3,5,7,10] },
+  { cat:'mental', q:'同事间内卷竞争程度？', opts:['合作氛围好，不排名（1）','偶尔有竞争但可控（3）','公开排名/末位淘汰（5）','每周通报PK结果（7）','全员互相卷，半夜还在卷（10）'], scores:[1,3,5,7,10] },
+  { cat:'mental', q:'领导的管理风格如何？', opts:['信任放权，尊重下属（1）','偶尔加压但合理（3）','经常批评/否定（5）','公开训斥/精神打压（7）','PUA+24h待命+人格侮辱（10）'], scores:[1,3,5,7,10] },
+  // === 收入回报 ===
+  { cat:'reward', q:'你的时薪大概多少？（月薪÷月工时）', opts:['> 100元/小时（1）','70-100元/小时（3）','50-70元/小时（5）','30-50元/小时（7）','< 30元/小时（10）'], scores:[1,3,5,7,10] },
+  { cat:'reward', q:'公司五险一金缴纳基数？', opts:['按实际工资全额缴纳+补充福利（1）','按实际工资缴纳（3）','按最低基数缴纳（5）','只交五险无一金（7）','社保都不交/劳务派遣（10）'], scores:[1,3,5,7,10] },
+  { cat:'reward', q:'过去一年公司是否裁员？', opts:['没裁过，还在扩招（1）','小幅优化<5%（3）','裁了5-15%（5）','裁了15-30%（7）','大裁30%+或已经第三轮（10）'], scores:[1,3,5,7,10] },
+  { cat:'reward', q:'如果被裁，公司会怎么补偿？', opts:['N+3及以上（1）','N+1或N+2（3）','N（法定最低）（5）','N以下或变相逼你走（7）','0补偿/威胁你主动离职（10）'], scores:[1,3,5,7,10] },
+  { cat:'reward', q:'年终奖兑现情况？', opts:['写多少发多少，远超预期（1）','基本按约定发放（3）','打折但多少有点（5）','画饼没兑现（7）','根本没有年终奖这回事（10）'], scores:[1,3,5,7,10] },
+  // === 健康损耗 ===
+  { cat:'health', q:'你目前是否出现以下症状？（多选最严重的一项）', opts:['几乎无症状，精力充沛（1）','偶尔疲劳/肩酸（3）','失眠/脱发/胃病之一（5）','心悸/焦虑/持续疲劳（7）','已有确诊职业病或抑郁倾向（10）'], scores:[1,3,5,7,10] },
+  { cat:'health', q:'年假能正常休完吗？', opts:['全部休完（1）','休了80%以上（3）','休了一半左右（5）','基本没休（7）','根本没年假/休年假算你旷工（10）'], scores:[1,3,5,7,10] },
+  { cat:'health', q:'每天连续坐着多长时间？', opts:['< 4小时，经常起身（1）','4-6小时（3）','6-8小时（5）','8-10小时（7）','10h+，除了上厕所不动（10）'], scores:[1,3,5,7,10] },
+  { cat:'health', q:'你的心理状态整体感觉？', opts:['轻松愉快，期望去上班（1）','偶尔低落但能调节（3）','常感疲惫但还能撑（5）','经常焦虑/不想上班（7）','严重焦虑/抑郁，需要专业帮助（10）'], scores:[1,3,5,7,10] },
+  // === 行业系数（作为调节而非评分）===
+  { cat:'industry', q:'你的行业属于？', opts:['体制内/事业单位/国企（0.5）','外企/合资（0.8）','制造业/传统行业（1.0）','互联网/科技/创业（1.3）','金融/咨询/投行/律所（1.4）'], scores:[0.5,0.8,1.0,1.3,1.4] },
+  { cat:'industry', q:'你的职级？', opts:['基层员工/执行层（1.0）','中层/Team Lead（1.2）','高层/总监级（0.9）','老板/合伙人（0.5）'], scores:[1.0,1.2,0.9,0.5] },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentQ = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let totalScore = 0;
+
+const HEALTH_DATA = {
+  neck: {
+    name:'颈椎病', icon:'🦒',
+    selfCheck:'长期低头看屏幕、肩颈酸痛、转头有响声、手指发麻',
+    prevention:[
+      '米字操：用头写"米"字，每个方向停留3秒，重复5遍',
+      '下巴后缩：坐直，下巴水平后缩（双下巴动作），保持5秒，重复10次',
+      '拒绝低头：屏幕中心与视线平齐，可用笔记本支架或增高架',
+      '定时提醒：每30分钟站起来活动颈部1分钟'
+    ],
+    whenDoctor:'持续手麻/无力、眩晕、走路踩棉花感 → 立即去骨科或神经科'
+  },
+  spine: {
+    name:'腰椎间盘突出', icon:'🔴',
+    selfCheck:'久坐后腰痛、弯腰时刺痛、腿部放射性疼痛、坐立难安',
+    prevention:[
+      '坐姿脊柱扭转：坐直，向左扭转上身保持15秒，换方向，重复3组',
+      '猫牛式：手撑桌边，交替拱背和塌腰，配合呼吸，重复10次',
+      '腰靠支撑：腰后放靠垫保持腰曲，双脚平放地面不翘二郎腿',
+      '站立办公：有条件用升降桌，每45分钟站立15分钟'
+    ],
+    whenDoctor:'腿部放射痛持续、大小便异常、足下垂 → 立即去脊柱外科'
+  },
+  wrist: {
+    name:'腱鞘炎/鼠标手', icon:'🖐️',
+    selfCheck:'手腕刺痛、拇指无力、握拳困难、拧毛巾无力、夜间痛醒',
+    prevention:[
+      '手指开合：五指用力张开保持5秒，再握拳5秒，重复10次',
+      '手腕伸展：一手拉另一手手指向后，保持15秒，换手',
+      '换手用鼠标：左右手交替使用鼠标，每2小时换一次',
+      '改用垂直鼠标或轨迹球，减少手腕扭转角度'
+    ],
+    whenDoctor:'持续疼痛超过2周、握力明显下降、夜间痛醒 → 去手外科/骨科'
+  },
+  eye: {
+    name:'干眼症/视疲劳', icon:'👁️',
+    selfCheck:'眼干涩、异物感、视力模糊、畏光、长时间看屏幕后头痛',
+    prevention:[
+      '20-20-20法则：每20分钟看6米外20秒，眨眼20次',
+      '热敷双眼：温毛巾敷眼10分钟，每天1-2次，促进睑板腺分泌',
+      '屏幕设置：调低亮度（与周围环境一致），开启夜览模式，字体放大150%',
+      '人工泪液：使用不含防腐剂的人工泪液，不要乱用眼药水'
+    ],
+    whenDoctor:'视力突然下降、持续性眼痛、视野缺损 → 立即去眼科'
+  },
+  fat: {
+    name:'过劳肥/代谢综合征', icon:'🍔',
+    selfCheck:'腰围增加、越累越想吃碳水、疲劳性饥饿、下班后完全没精力运动',
+    prevention:[
+      '工位HIIT：开合跳30秒+高抬腿30秒+深蹲15个，3分钟完成',
+      '带饭代替外卖：提前准备好午餐，控制油盐糖摄入',
+      '16:8间歇断食：每天在8小时内吃完三餐，改善代谢',
+      '多喝水：工位放1.5L水壶，强迫自己喝完，减少含糖饮料'
+    ],
+    whenDoctor:'空腹血糖>7.0、血压持续>140/90、腰围男>90cm/女>85cm → 去内分泌科'
+  }
+};
+
+// ============================================================
+// QUIZ LOGIC
+// ============================================================
+
+function startQuiz(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  currentQ=0; answers=new Array(QUESTIONS.length).fill(null);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=QUESTIONS[currentQ];
+  document.getElementById('questionCount').textContent=`第 ${currentQ+1} / ${QUESTIONS.length} 题`;
+  document.getElementById('questionText').textContent=q.q;
+  const optsDiv=document.getElementById('options');
+  optsDiv.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='option'+(answers[currentQ]===i?' selected':'');
+    div.textContent=opt;
+    div.onclick=()=>selectOption(i);
+    optsDiv.appendChild(div);
+  });
+  document.getElementById('progressFill').style.width=((currentQ+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('prevBtn').style.display=currentQ>0?'inline-block':'none';
+  const nextBtn=document.getElementById('nextBtn');
+  if(answers[currentQ]!==null){
+    nextBtn.style.display='inline-block';
+    nextBtn.textContent=currentQ===QUESTIONS.length-1?'查看结果':'下一步';
+  } else {
+    nextBtn.style.display='none';
+  }
+}
+
+function selectOption(idx){
+  answers[currentQ]=idx;
+  // highlight
+  document.querySelectorAll('.option').forEach((el,i)=>{
+    el.classList.toggle('selected',i===idx);
+  });
+  const nextBtn=document.getElementById('nextBtn');
+  nextBtn.style.display='inline-block';
+  nextBtn.textContent=currentQ===QUESTIONS.length-1?'查看结果':'下一步';
+}
+
+function nextQuestion(){
+  if(answers[currentQ]===null)return;
+  if(currentQ===QUESTIONS.length-1){
+    calculateScore(); return;
+  }
+  currentQ++;
+  renderQuestion();
+}
+
+function prevQuestion(){
+  if(currentQ>0){currentQ--;renderQuestion()}
+}
+
+// ============================================================
+// SCORING ENGINE
+// ============================================================
+
+function calculateScore(){
+  // Group scores by category
+  let catScores={work:[],mental:[],reward:[],health:[],industry:[]};
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===null)answers[i]=0;
+    catScores[q.cat].push(q.scores[answers[i]]);
+  });
+
+  // Compute category averages
+  function avg(arr){
+    // For industry, multiply factors
+    if(arr.length===2) return arr[0]*arr[1];
+    return arr.reduce((a,b)=>a+b,0)/arr.length;
+  }
+
+  let catAvgs={};
+  for(let k in catScores){
+    catAvgs[k]=avg(catScores[k]);
+  }
+
+  // Weighted total (industry as multiplier on base)
+  let baseScore=0;
+  baseScore += catAvgs.work * CATEGORIES.work.weight;
+  baseScore += catAvgs.mental * CATEGORIES.mental.weight;
+  baseScore += catAvgs.reward * CATEGORIES.reward.weight;
+  baseScore += catAvgs.health * CATEGORIES.health.weight;
+
+  // Industry multiplier (0.5-1.4 range, normalize so 1.0=neutral)
+  let industryFactor=catAvgs.industry;
+  let finalScore=Math.round(baseScore * industryFactor * 10);
+  finalScore=Math.max(0,Math.min(100,finalScore));
+
+  totalScore=finalScore;
+  showResults(finalScore,catAvgs);
+}
+
+// ============================================================
+// RESULTS DISPLAY
+// ============================================================
+
+function showResults(score,catAvgs){
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('results').style.display='block';
+
+  // Tier
+  let tier,label,desc,tierEmoji;
+  if(score<=20){
+    tier=1;tierEmoji='😇';label='神仙级 · 天上人';desc='钱多事少离家近，该有的都有。建议不要声张，默默享受。';
+  } else if(score<=40){
+    tier=2;tierEmoji='😊';label='人类级 · 正常打工人';desc='偶尔加班但总体可接受。你还在人类的范围内，珍惜当下。';
+  } else if(score<=60){
+    tier=3;tierEmoji='🐂';label='牛马级 · 标准社畜';desc='累但还能扛。建议定期监测身体指标，该摸鱼就摸鱼。';
+  } else if(score<=80){
+    tier=4;tierEmoji='🐫';label='骡马级 · 高危预警';desc='身体已经发出警告信号。认真考虑换个环境吧，命比工作重要。';
+  } else {
+    tier=5;tierEmoji='💀';label='血汗级 · 活着就好';desc='这不是工作，是慢性透支。请立即审视你的职场选择，生命只有一次。';
+  }
+
+  document.getElementById('resultTier').textContent=tierEmoji;
+  document.getElementById('resultScore').textContent=score;
+  const labelEl=document.getElementById('resultLabel');
+  labelEl.textContent=label;
+  labelEl.style.background=getTierColor(tier,0.12);
+  labelEl.style.color=getTierColor(tier);
+  document.getElementById('resultDesc').textContent=desc;
+
+  // Breakdown
+  const bDiv=document.getElementById('breakdownContainer');
+  bDiv.innerHTML='';
+  const cats=['work','mental','reward','health'];
+  cats.forEach(k=>{
+    const rawScore=Math.round(catAvgs[k]*10);
+    const displayScore=Math.min(100,rawScore);
+    const div=document.createElement('div');
+    div.className='breakdown-item';
+    div.innerHTML=`
+      <div class="label">${CATEGORIES[k].label}</div>
+      <div class="value" style="color:${CATEGORIES[k].color}">${displayScore}</div>
+      <div class="bar"><div class="bar-fill" style="width:${displayScore}%;background:${CATEGORIES[k].color}"></div></div>
+    `;
+    bDiv.appendChild(div);
+  });
+
+  // Radar
+  drawRadar(catAvgs);
+
+  // Highlights (top 2 worst indicators)
+  const highlights=[];
+  const maxCat=cats.sort((a,b)=>catAvgs[b]-catAvgs[a])[0];
+  // High-scoring individual questions
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===null)return;
+    const scoreVal=q.scores[answers[i]];
+    if((q.cat==='work'||q.cat==='mental'||q.cat==='health') && scoreVal>=7){
+      highlights.push({q:q.q,v:scoreVal});
+    }
+  });
+  highlights.sort((a,b)=>b.v-a.v);
+  const hlDiv=document.getElementById('highlightList');
+  if(highlights.length===0){
+    hlDiv.innerHTML='✅ 各项指标均在正常范围，继续保持！';
+  } else {
+    hlDiv.innerHTML='<strong>⚠️ 以下指标需关注：</strong><br>'+
+      highlights.slice(0,3).map(h=>`· ${h.q}（得分：${h.v}/10）`).join('<br>')+
+      `<br><br>💡 <strong>最需改善类别：</strong>${CATEGORIES[maxCat].label}`;
+  }
+
+  // Advice
+  const adviceDiv=document.getElementById('adviceContainer');
+  let adviceHtml='';
+  if(score<=20){
+    adviceHtml='<div class="tip-card"><p>你的职场状态非常理想！建议：继续保持工作生活平衡，定期体检防范未然，同时帮助身边还在水深火热的同事吧 🙏</p></div>';
+  } else if(score<=40){
+    adviceHtml='<div class="tip-card"><p>状态不错，但仍有提升空间：</p><ul style="font-size:14px;line-height:1.8;padding-left:20px;color:var(--text-muted)"><li>确保每年用完年假</li><li>每天保证30分钟运动</li><li>建立工作边界，避免慢性加班累积</li></ul></div>';
+  } else if(score<=60){
+    adviceHtml='<div class="tip-card"><p>你处在"还能撑"的阶段，但需要主动管理了：</p><ul style="font-size:14px;line-height:1.8;padding-left:20px;color:var(--text-muted)"><li>每周至少留一天完全不碰工作</li><li>学习"摸鱼技巧"：番茄工作法，每25分钟休息5分钟</li><li>关注身体信号：失眠/脱发/胃痛是预警</li><li>开始更新简历和猎头联系，保持主动性</li></ul></div>';
+  } else if(score<=80){
+    adviceHtml='<div class="tip-card"><p style="color:var(--danger);font-weight:600">⚠️ 你已进入高危区！</p><ul style="font-size:14px;line-height:1.8;padding-left:20px;color:var(--text-muted)"><li>认真评估现有工作是否值得牺牲健康</li><li>立即开始求职，不要把简历拖着不更新</li><li>约一次全面体检（重点：心血管、颈椎、心理）</li><li>强制每天留1小时"无工作时间"</li><li>和信任的人聊聊你的状态，不要憋着</li></ul></div>';
+  } else {
+    adviceHtml='<div class="tip-card"><p style="color:var(--danger);font-weight:600">🚨 紧急建议！</p><ul style="font-size:14px;line-height:1.8;padding-left:20px;color:var(--text-muted)"><li>请立即审视你的职场选择，健康比任何工作都重要</li><li>如果已经出现焦虑/抑郁症状，请尽快约心理医生</li><li>请务必安排一次全面的身体检查</li><li>就算没有新offer，也值得考虑裸辞休息一段时间</li><li>记住：公司离了谁都能转，但你的家人只有你</li></ul></div>';
+  }
+  adviceDiv.innerHTML=adviceHtml;
+
+  // Disease content
+  renderDiseaseContent();
+
+  // Confetti for low scores
+  if(score<=40) confetti();
+}
+
+function getTierColor(tier,opacity=1){
+  const colors={1:'#34c759',2:'#7dd348',3:'#ffcc00',4:'#ff9500',5:'#ff3b30'};
+  const c=colors[tier]||'#86868b';
+  if(opacity<1) return c+Math.round(opacity*255).toString(16).padStart(2,'0');
+  return c;
+}
+
+// ============================================================
+// RADAR CHART (Canvas)
+// ============================================================
+
+function drawRadar(catAvgs){
+  const canvas=document.getElementById('radarCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const w=300,d=300;
+  canvas.style.width=w+'px';canvas.style.height=d+'px';
+  canvas.width=w*dpr;canvas.height=d*dpr;
+  ctx.scale(dpr,dpr);
+
+  const cx=w/2,cy=d/2,radius=w*0.38;
+  const cats=['work','mental','reward','health'];
+  const labels=cats.map(k=>CATEGORIES[k].label);
+  const values=cats.map(k=>Math.min(1,catAvgs[k]/10));
+  const angles=cats.map((_,i)=>-Math.PI/2+2*Math.PI*i/cats.length);
+
+  ctx.clearRect(0,0,w,d);
+
+  // Grid: 5 concentric levels
+  for(let level=1;level<=5;level++){
+    ctx.beginPath();
+    const r=radius*level/5;
+    angles.forEach((a,i)=>{
+      const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle='#e5e5ea';ctx.lineWidth=1;ctx.stroke();
+  }
+
+  // Axes
+  angles.forEach(a=>{
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+radius*Math.cos(a),cy+radius*Math.sin(a));
+    ctx.strokeStyle='#e5e5ea';ctx.lineWidth=1;ctx.stroke();
+  });
+
+  // Data area
+  ctx.beginPath();
+  angles.forEach((a,i)=>{
+    const r=values[i]*radius;
+    const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle='rgba(0,102,204,0.1)';ctx.fill();
+  ctx.strokeStyle='#0066cc';ctx.lineWidth=2.5;ctx.stroke();
+
+  // Data points
+  angles.forEach((a,i)=>{
+    const r=values[i]*radius;
+    const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+    ctx.beginPath();ctx.arc(x,y,5,0,2*Math.PI);
+    ctx.fillStyle='#0066cc';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+  });
+
+  // Labels
+  ctx.font='13px -apple-system, sans-serif';ctx.fillStyle='#1d1d1f';ctx.textAlign='center';
+  const labelOffset=radius+22;
+  angles.forEach((a,i)=>{
+    const x=cx+labelOffset*Math.cos(a),y=cy+labelOffset*Math.sin(a)+4;
+    ctx.fillText(labels[i],x,y);
+  });
+
+  // Center text
+  ctx.font='12px -apple-system, sans-serif';ctx.fillStyle='#86868b';ctx.textAlign='center';
+  ctx.fillText('越高越差',cx,cy+4);
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+
+let currentResultTab='tab-report';
+function switchTab(tabId,btn){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.querySelectorAll('#resultTabs .tab').forEach(el=>el.classList.remove('active'));
+  btn.classList.add('active');
+  currentResultTab=tabId;
+}
+
+// ============================================================
+// DISEASE CONTENT
+// ============================================================
+
+function renderDiseaseContent(){
+  for(let key in HEALTH_DATA){
+    const d=HEALTH_DATA[key];
+    const el=document.getElementById('disease-'+key);
+    if(!el)continue;
+    el.innerHTML=`
+      <div class="disease-card">
+        <h4>${d.icon} ${d.name} · 自测</h4>
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.6">出现以下症状请警惕：<br>${d.selfCheck}</p>
+      </div>
+      <div class="disease-card">
+        <h4>🧘 工位预防运动</h4>
+        ${d.prevention.map(p=>`<div class="exercise" style="margin-bottom:6px">✅ ${p}</div>`).join('')}
+      </div>
+      <div class="disease-card" style="border-left:3px solid var(--danger)">
+        <h4>🚨 何时就医</h4>
+        <p style="font-size:14px;line-height:1.6;color:var(--text-muted)">${d.whenDoctor}</p>
+      </div>
+    `;
+  }
+}
+
+let currentDisease='neck';
+function switchDisease(id,btn){
+  document.querySelectorAll('.disease-content').forEach(el=>el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.disease-tab').forEach(el=>el.classList.remove('active'));
+  btn.classList.add('active');
+  currentDisease=id;
+}
+
+// ============================================================
+// MINI GAMES
+// ============================================================
+
+function switchGame(id,btn){
+  document.querySelectorAll('#tab-games .tab-content').forEach(el=>el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('#tab-games .tabs .tab').forEach(el=>el.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// --- Game 1: Alarm Reaction ---
+let alarmTimer=null,alarmActive=false,alarmReactions=[];
+function alarmStart(){
+  if(alarmActive){ alarmHit(); return; }
+  const area=document.getElementById('alarmArea');
+  area.textContent='⏳ 等待变绿...';area.className='alarm-area';
+  const delay=1000+Math.random()*3000;
+  if(alarmTimer)clearTimeout(alarmTimer);
+  alarmTimer=setTimeout(()=>{
+    area.textContent='💥 快按！';area.className='alarm-area active';
+    alarmActive=true;
+    alarmTimer=setTimeout(()=>{
+      if(alarmActive){ alarmActive=false; area.textContent='😴 太慢了...';area.className='alarm-area danger'; }
+    },800);
+  },delay);
+}
+function alarmHit(){
+  if(!alarmActive)return;
+  alarmActive=false;
+  clearTimeout(alarmTimer);
+  const area=document.getElementById('alarmArea');
+  area.textContent='✅ 好样的！';area.className='alarm-area';
+  alarmReactions.push(100);
+  document.getElementById('alarmScore').textContent=alarmReactions.reduce((a,b)=>a+b,0);
+  setTimeout(()=>{area.textContent='👀 盯住这里';area.className='alarm-area';},1000);
+}
+function alarmReset(){
+  alarmReactions=[];document.getElementById('alarmScore').textContent='0';
+  const area=document.getElementById('alarmArea');
+  area.textContent='👀 盯住这里';area.className='alarm-area';
+  alarmActive=false;if(alarmTimer)clearTimeout(alarmTimer);
+}
+
+// --- Game 2: Press ---
+let pressTimer=null,pressCount=0;
+function pressStart(){
+  pressCount=0;pressTimer=setInterval(()=>{pressCount++;},100);
+}
+function pressEnd(){
+  if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}
+  document.getElementById('pressScore').textContent=pressCount;
+  pressCount=0;
+}
+
+// --- Game 3: Pan - Dodge the Frying Pan ---
+let panScore=0,panTimer=null;
+function panClick(e){
+  const area=document.getElementById('panArea');
+  const pan=document.getElementById('panTarget');
+  const rect=area.getBoundingClientRect();
+  const x=e.clientX-rect.left,y=e.clientY-rect.top;
+  const panRect=pan.getBoundingClientRect();
+  const px=panRect.left-rect.left+panRect.width/2,py=panRect.top-rect.top+panRect.height/2;
+  const dist=Math.sqrt((x-px)**2+(y-py)**2);
+  if(dist<50){
+    panScore+=10;
+    document.getElementById('panScore').textContent=panScore;
+    pan.textContent='💨';
+    movePan(area,pan);
+    setTimeout(()=>{pan.textContent='🍳';},300);
+  } else {
+    movePan(area,pan);
+  }
+}
+function movePan(area,pan){
+  const w=area.clientWidth-60,h=area.clientHeight-60;
+  pan.style.left=(20+Math.random()*w)+'px';
+  pan.style.top=(20+Math.random()*h)+'px';
+}
+function panReset(){panScore=0;document.getElementById('panScore').textContent='0';}
+
+// --- Game 4: Breathe ---
+let breatheInterval=null;
+function breatheToggle(){
+  const circle=document.getElementById('breatheCircle');
+  const btn=document.getElementById('breatheBtn');
+  if(breatheInterval){
+    clearInterval(breatheInterval);breatheInterval=null;
+    circle.style.transform='scale(1)';circle.textContent='吸气';
+    btn.textContent='开始呼吸';return;
+  }
+  btn.textContent='停止';
+  const phases=[
+    {text:'吸气',scale:1.4,duration:4000},
+    {text:'屏气',scale:1.4,duration:4000},
+    {text:'呼气',scale:0.8,duration:6000}
+  ];
+  let step=0;
+  function runStep(){
+    const p=phases[step%3];
+    circle.textContent=p.text;
+    circle.style.transform='scale('+p.scale+')';
+    step++;
+    breatheInterval=setTimeout(runStep,p.duration);
+  }
+  breatheInterval=setTimeout(runStep,100);
+}
+
+// ============================================================
+// SHARE
+// ============================================================
+
+function shareResult(){
+  const tierEmoji=document.getElementById('resultTier').textContent;
+  const score=document.getElementById('resultScore').textContent;
+  const label=document.getElementById('resultLabel').textContent;
+  const shareText=`🐂🔥 牛马热力指数测评结果：${tierEmoji} ${label}\n得分：${score}/100\n\n测测你的职场压迫指数👇`;
+  if(navigator.share){
+    navigator.share({title:'牛马热力指数',text:shareText,url:window.location.href}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(shareText).then(()=>alert('结果已复制到剪贴板，快去分享吧！')).catch(()=>{
+      prompt('复制以下内容分享：',shareText);
+    });
+  }
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+
+function confetti(){
+  const colors=['#34c759','#7dd348','#ffcc00','#007aff','#5ac8fa','#ff9500','#ff3b30','#af52de'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.width=(6+Math.random()*8)+'px';
+    el.style.height=(6+Math.random()*8)+'px';
+    el.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    el.style.animationDuration=(2+Math.random()*3)+'s';
+    el.style.animationDelay=Math.random()*2+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),6000);
+  }
+}
+
+// ============================================================
+// RESTART
+// ============================================================
+
+function restartQuiz(){
+  currentQ=0;answers=new Array(QUESTIONS.length).fill(null);totalScore=0;
+  document.getElementById('results').style.display='none';
+  document.getElementById('cover').style.display='block';
+}
+</script>
+</body>
+</html>
