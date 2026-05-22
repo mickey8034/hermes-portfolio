@@ -121,6 +121,7 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 <div class="card">
   <div class="card-title">🧬 大五人格剖面 / Big Five (OCEAN) Profile</div>
   <div class="subtle">基于行为观察推论 · 连续维度描述 · 百分位参考</div>
+
   <div class="bar-container">
 
     <div class="bar-item">
@@ -202,11 +203,11 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
     <div style="padding:12px;background:rgba(167,139,250,.08);border-radius:8px">
       <div style="font-size:11px;color:#64748b">主导风格</div>
-      <div style="font-weight:700;font-size:15px;color:#a78bfa;margin-top:4px">{big5_profile["leadership_style"]["primary"]}</div>
+      <div style="font-weight:700;font-size:15px;color:#a78bfa;margin-top:4px">推销型 S2 — 高指导 + 高支持</div>
     </div>
     <div style="padding:12px;background:rgba(96,165,250,.08);border-radius:8px">
       <div style="font-size:11px;color:#64748b">团队成熟度</div>
-      <div style="font-weight:600;font-size:13px;color:#60a5fa;margin-top:4px">{big5_profile["leadership_style"]["maturity"]}</div>
+      <div style="font-weight:600;font-size:13px;color:#60a5fa;margin-top:4px">团队处于 P2→P3 阶段（有能力但信心不足）</div>
     </div>
   </div>
   <table style="margin-top:10px">
@@ -226,16 +227,16 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
   <div class="disc-chart">
     <div class="disc-donut">
       <div class="disc-donut-inner">
-        <div class="type">{disc_profile["primary"][:2]}</div>
+        <div class="type">DI</div>
         <div class="sub">DI 型</div>
       </div>
     </div>
     <div class="disc-legend">
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#ef4444"></span> D {disc_profile["scores"]["D"]}% Dominance</div>
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#f59e0b"></span> I {disc_profile["scores"]["I"]}% Influence</div>
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#3b82f6"></span> S {disc_profile["scores"]["S"]}% Steadiness</div>
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#10b981"></span> C {disc_profile["scores"]["C"]}% Conscientiousness</div>
-      <div style="margin-top:8px;font-size:12px;color:#94a3b8">{disc_profile["description"]}</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#ef4444"></span> D 85% Dominance</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#f59e0b"></span> I 72% Influence</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#3b82f6"></span> S 30% Steadiness</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#10b981"></span> C 55% Conscientiousness</div>
+      <div style="margin-top:8px;font-size:12px;color:#94a3b8">结果导向 + 社交活跃 — 典型的创业CEO风格</div>
     </div>
   </div>
 </div>
@@ -333,15 +334,15 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
   <div class="grid3" style="margin-bottom:12px">
     <div style="text-align:center;padding:10px;background:rgba(16,185,129,.06);border-radius:8px">
       <div style="font-size:11px;color:#64748b">推荐选项</div>
-      <div style="font-weight:700;font-size:16px;color:#34d399;margin-top:4px">{decision_result["recommendation"]}</div>
+      <div style="font-weight:700;font-size:16px;color:#34d399;margin-top:4px">Vendor B (创新型)</div>
     </div>
     <div style="text-align:center;padding:10px;background:rgba(167,139,250,.06);border-radius:8px">
       <div style="font-size:11px;color:#64748b">损失厌恶系数</div>
-      <div style="font-weight:700;font-size:16px;color:#a78bfa;margin-top:4px">×{decision_result["parameters"]["loss_aversion_factor"]}</div>
+      <div style="font-weight:700;font-size:16px;color:#a78bfa;margin-top:4px">×2.0</div>
     </div>
     <div style="text-align:center;padding:10px;background:rgba(245,158,11,.06);border-radius:8px">
       <div style="font-size:11px;color:#64748b">过度自信折扣</div>
-      <div style="font-weight:700;font-size:16px;color:#f59e0b;margin-top:4px">{decision_result["parameters"]["overconfidence_discount"]}</div>
+      <div style="font-weight:700;font-size:16px;color:#f59e0b;margin-top:4px">0.92</div>
     </div>
   </div>
 
