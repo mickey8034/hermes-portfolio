@@ -779,7 +779,18 @@ function toggleTheme(){
   localStorage.setItem('color-scheme', meta.content);
 }
 
+// ===== UPDATE STATS =====
+function updateStats(){
+  const totalProj = projects.length;
+  const totalFiles = projects.reduce((sum, p) => sum + (p.filesList ? p.filesList.length : 0), 0);
+  const maxVer = Math.max(...projects.map(p => p.versions || 1));
+  document.getElementById('totalProjects').textContent = totalProj;
+  document.getElementById('totalFiles').textContent = totalFiles;
+  document.getElementById('totalVersions').textContent = maxVer;
+}
+
 // ===== INIT =====
+updateStats();
 renderGrid(projects);
 </script>
 </body>
