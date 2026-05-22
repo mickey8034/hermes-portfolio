@@ -4,598 +4,713 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
-<title>Hermes Portfolio</title>
-<meta name="description" content="Hermes Agent 数据分析作品集">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌘</text></svg>">
+<title>Hermes 作品集 · 项目目录</title>
+<meta name="description" content="Hermes Agent 数据分析与咨询报告作品集">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<!-- Inline script to prevent FOUC -->
 <script>
 (function(){
-  var t = localStorage.getItem('theme');
-  if(t === 'dark') document.documentElement.classList.add('dark');
+  var cs = localStorage.getItem('color-scheme');
+  if (cs) document.querySelector('meta[name="color-scheme"]').content = cs;
+  var savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+  if (savedTheme === 'light') document.documentElement.classList.remove('dark');
 })();
 </script>
 <style>
 /* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
   color-scheme:light dark;
-  
-  /* Fonts */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'SF Mono', 'SF Pro', 'Menlo', 'Consolas', monospace;
-  
-  /* Light */
-  --bg: #f5f5f7;
-  --bg-card: rgba(255,255,255,0.72);
-  --bg-glass: rgba(255,255,255,0.6);
-  --text: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-muted: #aeaeb2;
-  --border: rgba(0,0,0,0.06);
-  --border-hover: rgba(0,0,0,0.12);
-  --accent: #0071e3;
-  --accent-glow: rgba(0,113,227,0.08);
-  --accent-gradient: linear-gradient(135deg, #0071e3, #64d2ff);
-  --green: #30d158;
-  --amber: #ff9f0a;
-  --red: #ff453a;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.08);
-  --radius-sm: 10px;
-  --radius-md: 14px;
+
+  /* Light tokens */
+  --bg-page: oklch(0.97 0.005 280);
+  --bg-card: oklch(1 0 0 / 0.7);
+  --bg-card-hover: oklch(1 0 0 / 0.9);
+  --bg-glass: oklch(1 0 0 / 0.4);
+  --text-primary: oklch(0.15 0.02 280);
+  --text-secondary: oklch(0.45 0.03 280);
+  --text-muted: oklch(0.6 0.02 280);
+  --border: oklch(0.85 0.01 280 / 0.5);
+  --border-hover: oklch(0.7 0.05 260 / 0.6);
+  --accent: oklch(0.55 0.2 260);
+  --accent-glow: oklch(0.55 0.2 260 / 0.15);
+  --accent-gradient: linear-gradient(135deg, oklch(0.55 0.2 260), oklch(0.6 0.18 310));
+  --green: oklch(0.55 0.18 150);
+  --amber: oklch(0.65 0.18 85);
+  --red: oklch(0.55 0.2 25);
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.08);
+  --shadow-lg: 0 8px 32px oklch(0 0 0 / 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
   --radius-lg: 20px;
-  --radius-xl: 28px;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
 :root.dark{
-  --bg: #000;
-  --bg-card: rgba(28,28,30,0.72);
-  --bg-glass: rgba(28,28,30,0.5);
-  --text: #f5f5f7;
-  --text-secondary: #98989d;
-  --text-muted: #636366;
-  --border: rgba(255,255,255,0.08);
-  --border-hover: rgba(255,255,255,0.15);
-  --accent: #2997ff;
-  --accent-glow: rgba(41,151,255,0.1);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+  --bg-page: oklch(0.13 0.015 280);
+  --bg-card: oklch(0.2 0.015 280 / 0.6);
+  --bg-card-hover: oklch(0.25 0.015 280 / 0.7);
+  --bg-glass: oklch(0.2 0.015 280 / 0.3);
+  --text-primary: oklch(0.92 0.01 280);
+  --text-secondary: oklch(0.7 0.02 280);
+  --text-muted: oklch(0.5 0.02 280);
+  --border: oklch(0.3 0.01 280 / 0.5);
+  --border-hover: oklch(0.45 0.05 260 / 0.5);
+  --accent: oklch(0.65 0.2 260);
+  --accent-glow: oklch(0.65 0.2 260 / 0.12);
+  --accent-gradient: linear-gradient(135deg, oklch(0.65 0.2 260), oklch(0.7 0.18 310));
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.2);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
+  --shadow-lg: 0 8px 32px oklch(0 0 0 / 0.4);
 }
 
-html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
+html{scroll-behavior:smooth}
 body{
   font-family:var(--font-sans);
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.47059;
+  background:var(--bg-page);
+  color:var(--text-primary);
+  line-height:1.6;
   min-height:100dvh;
   transition:background 0.4s ease,color 0.4s ease;
 }
 
-/* ===== NAV ===== */
-nav{
-  position:sticky;top:0;z-index:100;
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  background:light-dark(rgba(255,255,255,0.8), rgba(0,0,0,0.8));
-  border-bottom:1px solid var(--border);
-}
-.nav-inner{
-  max-width:1000px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.5rem;height:48px;
-}
-.nav-brand{
-  font-size:0.85rem;font-weight:600;letter-spacing:-0.01em;
-  color:var(--text);
-}
-.nav-brand span{color:var(--accent)}
-.nav-right{display:flex;align-items:center;gap:0.6rem}
-.clock{
-  font-family:var(--font-mono);
-  font-size:0.8rem;font-weight:500;
-  color:var(--text-secondary);
-  letter-spacing:0.5px;
-  font-variant-numeric:tabular-nums;
-  min-width:60px;text-align:right;
-}
-.date-badge{
-  font-size:0.7rem;
-  color:var(--text-muted);
-  background:var(--bg-glass);
-  padding:2px 10px;
-  border-radius:100px;
-  border:1px solid var(--border);
-  white-space:nowrap;
-  font-weight:500;
-}
-.nav-stat{
-  font-size:0.75rem;color:var(--text-secondary);font-weight:500;
-}
-.theme-btn{
-  width:30px;height:30px;border-radius:50%;
-  border:none;background:var(--bg-glass);
-  backdrop-filter:blur(8px);
-  cursor:pointer;font-size:0.85rem;
-  display:grid;place-items:center;
-  transition:all 0.2s;color:var(--text);
-  border:1px solid var(--border);
-}
-.theme-btn:hover{background:var(--accent-glow);border-color:var(--accent)}
-:root.dark .theme-btn .light-icon{display:none}
-:root.dark .theme-btn .dark-icon{display:inline}
-.theme-btn .dark-icon{display:none}
-.theme-btn .light-icon{display:inline}
-
 /* ===== HERO ===== */
 .hero{
-  max-width:1000px;margin:0 auto;
-  padding:3.5rem 1.5rem 2rem;
+  position:relative;
+  padding:3rem 1.5rem 2.5rem;
   text-align:center;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--accent-gradient);
+  opacity:0.06;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+}
+.hero-content{position:relative;max-width:700px;margin:0 auto}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 14px;border-radius:100px;
+  font-size:0.75rem;font-weight:600;letter-spacing:0.3px;
+  background:var(--accent-glow);color:var(--accent);
+  margin-bottom:1rem;
+  border:1px solid var(--border);
 }
 .hero h1{
-  font-size:clamp(2.2rem,6vw,3.5rem);
-  font-weight:700;letter-spacing:-0.03em;
-  line-height:1.1;
+  font-size:clamp(1.8rem, 5vw, 2.8rem);
+  font-weight:800;letter-spacing:-0.02em;
+  margin-bottom:0.5rem;
   background:var(--accent-gradient);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
-  margin-bottom:0.4rem;
 }
 .hero p{
-  font-size:clamp(1rem,2vw,1.2rem);
+  font-size:clamp(0.95rem, 2vw, 1.1rem);
   color:var(--text-secondary);
-  font-weight:400;
-  max-width:500px;margin:0 auto;
+  max-width:520px;margin:0 auto 1.2rem;
 }
 .hero-stats{
-  display:flex;justify-content:center;gap:2.5rem;
-  margin-top:2rem;
+  display:flex;justify-content:center;gap:2rem;
+  padding-top:0.8rem;
 }
 .stat{text-align:center}
 .stat-num{
-  font-size:1.8rem;font-weight:700;letter-spacing:-0.02em;
-  color:var(--accent);
+  font-size:1.6rem;font-weight:800;
   font-variant-numeric:tabular-nums;
+  background:var(--accent-gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
 }
-.stat-label{
-  font-size:0.8rem;color:var(--text-muted);
-  margin-top:2px;
-}
+.stat-label{font-size:0.8rem;color:var(--text-muted);margin-top:-2px}
 
-/* ===== TOOLBAR ===== */
-.toolbar{
-  max-width:1000px;margin:0 auto;
-  padding:0 1.5rem 1.5rem;
-  display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;
-}
-.search-box{
-  flex:1;min-width:200px;position:relative;
-}
-.search-box input{
-  width:100%;padding:0.6rem 1rem 0.6rem 2.3rem;
-  border-radius:var(--radius-xl);
+/* ===== THEME TOGGLE ===== */
+.theme-toggle{
+  position:fixed;top:1.2rem;right:1.2rem;z-index:100;
+  width:40px;height:40px;border-radius:50%;
   border:1px solid var(--border);
   background:var(--bg-glass);
   backdrop-filter:blur(8px);
-  font-size:0.85rem;color:var(--text);
-  outline:none;transition:all 0.25s;
+  -webkit-backdrop-filter:blur(8px);
+  cursor:pointer;font-size:1.1rem;
+  display:grid;place-items:center;
+  transition:all 0.3s ease;
+  color:var(--text-primary);
+}
+.theme-toggle:hover{
+  border-color:var(--accent);
+  transform:scale(1.08);
+}
+.theme-toggle .icon-sun{display:inline}
+.theme-toggle .icon-moon{display:none}
+:root.dark .theme-toggle .icon-sun{display:none}
+:root.dark .theme-toggle .icon-moon{display:inline}
+
+/* ===== CLOCK & DATE ===== */
+.header-info{
+  position:fixed;top:1.2rem;left:1.2rem;z-index:100;
+  display:flex;align-items:center;gap:0.6rem;
+  font-family:var(--font-mono);
+}
+.header-clock{
+  font-size:0.85rem;font-weight:600;
+  color:var(--text-primary);
+  background:var(--bg-glass);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  padding:5px 12px;border-radius:100px;
+  border:1px solid var(--border);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:0.5px;
+}
+.header-date{
+  font-size:0.75rem;
+  color:var(--text-muted);
+  background:var(--bg-glass);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  padding:5px 12px;border-radius:100px;
+  border:1px solid var(--border);
+} 
+
+/* ===== SEARCH BAR ===== */
+.search-section{
+  padding:0 1.5rem 1.5rem;
+  max-width:1200px;margin:0 auto;
+}
+.search-wrap{
+  position:relative;
+  max-width:500px;margin:0 auto;
+}
+.search-wrap input{
+  width:100%;padding:0.75rem 1rem 0.75rem 2.6rem;
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  background:var(--bg-glass);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  font-size:0.9rem;color:var(--text-primary);
+  outline:none;transition:all 0.3s;
   font-family:var(--font-sans);
 }
-.search-box input::placeholder{color:var(--text-muted)}
-.search-box input:focus{
+.search-wrap input::placeholder{color:var(--text-muted)}
+.search-wrap input:focus{
   border-color:var(--accent);
   box-shadow:0 0 0 3px var(--accent-glow);
 }
 .search-icon{
-  position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);
-  color:var(--text-muted);font-size:0.8rem;pointer-events:none;
+  position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);
+  color:var(--text-muted);font-size:0.9rem;
+  pointer-events:none;
 }
-.filter-group{
-  display:flex;gap:0.25rem;
-  background:var(--bg-glass);
-  backdrop-filter:blur(8px);
-  padding:3px;border-radius:var(--radius-xl);
-  border:1px solid var(--border);
+
+/* ===== FILTER TABS ===== */
+.filter-bar{
+  display:flex;flex-wrap:wrap;gap:0.4rem;
+  justify-content:center;
+  padding:0 1.5rem 1.8rem;
+  max-width:1200px;margin:0 auto;
 }
 .filter-btn{
-  padding:0.35rem 0.8rem;border-radius:100px;
-  border:none;background:transparent;
-  font-size:0.78rem;font-weight:500;
-  color:var(--text-secondary);cursor:pointer;
-  transition:all 0.2s;font-family:var(--font-sans);
-  white-space:nowrap;
+  padding:0.35rem 0.9rem;border-radius:100px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text-secondary);
+  font-size:0.8rem;font-weight:500;
+  cursor:pointer;transition:all 0.25s;
+  font-family:var(--font-sans);
 }
-.filter-btn:hover{color:var(--text)}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
 .filter-btn.active{
   background:var(--accent);color:white;
-  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+  border-color:var(--accent);
 }
 
-/* ===== GRID ===== */
-.grid-section{max-width:1000px;margin:0 auto;padding:0 1.5rem 3rem}
+/* ===== PROJECT GRID ===== */
+.grid-section{
+  padding:0 1.5rem 3rem;
+  max-width:1200px;margin:0 auto;
+}
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  gap:0.8rem;
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap:1rem;
+  container-type:inline-size;
 }
 
-/* ===== CARD ===== */
+/* ===== PROJECT CARD ===== */
 .card{
-  position:relative;overflow:hidden;
+  position:relative;
   background:var(--bg-card);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   border:1px solid var(--border);
   border-radius:var(--radius-lg);
   padding:1.5rem;
   cursor:pointer;
   transition:all 0.35s cubic-bezier(0.22,1,0.36,1);
-  -webkit-tap-highlight-color:transparent;
+  overflow:hidden;
+}
+.card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:var(--accent-gradient);
+  opacity:0;transition:opacity 0.4s;
+  border-radius:inherit;
+  pointer-events:none;
 }
 .card:hover{
   border-color:var(--border-hover);
-  transform:translateY(-2px);
+  transform:translateY(-3px);
   box-shadow:var(--shadow-lg);
 }
-.card:active{transform:scale(0.985)}
-
-.card-icon-wrap{
-  width:40px;height:40px;border-radius:var(--radius-sm);
-  background:var(--accent-glow);
-  display:grid;place-items:center;
-  font-size:1.3rem;margin-bottom:0.8rem;
-  transition:transform 0.3s;
-  position:relative;
+.card:hover::before{opacity:0.04}
+.card:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
 }
-.card:hover .card-icon-wrap{transform:scale(1.05)}
 
+.card-icon{
+  width:44px;height:44px;
+  border-radius:var(--radius-sm);
+  display:grid;place-items:center;
+  font-size:1.4rem;
+  margin-bottom:0.8rem;
+  background:var(--accent-glow);
+}
 .card h3{
-  font-size:0.95rem;font-weight:600;letter-spacing:-0.01em;
-  margin-bottom:0.25rem;
+  font-size:1.05rem;font-weight:700;
+  margin-bottom:0.3rem;
+  letter-spacing:-0.01em;
 }
 .card p{
-  font-size:0.82rem;color:var(--text-secondary);
+  font-size:0.85rem;color:var(--text-secondary);
   line-height:1.5;margin-bottom:0.8rem;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 .card-meta{
-  display:flex;align-items:center;gap:0.5rem;
+  display:flex;align-items:center;gap:0.6rem;
+  flex-wrap:wrap;
 }
-.badge{
+.card-badge{
   display:inline-flex;align-items:center;gap:4px;
   padding:2px 10px;border-radius:100px;
-  font-size:0.7rem;font-weight:500;
+  font-size:0.7rem;font-weight:600;
   background:var(--accent-glow);color:var(--accent);
   border:1px solid var(--border);
 }
-.badge.ready{background:rgba(48,209,88,0.1);color:var(--green);border-color:rgba(48,209,88,0.2)}
+.card-badge.ready{background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)}
+.card-badge.draft{background:oklch(0.65 0.18 85 / 0.12);color:var(--amber);border-color:oklch(0.65 0.18 85 / 0.25)}
 .card-files{
-  font-size:0.7rem;color:var(--text-muted);
+  font-size:0.75rem;color:var(--text-muted);
   margin-left:auto;
+}
+
+/* Card entrance animation */
+.card{
+  view-transition-name:auto;
+  @starting-style{opacity:0;transform:translateY(16px)}
 }
 
 /* ===== RIPPLE EFFECT ===== */
 .ripple{
   position:absolute;border-radius:50%;
-  background:rgba(0,113,227,0.15);
+  background:var(--accent);
   transform:scale(0);
   animation:ripple-anim 0.6s ease-out;
   pointer-events:none;
+  opacity:0.15;
 }
 @keyframes ripple-anim{
   to{transform:scale(4);opacity:0}
 }
 
-/* ===== DIALOG ===== */
+/* ===== DIALOG (Project Detail) ===== */
 .dialog-overlay{
   position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,0.3);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
+  background:oklch(0 0 0 / 0.5);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  opacity:0;visibility:hidden;
+  transition:all 0.3s;
   display:grid;place-items:center;
   padding:1rem;
-  opacity:0;visibility:hidden;
-  transition:all 0.35s;
 }
 .dialog-overlay.open{opacity:1;visibility:visible}
 .dialog{
   background:var(--bg-card);
-  backdrop-filter:blur(40px) saturate(180%);
-  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
   border:1px solid var(--border);
-  border-radius:var(--radius-xl);
-  max-width:520px;width:100%;
+  border-radius:var(--radius-lg);
+  max-width:560px;width:100%;
   max-height:85dvh;overflow-y:auto;
-  padding:1.8rem;
-  transform:scale(0.92) translateY(10px);
-  transition:all 0.4s cubic-bezier(0.22,1,0.36,1);
-  box-shadow:var(--shadow-lg);
+  padding:2rem;
+  transform:scale(0.92) translateY(12px);
+  transition:all 0.35s cubic-bezier(0.22,1,0.36,1);
 }
 .dialog-overlay.open .dialog{transform:scale(1) translateY(0)}
-.dialog-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem}
-.dialog-title{display:flex;align-items:center;gap:0.6rem}
-.dialog-title .icon{font-size:1.5rem}
-.dialog-title h2{font-size:1.1rem;font-weight:600;letter-spacing:-0.01em}
+.dialog-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:1.5rem;
+}
+.dialog-title{
+  display:flex;align-items:center;gap:0.6rem;
+}
+.dialog-title .icon{font-size:1.8rem}
+.dialog-title h2{font-size:1.3rem;font-weight:700}
 .dialog-close{
-  width:30px;height:30px;border-radius:50%;
-  border:1px solid var(--border);background:var(--bg-glass);
-  color:var(--text-secondary);cursor:pointer;font-size:0.9rem;
-  display:grid;place-items:center;transition:all 0.2s;
-  flex-shrink:0;font-family:var(--font-sans);
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text-secondary);
+  cursor:pointer;font-size:1rem;
+  display:grid;place-items:center;
+  transition:all 0.2s;flex-shrink:0;
+  font-family:var(--font-sans);
 }
-.dialog-close:hover{background:var(--accent-glow);border-color:var(--accent);color:var(--accent)}
-.dialog-desc{
-  color:var(--text-secondary);font-size:0.85rem;
-  margin-bottom:1.2rem;line-height:1.6;
-}
+.dialog-close:hover{border-color:var(--accent);color:var(--accent)}
+.dialog-desc{color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6}
+.dialog-section{margin-bottom:1.2rem}
 .dialog-section h4{
-  font-size:0.75rem;font-weight:600;text-transform:uppercase;
+  font-size:0.8rem;font-weight:700;text-transform:uppercase;
   letter-spacing:0.5px;color:var(--text-muted);
-  margin-bottom:0.5rem;
+  margin-bottom:0.6rem;
 }
-.file-list{display:flex;flex-direction:column;gap:0.3rem}
+.file-list{list-style:none;display:flex;flex-direction:column;gap:0.4rem}
 .file-item{
   display:flex;align-items:center;gap:0.5rem;
   padding:0.5rem 0.7rem;
-  background:var(--bg-glass);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--border);
   border-radius:var(--radius-sm);
-  transition:all 0.2s;
-  font-size:0.82rem;
-}
-.file-item:hover{border-color:var(--border-hover);background:var(--accent-glow)}
-.file-item .name{
-  font-family:var(--font-mono);font-size:0.75rem;
-  word-break:break-all;text-decoration:none;color:var(--text);flex:1;
-}
-.file-item .name:hover{color:var(--accent)}
-.file-status{
-  font-size:0.65rem;font-weight:500;
-  padding:1px 8px;border-radius:100px;
-  white-space:nowrap;
+  background:var(--bg-glass);
   border:1px solid var(--border);
-  color:var(--text-muted);
+  font-size:0.85rem;
+  transition:all 0.2s;
 }
-.file-status.online{
-  color:var(--green);
-  border-color:rgba(48,209,88,0.25);
-  background:rgba(48,209,88,0.08);
+.file-item:hover{border-color:var(--accent)}
+.file-item .name{font-family:var(--font-mono);font-size:0.8rem;word-break:break-all}
+.file-item .status{
+  margin-left:auto;font-size:0.7rem;
+  padding:1px 8px;border-radius:100px;
+  background:oklch(0.65 0.18 85 / 0.12);color:var(--amber);
+  white-space:nowrap;
+  border:1px solid oklch(0.65 0.18 85 / 0.2);
 }
 .empty-state{
-  text-align:center;padding:1.5rem;
+  text-align:center;padding:2rem 1rem;
   color:var(--text-muted);font-size:0.85rem;
 }
-.empty-state .big-icon{font-size:2rem;display:block;margin-bottom:0.3rem}
+.empty-state .big-icon{font-size:2.5rem;margin-bottom:0.5rem;display:block}
 
 /* ===== FOOTER ===== */
 footer{
   text-align:center;padding:2rem 1.5rem;
+  color:var(--text-muted);font-size:0.8rem;
   border-top:1px solid var(--border);
-  color:var(--text-muted);font-size:0.75rem;
+  margin-top:2rem;
 }
 footer a{color:var(--accent);text-decoration:none}
-footer a:hover{text-decoration:underline}
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+:root{scrollbar-color:var(--text-muted) transparent;scrollbar-width:thin}
 
 /* ===== RESPONSIVE ===== */
-@media (max-width:640px){
-  .hero{padding:2.5rem 1rem 1.5rem}
-  .hero-stats{gap:1.5rem}
-  .toolbar{flex-direction:column;align-items:stretch}
-  .filter-group{justify-content:center}
-  .grid{gap:0.6rem}
+@container (max-width: 400px){
+  .card{padding:1.2rem}
+  .card-icon{width:36px;height:36px;font-size:1.1rem}
+  .card h3{font-size:0.95rem}
   .dialog{padding:1.2rem}
-  .clock{display:none}
-  .date-badge{font-size:0.6rem;padding:1px 6px}
+}
+@media (max-width:640px){
+  .hero{padding:2rem 1rem 1.5rem}
+  .hero-stats{gap:1.2rem}
+  .grid{gap:0.8rem}
+  .filter-bar{padding-bottom:1.2rem}
+  .dialog{padding:1.2rem;max-height:90dvh}
+  .header-info{top:0.8rem;left:0.8rem;gap:0.4rem}
+  .header-clock{font-size:0.7rem;padding:3px 8px}
+  .header-date{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- Nav -->
-<nav>
-  <div class="nav-inner">
-    <div class="nav-brand">Hermes <span>Portfolio</span></div>
-    <div class="nav-right">
-      <div class="clock" id="clockDisplay"></div>
-      <div class="date-badge" id="dateBadge"></div>
-      <span class="nav-stat" id="navStat">7 项目 · 22 文件</span>
-      <button class="theme-btn" onclick="toggleTheme()" aria-label="切换主题">
-        <span class="light-icon">☀️</span>
-        <span class="dark-icon">🌙</span>
-      </button>
-    </div>
-  </div>
-</nav>
+<!-- Clock & Date -->
+<div class="header-info">
+  <span class="header-clock" id="clockDisplay">00:00:00</span>
+  <span class="header-date" id="dateDisplay">----.--.--</span>
+</div>
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">
+  <span class="icon-sun">☀️</span>
+  <span class="icon-moon">🌙</span>
+</button>
 
 <!-- Hero -->
 <section class="hero">
-  <h1>数据分析作品集</h1>
-  <p>Hermes Agent 深度分析生成的咨询级报告与可视化仪表板</p>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">7</div><div class="stat-label">项目</div></div>
-    <div class="stat"><div class="stat-num">22</div><div class="stat-label">报告文件</div></div>
-    <div class="stat"><div class="stat-num">12</div><div class="stat-label">最高迭代</div></div>
+  <div class="hero-content">
+    <div class="hero-badge">✨ Agent 出品 · 数据分析作品集</div>
+    <h1>Hermes Portfolio</h1>
+    <p>基于 Hermes Agent 深度分析生成的咨询级报告与可视化仪表板</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num" id="totalProjects">7</div>
+        <div class="stat-label">项目</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="totalFiles">22</div>
+        <div class="stat-label">报告文件</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="totalVersions">12</div>
+        <div class="stat-label">最高迭代版本</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- Toolbar -->
-<div class="toolbar">
-  <div class="search-box">
+<!-- Search -->
+<section class="search-section">
+  <div class="search-wrap">
     <span class="search-icon">🔍</span>
     <input type="text" id="searchInput" placeholder="搜索项目名称或描述..." oninput="filterProjects()">
   </div>
-  <div class="filter-group">
-    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">全部</button>
-    <button class="filter-btn" data-filter="finance" onclick="setFilter('finance',this)">📈 财务</button>
-    <button class="filter-btn" data-filter="audit" onclick="setFilter('audit',this)">📋 审计</button>
-    <button class="filter-btn" data-filter="dashboard" onclick="setFilter('dashboard',this)">📊 大屏</button>
-  </div>
-</div>
+</section>
+
+<!-- Filter Tabs -->
+<section class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">全部</button>
+  <button class="filter-btn" data-filter="finance" onclick="setFilter('finance',this)">📈 财务分析</button>
+  <button class="filter-btn" data-filter="audit" onclick="setFilter('audit',this)">📋 审计分析</button>
+  <button class="filter-btn" data-filter="dashboard" onclick="setFilter('dashboard',this)">📊 数据大屏</button>
+</section>
 
 <!-- Grid -->
 <section class="grid-section">
   <div class="grid" id="projectGrid"></div>
 </section>
 
-<!-- Dialog -->
+<!-- Dialog Overlay -->
 <div class="dialog-overlay" id="dialogOverlay" onclick="closeDialog(event)">
   <div class="dialog" onclick="event.stopPropagation()">
     <div class="dialog-header">
-      <div class="dialog-title"><span class="icon" id="dialogIcon">📁</span><h2 id="dialogTitle">项目名称</h2></div>
-      <button class="dialog-close" onclick="closeDialog()">✕</button>
+      <div class="dialog-title">
+        <span class="icon" id="dialogIcon">📁</span>
+        <h2 id="dialogTitle">项目名称</h2>
+      </div>
+      <button class="dialog-close" onclick="closeDialog()" aria-label="关闭">✕</button>
     </div>
     <div class="dialog-desc" id="dialogDesc"></div>
     <div class="dialog-section">
       <h4>📄 文件列表</h4>
-      <div id="dialogFiles"><div class="empty-state"><span class="big-icon">📁</span>暂无文件</div></div>
+      <div id="dialogFiles">
+        <div class="empty-state">
+          <span class="big-icon">📭</span>
+          尚未上传文件<br>如需上传请通知 Hermes
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Footer -->
 <footer>
-  <p>Powered by <a href="#">Hermes Agent</a> · Built with Modern Web Guidance</p>
-  <p style="margin-top:0.2rem">© 2026 · 数据安全保护</p>
+  <p>Powered by <a href="https://hermes-agent.nousresearch.com" target="_blank">Hermes Agent</a> · Built with <a href="https://github.com/GoogleChrome/modern-web-guidance" target="_blank">Modern Web Guidance</a></p>
+  <p style="margin-top:0.3rem">© 2026 · 数据安全 · Cloudflare Access 保护</p>
 </footer>
 
 <script>
 // ===== DATA =====
 const projects = [
-  {id:'九号公司_财报分析',name:'九号公司 财报分析',icon:'📈',filter:'finance',
-   desc:'Ninebot 深度财报分析 — 营收结构、盈利能力、现金流质量、估值模型。12轮迭代逐步深化。',files:12,status:'ready',
-   filesList:[
-     {name:'ninebot_financial_analysis_v12.html',desc:'最终版 · 完整财报分析报告',uploaded:true},
-     {name:'ninebot_financial_analysis_v11.html',desc:'迭代版 v11',uploaded:true},
-     {name:'ninebot_financial_analysis_v10.html',desc:'迭代版 v10',uploaded:true},
-     {name:'ninebot_financial_analysis_v9.html',desc:'迭代版 v9',uploaded:true},
-     {name:'ninebot_financial_analysis_v8.html',desc:'迭代版 v8',uploaded:true},
-     {name:'ninebot_financial_analysis_v7.html',desc:'迭代版 v7',uploaded:true},
-     {name:'ninebot_financial_analysis_v6.html',desc:'迭代版 v6',uploaded:true},
-     {name:'ninebot_financial_analysis_v5.html',desc:'迭代版 v5',uploaded:true},
-     {name:'ninebot_financial_analysis_v4.html',desc:'迭代版 v4',uploaded:true},
-     {name:'ninebot_financial_analysis_v3.html',desc:'迭代版 v3',uploaded:true},
-     {name:'ninebot_financial_analysis_v2.html',desc:'迭代版 v2',uploaded:true},
-     {name:'ninebot_financial_analysis_v1.html',desc:'初始版',uploaded:true}
-  ]},
-  {id:'贵州茅台_投行级分析',name:'贵州茅台 投行级分析',icon:'🍶',filter:'finance',
-   desc:'茅台投行级估值 — DCF模型、可比公司分析、财务健康度评分卡、敏感性分析仪表板。',files:3,status:'ready',
-   filesList:[
-     {name:'moutai_ib_dashboard_v2.html',desc:'投行级分析仪表板 v2',uploaded:true},
-     {name:'moutai_complete_dashboard.html',desc:'完整版分析报告',uploaded:true},
-     {name:'maotai_dashboard.html',desc:'基础版分析看板',uploaded:true}
-  ]},
-  {id:'中国平安_审计分析',name:'中国平安 审计分析',icon:'🛡️',filter:'audit',
-   desc:'内部控制审计评估 — COSO框架、SOX 404合规、ICFR评估、控制测试与缺陷分析。',files:2,status:'ready',
-   filesList:[
-     {name:'A5_中国平安2024审计智慧大屏.html',desc:'2024审计智慧大屏',uploaded:true},
-     {name:'中国平安_内部控制审计报告_dashboard.html',desc:'内控审计报告看板',uploaded:true}
-  ]},
-  {id:'腾讯控股_投行级分析',name:'腾讯控股 投行级分析',icon:'🐧',filter:'finance',
-   desc:'腾讯控股投行级分析 — 四层估值体系、财务健康度评分、同业对标矩阵与情景分析。',files:1,status:'ready',
-   filesList:[
-     {name:'腾讯控股_投行级分析_v1.html',desc:'投行级完整分析报告',uploaded:true}
-  ]},
-  {id:'财务共享中心_FSSC',name:'财务共享中心 FSSC',icon:'🏢',filter:'dashboard',
-   desc:'财务共享服务中心运营管理大屏 — 7大模块架构、SVG过程流转动图、单据流转实时可视化。',files:2,status:'ready',
-   filesList:[
-     {name:'华兴集团·财务共享中心智慧大屏 v3.0.html',desc:'FSSC 智慧大屏 v3.0'},
-     {name:'fssc_dashboard.html',desc:'FSSC 运营看板'}
-  ]},
-  {id:'通用财务分析',name:'通用财务分析',icon:'📊',filter:'finance',
-   desc:'通用财务分析仪表板 — 盈利能力、偿债能力、运营效率指标可视化，适配多行业。',files:1,status:'ready',
-   filesList:[
-     {name:'financial-analysis-dashboard.html',desc:'财务分析仪表板'}
-  ]},
-  {id:'金融分析师团队',name:'金融分析师团队',icon:'👥',filter:'dashboard',
-   desc:'金融分析师团队协作看板 — 多分析师成果聚合展示，工作量和产出质量可视化。',files:1,status:'ready',
-   filesList:[
-     {name:'analyst_team_dashboard.html',desc:'分析师团队看板'}
-  ]}
+  {
+    id: '九号公司_财报分析',
+    name: '九号公司 财报分析',
+    icon: '📈',
+    filter: 'finance',
+    desc: 'Ninebot 九号公司深度财报分析，覆盖营收结构、盈利能力、现金流质量、估值模型等维度。12个迭代版本逐步深化。',
+    files: 12,
+    status: 'ready',
+    versions: 12,
+    filesList: [
+      {name: 'ninebot_financial_analysis_v12.html', desc: '最终版 · 完整财报分析报告', uploaded: true},
+      {name: 'ninebot_financial_analysis_v11.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v10.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v9.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v8.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v7.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v6.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v5.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v4.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v3.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v2.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v1.html', desc: '初版', uploaded: true}
+    ]
+  },
+  {
+    id: '贵州茅台_投行级分析',
+    name: '贵州茅台 投行级分析',
+    icon: '🍶',
+    filter: 'finance',
+    desc: '贵州茅台投行级估值分析，包含DCF模型、可比公司分析、财务健康度评分卡、敏感性分析仪表板。',
+    files: 3,
+    status: 'ready',
+    versions: 3,
+    filesList: [
+      {name: 'moutai_ib_dashboard_v2.html', desc: '投行级分析仪表板 v2', uploaded: true},
+      {name: 'moutai_complete_dashboard.html', desc: '完整版分析报告', uploaded: true},
+      {name: 'maotai_dashboard.html', desc: '基础版分析看板', uploaded: true}
+    ]
+  },
+  {
+    id: '腾讯控股_投行级分析',
+    name: '腾讯控股 投行级分析',
+    icon: '🐧',
+    filter: 'finance',
+    desc: '腾讯控股投行级分析报告，包含四层估值体系、财务健康度评分、同业对标矩阵与情景分析。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
+    filesList: [
+      {name: '腾讯控股_投行级分析_v1.html', desc: '投行级完整分析报告', uploaded: true}
+    ]
+  },
+  {
+    id: '中国平安_审计分析',
+    name: '中国平安 审计分析',
+    icon: '🛡️',
+    filter: 'audit',
+    desc: '中国平安内部控制审计评估，覆盖COSO框架、SOX 404合规、ICFR评估、控制测试与缺陷分析。',
+    files: 2,
+    status: 'ready',
+    versions: 2,
+    filesList: [
+      {name: 'A5_中国平安2024审计智慧大屏.html', desc: '2024审计智慧大屏', uploaded: true},
+      {name: '中国平安_内部控制审计报告_dashboard.html', desc: '内控审计报告看板', uploaded: true}
+    ]
+  },
+  {
+    id: '财务共享中心_FSSC',
+    name: '财务共享中心 FSSC',
+    icon: '🏢',
+    filter: 'dashboard',
+    desc: '财务共享服务中心(FSSC)运营管理大屏，7大模块架构，SVG过程流转动图，单据流转实时可视化。',
+    files: 2,
+    status: 'ready',
+    versions: 2,
+    filesList: [
+      {name: '华兴集团·财务共享中心智慧大屏 v3.0.html', desc: 'FSSC 智慧大屏 v3.0'},
+      {name: 'fssc_dashboard.html', desc: 'FSSC 运营看板'}
+    ]
+  },
+  {
+    id: '通用财务分析',
+    name: '通用财务分析',
+    icon: '📊',
+    filter: 'finance',
+    desc: '通用财务分析仪表板，覆盖盈利能力、偿债能力、运营效率指标可视化，适配多行业分析。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
+    filesList: [
+      {name: 'financial-analysis-dashboard.html', desc: '财务分析仪表板'}
+    ]
+  },
+  {
+    id: '金融分析师团队',
+    name: '金融分析师团队',
+    icon: '👥',
+    filter: 'dashboard',
+    desc: '金融分析师团队协作看板，多分析师成果聚合展示，含团队工作量与产出质量可视化。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
+    filesList: [
+      {name: 'analyst_team_dashboard.html', desc: '分析师团队看板'}
+    ]
+  }
 ];
 
 // ===== RENDER =====
 function renderGrid(list){
-  document.getElementById('projectGrid').innerHTML = list.map(p =>
-    `<div class="card" tabindex="0" role="button"
+  const grid = document.getElementById('projectGrid');
+  grid.innerHTML = list.map(p => `
+    <div class="card" tabindex="0" role="button"
          onclick="openDialog('${p.id}')" onkeydown="if(event.key==='Enter')openDialog('${p.id}')"
-         data-filter="${p.filter}">
-      <div class="card-icon-wrap">${p.icon}</div>
+         data-filter="${p.filter}" data-name="${p.name}">
+      <div class="card-icon">${p.icon}</div>
       <h3>${p.name}</h3>
       <p>${p.desc}</p>
       <div class="card-meta">
-        <span class="badge ${p.status}">${p.status==='ready'?'已就绪':'草稿'}</span>
+        <span class="card-badge ${p.status}">${p.status === 'ready' ? '✅ 已就绪' : '📝 草稿'}</span>
         <span class="card-files">${p.files} 个文件</span>
       </div>
-    </div>`
-  ).join('');
-  // Attach ripple effect to new cards
-  document.querySelectorAll('.card').forEach(el => {
-    el.addEventListener('click', function(e){
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple';
-      const rect = this.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
-      ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
-      this.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    });
-  });
+    </div>
+  `).join('');
 }
 
 // ===== FILTER =====
 let currentFilter = 'all';
-function setFilter(f, btn){
-  currentFilter = f;
+
+function setFilter(filter, btn){
+  currentFilter = filter;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   filterProjects();
 }
+
 function filterProjects(){
   const q = document.getElementById('searchInput').value.toLowerCase();
-  renderGrid(projects.filter(p => {
-    const mf = currentFilter === 'all' || p.filter === currentFilter;
-    const ms = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
-    return mf && ms;
-  }));
+  const filtered = projects.filter(p => {
+    const matchFilter = currentFilter === 'all' || p.filter === currentFilter;
+    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+  renderGrid(filtered);
 }
 
 // ===== DIALOG =====
 function openDialog(id){
-  const p = projects.find(x => x.id === id); if(!p) return;
+  const p = projects.find(x => x.id === id);
+  if(!p) return;
   document.getElementById('dialogIcon').textContent = p.icon;
   document.getElementById('dialogTitle').textContent = p.name;
   document.getElementById('dialogDesc').textContent = p.desc;
+
   const list = document.getElementById('dialogFiles');
-  if(p.filesList && p.filesList.length){
-    list.innerHTML = '<div class="file-list">' + p.filesList.map(f => {
-      const label = f.uploaded ? 'ONLINE' : 'PENDING';
-      const cls = f.uploaded ? 'online' : '';
-      const href = f.uploaded ? `projects/${encodeURIComponent(p.id)}/${encodeURIComponent(f.name)}` : '#';
-      return `<div class="file-item"><span>📄</span><a href="${href}" target="_blank" class="name">${f.name}</a><span class="file-status ${cls}">${label}</span></div>`;
-    }).join('') + '</div>';
+  if(p.filesList && p.filesList.length > 0){
+    list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => {
+      const status = f.uploaded
+        ? '<span class="status" style="background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)">✅ 已上传</span>'
+        : '<span class="status">待上传</span>';
+      const href = f.uploaded ? `projects/${p.id}/${encodeURIComponent(f.name)}` : '#';
+      return `
+        <li class="file-item">
+          <span>📄</span>
+          <a href="${href}" target="_blank" class="name" style="text-decoration:none;color:inherit;flex:1">${f.name}</a>
+          ${status}
+        </li>
+      `;
+    }).join('') + '</ul>';
   } else {
-    list.innerHTML = '<div class="empty-state"><span class="big-icon">📁</span>暂无文件</div>';
+    list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
   }
+
   document.getElementById('dialogOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeDialog(e){
   if(e && e.target !== document.getElementById('dialogOverlay')) return;
   document.getElementById('dialogOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog({target:document.getElementById('dialogOverlay')}) });
 
 // ===== CLOCK & DATE =====
 function updateClock(){
@@ -604,21 +719,45 @@ function updateClock(){
   const mm = String(now.getMinutes()).padStart(2,'0');
   const ss = String(now.getSeconds()).padStart(2,'0');
   document.getElementById('clockDisplay').textContent = `${hh}:${mm}:${ss}`;
-  
   const weekdays = ['日','一','二','三','四','五','六'];
   const y = now.getFullYear();
   const m = String(now.getMonth()+1).padStart(2,'0');
   const d = String(now.getDate()).padStart(2,'0');
   const w = weekdays[now.getDay()];
-  document.getElementById('dateBadge').textContent = `${y}.${m}.${d} 周${w}`;
+  document.getElementById('dateDisplay').textContent = `${y}年${m}月${d}日 周${w}`;
 }
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
+
+// ===== RIPPLE EFFECT =====
+document.addEventListener('click', function(e){
+  const card = e.target.closest('.card');
+  if(!card) return;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const rect = card.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  card.style.position = 'relative';
+  card.style.overflow = 'hidden';
+  card.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
 
 // ===== THEME =====
 function toggleTheme(){
-  document.documentElement.classList.toggle('dark');
-  localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  const isDark = document.documentElement.classList.toggle('dark');
+  const meta = document.querySelector('meta[name="color-scheme"]');
+  if(isDark){
+    meta.content = 'dark';
+    localStorage.setItem('theme','dark');
+  } else {
+    meta.content = 'light dark';
+    localStorage.removeItem('theme');
+  }
+  localStorage.setItem('color-scheme', meta.content);
 }
 
 // ===== INIT =====
