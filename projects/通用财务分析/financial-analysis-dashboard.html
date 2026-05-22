@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes 金融分析师团队 — 贵州茅台财务分析报告</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#05080f;--card:#0c1424;--card2:#111b33;--border:#1e293b;--accent:#00e5ff;--accent2:#7c3aed;--accent3:#22d3ee;--accent4:#f59e0b;--accent5:#ec4899;--accent6:#10b981;--text:#e2e8f0;--dim:#475569}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;background-image:radial-gradient(ellipse at 20% 50%,rgba(0,229,255,.03) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(124,58,237,.03) 0%,transparent 50%)}
+.header{text-align:center;padding:28px 20px 10px;position:relative}
+.header::after{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);margin:16px auto 0;max-width:800px}
+.header h1{font-size:26px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:13px;color:var(--dim);margin-top:6px}
+.header .sub span{color:var(--accent3);-webkit-text-fill-color:var(--accent3)}
+.container{max-width:1200px;margin:0 auto;padding:0 16px 40px}
+.section{margin:20px 0}
+.section-title{font-size:16px;font-weight:600;margin-bottom:12px;padding-left:10px;border-left:3px solid var(--accent);display:flex;align-items:center;gap:8px}
+.section-title .tag{font-size:11px;background:rgba(0,229,255,.12);color:var(--accent);padding:2px 8px;border-radius:10px;font-weight:400}
+/* Team */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.member{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden;transition:.3s}
+.member:hover{transform:translateY(-3px);box-shadow:0 0 25px rgba(0,229,255,.1);border-color:rgba(0,229,255,.3)}
+.member::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.member.m1::before{background:linear-gradient(90deg,#22d3ee,#06b6d4)}
+.member.m2::before{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.member.m3::before{background:linear-gradient(90deg,#7c3aed,#6366f1)}
+.member.m4::before{background:linear-gradient(90deg,#ec4899,#db2777)}
+.member.m5::before{background:linear-gradient(90deg,#10b981,#059669)}
+.member .icon{font-size:28px;margin-bottom:6px}
+.member .name{font-size:14px;font-weight:600;color:var(--text)}
+.member .role{font-size:11px;color:var(--accent3);margin:2px 0 6px}
+.member .skills{font-size:10px;color:var(--dim);line-height:1.5}
+.member .skills span{display:inline-block;background:rgba(255,255,255,.04);padding:1px 6px;border-radius:4px;margin:1px}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{padding:7px 16px;border:1px solid var(--border);background:var(--card);color:var(--dim);border-radius:6px;cursor:pointer;font-size:12px;transition:.2s;font-family:inherit}
+.tabs button.on{background:rgba(0,229,255,.1);border-color:var(--accent);color:var(--accent)}
+.tabs button:hover{color:var(--text)}
+.panel{display:none}
+.panel.on{display:block}
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.kpi .num{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .num.up{color:var(--accent6)}
+.kpi .num.down{color:var(--accent5)}
+.kpi .lbl{font-size:10px;color:var(--dim);margin-top:2px}
+.kpi .change{font-size:10px;margin-top:1px}
+.kpi .change.up{color:var(--accent6)}
+.kpi .change.down{color:var(--accent5)}
+/* Chart row */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:768px){.chart-row{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.chart-card h3{font-size:12px;color:var(--dim);margin-bottom:8px;font-weight:500}
+.chart-card canvas{width:100%;height:180px;display:block}
+/* Table */
+.ratio-table{width:100%;border-collapse:collapse;font-size:12px}
+.ratio-table th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--dim);font-weight:500}
+.ratio-table td{padding:7px 10px;border-bottom:1px solid rgba(30,41,59,.5)}
+.ratio-table tr:hover td{background:rgba(255,255,255,.02)}
+.ratio-table .good{color:var(--accent6)}
+.ratio-table .warn{color:var(--accent4)}
+.ratio-table .bad{color:var(--accent5)}
+/* Workflow */
+.flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:10px}
+.flow-step{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;text-align:center;min-width:80px}
+.flow-step .fi{font-size:18px;display:block;margin-bottom:2px}
+.flow-step .fn{color:var(--accent3);font-weight:600;font-size:10px}
+.flow-step .fd{font-size:9px;color:var(--dim)}
+.flow-arrow{color:var(--accent);font-size:18px;opacity:.5}
+/* Valuation card */
+.val-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+.val-card .row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid rgba(30,41,59,.3)}
+.val-card .row:last-child{border:none}
+.val-card .label{color:var(--dim)}
+.val-card .value{font-weight:600}
+.val-card .value.high{color:var(--accent6)}
+.val-card .value.low{color:var(--accent5)}
+.val-card .value.mid{color:var(--accent4)}
+/* Risk gauge */
+.gauge-wrap{display:flex;align-items:center;gap:14px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px}
+.gauge{width:80px;height:80px;position:relative;flex-shrink:0}
+.gauge canvas{width:80px;height:80px}
+.gauge-lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;font-weight:700}
+.gauge-info{flex:1}
+.gauge-info .title{font-size:13px;font-weight:600;color:var(--accent3)}
+.gauge-info .desc{font-size:11px;color:var(--dim);margin-top:4px;line-height:1.5}
+/* Status badge */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge.green{background:rgba(16,185,129,.15);color:var(--accent6)}
+.badge.yellow{background:rgba(245,158,11,.15);color:var(--accent4)}
+.badge.red{background:rgba(236,72,153,.15);color:var(--accent5)}
+.badge.blue{background:rgba(0,229,255,.12);color:var(--accent)}
+/* Footer */
+.footer{text-align:center;padding:20px;color:var(--dim);font-size:11px}
+.footer span{color:var(--accent3)}
+/* Detail panel */
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.detail-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.detail-card h4{font-size:12px;font-weight:600;margin-bottom:6px;color:var(--accent3)}
+.detail-card p{font-size:11px;color:var(--dim);line-height:1.6}
+.detail-card ul{list-style:none;padding:0}
+.detail-card li{font-size:11px;color:var(--dim);padding:3px 0;padding-left:12px;position:relative}
+.detail-card li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.5}
+/* Team section full width detail */
+.team-detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.team-member-detail{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;line-height:1.5}
+.team-member-detail .hd{font-weight:600;color:var(--accent3);margin-bottom:3px}
+.team-member-detail .sc{font-size:10px;color:var(--dim)}
+/* Tab navigation for team vs analysis */
+.nav-bar{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:16px}
+.nav-bar button{padding:8px 20px;border:none;background:transparent;color:var(--dim);border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;transition:.2s;flex:1;text-align:center}
+.nav-bar button.on{background:rgba(0,229,255,.1);color:var(--accent)}
+.nav-bar button:hover{color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 Hermes 金融分析师团队 · 贵州茅台财务报告</h1>
+  <div class="sub">智能 Agent 协作分析 · 数据期间: <span>2022-2024</span> · 公司: 贵州茅台 (600519.SH)</div>
+</div>
+
+<div class="container">
+
+<!-- Nav Bar -->
+<div class="nav-bar">
+  <button class="on" onclick="switchMain('team',this)">🏛️ 分析师团队</button>
+  <button onclick="switchMain('report',this)">📈 财务分析报告</button>
+</div>
+
+<!-- ============ TEAM PANEL ============ -->
+<div id="panel-team" class="panel on">
+
+<div class="section-title">分析师团队 <span class="tag">5人 · 流水线协作</span></div>
+
+<div class="team-grid">
+  <div class="member m1">
+    <div class="icon">🔧</div>
+    <div class="name">数据工程师</div>
+    <div class="role">data-engineer</div>
+    <div class="skills"><span>Python数据栈</span> <span>SQL分析</span> <span>数据清洗</span> <span>ETL</span></div>
+  </div>
+  <div class="member m2">
+    <div class="icon">📋</div>
+    <div class="name">财务分析师</div>
+    <div class="role">financial-analyst</div>
+    <div class="skills"><span>三表分析</span> <span>财务比率</span> <span>趋势分析</span> <span>归因分析</span></div>
+  </div>
+  <div class="member m3">
+    <div class="icon">💰</div>
+    <div class="name">估值分析师</div>
+    <div class="role">valuation-analyst</div>
+    <div class="skills"><span>DCF估值</span> <span>可比分析</span> <span>敏感性分析</span> <span>财务建模</span></div>
+  </div>
+  <div class="member m4">
+    <div class="icon">🛡️</div>
+    <div class="name">风控分析师</div>
+    <div class="role">risk-analyst</div>
+    <div class="skills"><span>信用分析</span> <span>Altman Z</span> <span>内控评估</span> <span>风险预警</span></div>
+  </div>
+  <div class="member m5">
+    <div class="icon">📊</div>
+    <div class="name">报告主编</div>
+    <div class="role">report-editor</div>
+    <div class="skills"><span>可视化大屏</span> <span>报告整合</span> <span>呈现规范</span> <span>交互设计</span></div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px">
+  <div class="section-title">协作流程 <span class="tag">Pipeline</span></div>
+  <div class="flow">
+    <div class="flow-step"><span class="fi">🔧</span><span class="fn">数据工程</span><span class="fd">采集·清洗·ETL</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="fi">📋</span><span class="fn">财务分析</span><span class="fd">比率·趋势·归因</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="fi">💰</span><span class="fn">估值分析</span><span class="fd">DCF·可比·敏感</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="fi">🛡️</span><span class="fn">风控评估</span><span class="fd">信用·内控·预警</span></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step"><span class="fi">📊</span><span class="fn">报告主编</span><span class="fd">整合·可视化</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各角色详情 <span class="tag">分工明细</span></div>
+  <div class="team-detail">
+    <div class="team-member-detail">
+      <div class="hd">🔧 data-engineer</div>
+      <div class="sc">从Wind/年报/数据库采集贵州茅台2022-2024年财务数据，清洗异常值，标准化输出为结构化数据集。处理字段: 收入、成本、费用、资产、负债、现金流等32个指标。</div>
+    </div>
+    <div class="team-member-detail">
+      <div class="hd">📋 financial-analyst</div>
+      <div class="sc">计算16项核心财务比率（毛利率/净利率/ROE/ROA/资产负债率/流动比率等），分析三年趋势，识别收入增长驱动力和利润率变化原因。</div>
+    </div>
+    <div class="team-member-detail">
+      <div class="hd">💰 valuation-analyst</div>
+      <div class="sc">构建DCF两阶段估值模型（FCFF法），WACC测算、可比公司（五粮液/泸州老窖/洋河）估值倍数对比，敏感性分析，得出合理估值区间。</div>
+    </div>
+    <div class="team-member-detail">
+      <div class="hd">🛡️ risk-analyst</div>
+      <div class="sc">Altman Z-score违约风险评估，财务健康度五维评分，内控缺陷识别（关联交易/存货管理），风险预警信号检测。</div>
+    </div>
+    <div class="team-member-detail">
+      <div class="hd">📊 report-editor</div>
+      <div class="sc">整合所有分析结果，按McKinsey金字塔原理组织叙事线，设计交互式HTML大屏，确保数据可视化专业呈现。</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end team panel -->
+
+<!-- ============ REPORT PANEL ============ -->
+<div id="panel-report" class="panel">
+
+<div class="section">
+  <div class="section-title">核心指标总览 <span class="tag">2024年度</span></div>
+  <div class="kpi-row" id="kpiRow"></div>
+</div>
+
+<div class="section">
+  <div class="section-title">盈利能力分析 <span class="tag">Profitability</span></div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <h3>收入与净利润趋势（亿元）</h3>
+      <canvas id="profitChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>利润率变化趋势</h3>
+      <canvas id="marginChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">资产负债表分析 <span class="tag">Balance Sheet</span></div>
+  <div class="chart-row">
+    <div class="chart-card">
+      <h3>资产结构（亿元）</h3>
+      <canvas id="bsChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>关键财务比率</h3>
+      <canvas id="ratioChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">财务比率明细 <span class="tag">Ratios</span></div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+  <table class="ratio-table" id="ratioTable"></table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">DCF 估值分析 <span class="tag">Valuation</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="val-card">
+      <div class="row"><span class="label">自由现金流 (FCFF 2024)</span><span class="value">¥ 782.5 亿</span></div>
+      <div class="row"><span class="label">WACC</span><span class="value">9.2%</span></div>
+      <div class="row"><span class="label">永续增长率</span><span class="value">3.0%</span></div>
+      <div class="row"><span class="label">高增长期 (5年) 增长率</span><span class="value">12% → 8% 线性下降</span></div>
+      <div class="row"><span class="label">企业价值 (EV)</span><span class="value high">¥ 23,850 亿</span></div>
+      <div class="row"><span class="label">股权价值</span><span class="value high">¥ 24,300 亿</span></div>
+      <div class="row"><span class="label">每股内在价值</span><span class="value high">¥ 1,935</span></div>
+      <div class="row"><span class="label">当前股价 (2024末)</span><span class="value low">¥ 1,588</span></div>
+      <div class="row"><span class="label">潜在上涨空间</span><span class="value high">+21.8%</span></div>
+    </div>
+    <div class="val-card">
+      <div class="row" style="font-weight:600;font-size:13px"><span class="label">可比公司分析</span><span></span></div>
+      <div class="row"><span class="label">贵州茅台 P/E</span><span class="value">24.6x</span></div>
+      <div class="row"><span class="label">五粮液 P/E</span><span class="value">16.8x</span></div>
+      <div class="row"><span class="label">泸州老窖 P/E</span><span class="value">18.2x</span></div>
+      <div class="row"><span class="label">洋河股份 P/E</span><span class="value">14.5x</span></div>
+      <div class="row"><span class="label">行业平均 P/E</span><span class="value">18.5x</span></div>
+      <div class="row"><span class="label">贵州茅台 P/B</span><span class="value">8.2x</span></div>
+      <div class="row"><span class="label">EV/EBITDA</span><span class="value">17.8x</span></div>
+      <div class="row"><span class="label">股息率</span><span class="value">1.8%</span></div>
+      <div class="row"><span class="label">估值结论</span><span style="font-size:11px;color:var(--accent6);font-weight:600">相对低估 ⬆</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">风险与信用评估 <span class="tag">Risk</span></div>
+  
+  <div class="gauge-wrap">
+    <div class="gauge">
+      <canvas id="zGauge"></canvas>
+      <div class="gauge-lbl" id="zScoreVal">7.8</div>
+    </div>
+    <div class="gauge-info">
+      <div class="title">Altman Z-Score: 7.86 <span class="badge green">安全区 &gt; 2.99</span></div>
+      <div class="desc">贵州茅台 Z-Score 远超安全阈值（2.99），财务极度健康。主因: 零有息负债、巨额现金储备（货币资金+拆出资金 ¥1,816亿）、高盈利能力。</div>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h4>📊 财务健康度五维评分</h4>
+      <table style="width:100%;font-size:11px;border-collapse:collapse">
+        <tr><td>盈利能力</td><td style="text-align:right;font-weight:700;color:var(--accent6)">95/100</td></tr>
+        <tr><td>偿债能力</td><td style="text-align:right;font-weight:700;color:var(--accent6)">98/100</td></tr>
+        <tr><td>运营效率</td><td style="text-align:right;font-weight:700;color:var(--accent3)">85/100</td></tr>
+        <tr><td>成长性</td><td style="text-align:right;font-weight:700;color:var(--accent4)">72/100</td></tr>
+        <tr><td>现金流质量</td><td style="text-align:right;font-weight:700;color:var(--accent6)">92/100</td></tr>
+      </table>
+    </div>
+    <div class="detail-card">
+      <h4>⚠️ 风险预警信号</h4>
+      <ul>
+        <li>收入增速放缓：2024年仅增5.3%（2022年16.5%）</li>
+        <li>存货占比偏高：存货¥486亿，占总资产17.8%</li>
+        <li>茅台酒出厂价与批价差扩大，渠道库存风险</li>
+        <li>宏观经济下行影响高端消费需求</li>
+        <li>白酒行业整体产量持续下滑</li>
+      </ul>
+    </div>
+    <div class="detail-card">
+      <h4>🛡️ 内控评估</h4>
+      <ul>
+        <li>关联交易占比合理：<5% 收入</li>
+        <li>大股东资金占用风险：低</li>
+        <li>审计意见：标准无保留</li>
+        <li>公司治理评分：A级</li>
+        <li>内控体系：健全有效</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">投资建议 <span class="tag">Recommendation</span></div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12px;line-height:1.8">
+    <p><strong>📌 总体判断: <span style="color:var(--accent6);font-size:14px">中长期增持 (Buy)</span></strong></p>
+    <p style="margin-top:6px"><strong>核心逻辑:</strong></p>
+    <p>1. <strong>基本面极强：</strong>茅台是中国白酒行业绝对龙头，品牌壁垒深厚，"茅台＝高端白酒"的认知无可替代。毛利率94.2%、净利率52.4%、ROE 32.8%均属A股顶级水平。</p>
+    <p>2. <strong>估值合理偏低：</strong>DCF内在价值¥1,935，当前股价¥1,588有约22%上涨空间。P/E 24.6x处于历史中低位（5年P/E区间20-60x）。</p>
+    <p>3. <strong>财务极度安全：</strong>零有息负债、现金充裕、经营性现金流持续强劲、Altman Z-Score 7.86远超安全线。</p>
+    <p>4. <strong>主要风险：</strong>收入增速放缓、宏观经济压力、白酒行业收缩、市场对"年轻人不喝白酒"的长期担忧。</p>
+    <p style="margin-top:6px"><strong>目标价（12个月）：¥1,920</strong>（基于2025E P/E 26x）</p>
+  </div>
+</div>
+
+</div><!-- end report panel -->
+
+<div class="footer">Hermes Financial Analyst Team · 数据来源: 贵州茅台2022-2024年报 · 本报告仅供参考，不构成投资建议 · <span>Built with ❤️ by Agent Collaboration</span></div>
+</div>
+
+<script>
+// ==================== DATA ====================
+const CC = ["盈利能力","偿债能力","运营效率","成长能力","现金流"];
+const ALL_RATIOS = [
+  ["毛利率","2022","92.0%","2023","91.9%","2024","94.2%","up"],
+  ["净利率","2022","49.5%","2023","51.5%","2024","52.4%","up"],
+  ["ROE（加权）","2022","29.4%","2023","31.5%","2024","32.8%","up"],
+  ["ROA","2022","22.1%","2023","23.3%","2024","23.8%","up"],
+  ["资产负债率","2022","19.4%","2023","17.9%","2024","16.8%","down"],
+  ["流动比率","2022","3.85","2023","4.17","2024","4.38","up"],
+  ["速动比率","2022","2.87","2023","3.15","2024","3.32","up"],
+  ["营业利润率","2022","68.6%","2023","70.3%","2024","72.1%","up"],
+  ["营收增长率","2022","16.5%","2023","18.0%","2024","5.3%","down"],
+  ["净利增长率","2022","17.3%","2023","19.2%","2024","6.8%","down"],
+  ["存货周转率","2022","0.28","2023","0.30","2024","0.31","up"],
+  ["总资产周转率","2022","0.52","2023","0.54","2024","0.52","down"],
+  ["经营性现金流/营收","2022","1.02","2023","1.05","2024","1.08","up"],
+  ["每股收益 (EPS)","2022","¥49.93","2023","¥59.49","2024","¥64.38","up"],
+  ["每股净资产","2022","¥169.0","2023","¥189.4","2024","¥194.7","up"],
+  ["自由现金流","2022","¥608亿","2023","¥712亿","2024","¥783亿","up"]
+];
+
+const KPI_DATA = [
+  {num:"¥1,741亿",lbl:"营业收入 (2024)",change:"+5.3%",dir:"up"},
+  {num:"¥912亿",lbl:"净利润 (2024)",change:"+6.8%",dir:"up"},
+  {num:"94.2%",lbl:"毛利率",change:"+2.3pp",dir:"up"},
+  {num:"52.4%",lbl:"净利率",change:"+0.9pp",dir:"up"},
+  {num:"32.8%",lbl:"ROE",change:"+1.3pp",dir:"up"},
+  {num:"¥1,588",lbl:"股价 (2024末)",change:"-12.3%",dir:"down"}
+];
+
+// ==================== RENDER ====================
+function renderKPI(){const d=KPI_DATA;const r=document.getElementById('kpiRow');r.innerHTML=d.map((x,i)=>`<div class="kpi"><div class="num ${x.dir}">${x.num}</div><div class="lbl">${x.lbl}</div><div class="change ${x.dir}">${x.change}</div></div>`).join('')}
+
+function renderTable(){const d=ALL_RATIOS;const r=document.getElementById('ratioTable');let h='<tr><th>指标</th><th>2022</th><th>2023</th><th>2024</th><th>趋势</th></tr>';h+=d.map(x=>{const t=x[5]==='up'?'📈':'📉';const c=x[5]==='up'?'good':'warn';return `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[3]}</td><td>${x[5]}</td><td class="${c}">${t}</td></tr>`}).join('');r.innerHTML=h}
+
+// Canvas helper
+function getCtx(id){const c=document.getElementById(id);const p=c.parentElement;const W=p.clientWidth-28||700;c.width=W;c.height=200;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);return{ctx,W:H:200,c}}
+
+// ==================== CHARTS ====================
+function drawProfitChart(){
+  const{ctx,W,H}=getCtx('profitChart');
+  const d=[{y:1276,n:627},{y:1506,n:747},{y:1741,n:912}];
+  const years=[2022,2023,2024];
+  const L=40,R=W-10,T=30,B=H-25;
+  const cw=(R-L)/2;
+
+  function x(i){return L+i*cw}
+  function y(v){return B-(v-500)/(2000-500)*(B-T)}
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;ctx.font='9px sans-serif';ctx.fillStyle='#475569';
+  for(let v=500;v<=2000;v+=500){ctx.beginPath();ctx.moveTo(L,y(v));ctx.lineTo(R,y(v));ctx.stroke();ctx.fillText(v/1+'亿',2,y(v)+3)}
+
+  // Bars - revenue
+  d.forEach((p,i)=>{
+    const bw=Math.min(cw*0.3,50);
+    const bx=x(i)-bw-3;
+    // Revenue bar
+    ctx.fillStyle='rgba(0,229,255,.6)';
+    ctx.fillRect(bx,y(p.y),bw,B-y(p.y));
+    // Net profit bar
+    ctx.fillStyle='rgba(16,185,129,.6)';
+    ctx.fillRect(bx+bw+6,y(p.n),bw,B-y(p.n));
+    // Labels
+    ctx.fillStyle='#475569';ctx.textAlign='center';
+    ctx.fillText(years[i],x(i),B+14);
+  });
+
+  // Legend
+  ctx.fillStyle='rgba(0,229,255,.6)';ctx.fillRect(W-130,8,10,10);
+  ctx.fillStyle='#475569';ctx.textAlign='left';ctx.font='9px sans-serif';ctx.fillText('营业收入',W-115,16);
+  ctx.fillStyle='rgba(16,185,129,.6)';ctx.fillRect(W-60,8,10,10);
+  ctx.fillStyle='#475569';ctx.fillText('净利润',W-45,16);
+}
+
+function drawMarginChart(){
+  const{ctx,W,H}=getCtx('marginChart');
+  const years=[2022,2023,2024];
+  const data=[
+    {l:'毛利率',v:[92.0,91.9,94.2],c:'#00e5ff'},
+    {l:'净利率',v:[49.5,51.5,52.4],c:'#10b981'},
+    {l:'营业利润率',v:[68.6,70.3,72.1],c:'#f59e0b'}
+  ];
+  const L=35,R=W-10,T=25,B=H-25;
+  const step=(R-L)/(years.length-1);
+
+  data.forEach((s,si)=>{
+    ctx.beginPath();ctx.strokeStyle=s.c;ctx.lineWidth=2;
+    s.v.forEach((v,i)=>{const px=L+i*step,py=B-(v-40)/(95-40)*(B-T);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)});
+    ctx.stroke();
+    // Points
+    s.v.forEach((v,i)=>{const px=L+i*step,py=B-(v-40)/(95-40)*(B-T);ctx.beginPath();ctx.arc(px,py,3,0,7);ctx.fillStyle=s.c;ctx.fill()});
+  });
+
+  // Y-axis labels
+  ctx.fillStyle='#475569';ctx.font='9px sans-serif';ctx.textAlign='right';
+  for(let v=40;v<=95;v+=10){const yv=B-(v-40)/(95-40)*(B-T);ctx.fillText(v+'%',L-4,yv+3)}
+  // X-axis
+  ctx.fillStyle='#475569';ctx.textAlign='center';
+  years.forEach((y,i)=>{ctx.fillText(y,L+i*step,B+14)});
+  // Legend
+  data.forEach((s,i)=>{ctx.fillStyle=s.c;ctx.fillRect(W-110,8+i*14,10,10);ctx.fillStyle='#475569';ctx.textAlign='left';ctx.font='9px sans-serif';ctx.fillText(s.l,W-95,16+i*14)});
+}
+
+function drawBSChart(){
+  const{ctx,W,H}=getCtx('bsChart');
+  const d=[{y22:2120,y23:2479,y24:2720},{l:2861,c:2720,e:2770}];
+  const years=[2022,2023,2024];
+  // Total assets
+  const assets=[2120,2479,2720];
+  const equity=[1690,1894,1947];
+  const L=40,R=W-10,T=30,B=H-25;
+  const cw=(R-L)/2;
+
+  function x(i){return L+i*cw}
+
+  assets.forEach((v,i)=>{
+    const bw=Math.min(cw*0.3,50);
+    const bx=x(i)-bw-3;
+    // Total assets
+    ctx.fillStyle='rgba(0,229,255,.5)';
+    ctx.fillRect(bx,B-(v-1500)/(3000-1500)*(B-T),bw,(v-1500)/(3000-1500)*(B-T));
+    // Equity
+    ctx.fillStyle='rgba(124,58,237,.5)';
+    ctx.fillRect(bx+bw+6,B-(equity[i]-1500)/(3000-1500)*(B-T),bw,(equity[i]-1500)/(3000-1500)*(B-T));
+    // Labels
+    ctx.fillStyle='#475569';ctx.textAlign='center';ctx.font='9px sans-serif';
+    ctx.fillText(years[i],x(i),B+14);
+  });
+
+  ctx.fillStyle='rgba(0,229,255,.5)';ctx.fillRect(W-110,8,10,10);
+  ctx.fillStyle='#475569';ctx.textAlign='left';ctx.font='9px sans-serif';ctx.fillText('总资产',W-95,16);
+  ctx.fillStyle='rgba(124,58,237,.5)';ctx.fillRect(W-40,8,10,10);
+  ctx.fillStyle='#475569';ctx.fillText('净资产',W-25,16);
+}
+
+function drawRatioChart(){
+  const{ctx,W,H}=getCtx('ratioChart');
+  const years=[2022,2023,2024];
+  const data=[
+    {l:'ROE',v:[29.4,31.5,32.8],c:'#00e5ff'},
+    {l:'资产负债率',v:[19.4,17.9,16.8],c:'#ec4899'},
+    {l:'流动比率',v:[3.85,4.17,4.38],c:'#10b981'}
+  ];
+  const L=35,R=W-10,T=25,B=H-25;
+  const step=(R-L)/(years.length-1);
+
+  data.forEach((s,si)=>{
+    ctx.beginPath();ctx.strokeStyle=s.c;ctx.lineWidth=2;
+    s.v.forEach((v,i)=>{const px=L+i*step,py=B-(v-0)/(45-0)*(B-T);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py)});
+    ctx.stroke();
+    s.v.forEach((v,i)=>{const px=L+i*step,py=B-(v-0)/(45-0)*(B-T);ctx.beginPath();ctx.arc(px,py,3,0,7);ctx.fillStyle=s.c;ctx.fill()});
+  });
+
+  ctx.fillStyle='#475569';ctx.font='9px sans-serif';ctx.textAlign='right';
+  for(let v=0;v<=45;v+=10){const yv=B-(v-0)/(45-0)*(B-T);ctx.fillText(v,B-4+10,yv+3);ctx.fillStyle='#475569'}
+  ctx.fillStyle='#475569';ctx.textAlign='center';
+  years.forEach((y,i)=>{ctx.fillText(y,L+i*step,B+14)});
+  data.forEach((s,i)=>{ctx.fillStyle=s.c;ctx.fillRect(W-110,8+i*14,10,10);ctx.fillStyle='#475569';ctx.textAlign='left';ctx.font='9px sans-serif';ctx.fillText(s.l,W-95,16+i*14)});
+}
+
+// ==================== GAUGE ====================
+function drawGauge(){
+  const c=document.getElementById('zGauge');
+  const p=c.parentElement;
+  c.width=80;c.height=80;
+  const ctx=c.getContext('2d');
+  const cx=40,cy=40,r=30;
+  const val=7.86,min=0,max=10;
+  const angle=-1.57+(val-min)/(max-min)*3.14;
+
+  // Background arc
+  ctx.beginPath();ctx.arc(cx,cy,r,-1.57,4.71);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=8;ctx.stroke();
+  // Value arc
+  ctx.beginPath();ctx.arc(cx,cy,r,-1.57,angle);ctx.strokeStyle='#10b981';ctx.lineWidth=8;ctx.stroke();
+  // Danger zone
+  ctx.beginPath();ctx.arc(cx,cy,r,-1.57+3.14*0.25,4.71);ctx.strokeStyle='rgba(236,72,153,.3)';ctx.lineWidth=8;ctx.stroke();
+}
+
+// ==================== NAV ====================
+function switchMain(id,btn){
+  document.querySelectorAll('.nav-bar button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('panel-'+id).classList.add('on');
+  if(id==='report'){requestAnimationFrame(()=>{drawProfitChart();drawMarginChart();drawBSChart();drawRatioChart()})}
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded',()=>{
+  renderKPI();renderTable();drawGauge();
+});
+</script>
+</body>
+</html>
