@@ -152,7 +152,9 @@ body{
 .card h3{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;letter-spacing:1px}
 .card .val-big{font-size:26px;font-weight:700;margin:4px 0}
 .card .sub-text{font-size:11px;color:var(--dim);margin-top:2px}
-.card canvas{width:100%!important;height:auto!important;display:block;border-radius:6px;background:transparent}
+.card canvas{height:auto!important;min-height:220px;max-height:300px;display:block;width:100%;border-radius:6px;background:transparent}
+.grid2 .card canvas,.grid3 .card canvas{min-height:240px;max-height:320px}
+.grid-full .card canvas{min-height:260px;max-height:500px}
 .card .pscore{font-size:20px;font-weight:700;color:var(--accent4)}
 .card .pline{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(255,255,255,.03)}
 .card .plbl{color:var(--dim)}
@@ -852,19 +854,36 @@ function switchTab(i){
   document.querySelectorAll('.global-tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('gp'+i).classList.add('on');
   [...document.querySelectorAll('.global-tab-btn')][i].classList.add('on');
-  setTimeout(drawAll,100);
+  requestAnimationFrame(function(){requestAnimationFrame(drawAll)});
 }
 function switchInnerTab(i){
   document.querySelectorAll('.inner-panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.inner-tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('ip'+i).classList.add('on');
   [...document.querySelectorAll('.inner-tab-btn')][i].classList.add('on');
-  setTimeout(drawAll,100);
+  requestAnimationFrame(function(){requestAnimationFrame(drawAll)});
 }
 
 const C = {accent:'#00e5ff',accent2:'#7c3aed',accent3:'#22d3ee',accent4:'#f59e0b',accent5:'#ec4899',accent6:'#10b981',accent7:'#ef4444',accent8:'#f97316',dim:'#64748b',text:'#e2e8f0',card:'#0c1424',card2:'#111b33',border:'#1e293b'};
 function grad(ctx,x,y,w,h,c1,c2){let g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,c1);g.addColorStop(1,c2);return g}
 function grad2(ctx,x,y,w,h,c1,c2,c3){let g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,c1);g.addColorStop(.5,c2);g.addColorStop(1,c3);return g}
+
+/* resizeCanvas: consistent height clamp + HiDPI (skill §7.0.2) */
+function resizeCanvas(c){
+  var p=c.parentElement,h3=c.previousElementSibling;
+  var h3H=h3&&h3.tagName==='H3'?h3.offsetHeight:0;
+  var maxH=300,minH=220;
+  if(p.closest('.grid2')||p.closest('.grid3')){maxH=320;minH=240}
+  if(p.closest('.grid-full')){maxH=500;minH=260}
+  var dw=c.offsetWidth||(p.clientWidth-32);
+  var avail=p.clientHeight-h3H-24;
+  var h=Math.min(maxH,Math.max(minH,avail));
+  var dpr=window.devicePixelRatio||1;
+  c.width=Math.round(dw*dpr);
+  c.height=Math.round(h*dpr);
+  c.getContext('2d').setTransform(dpr,0,0,dpr,0,0);
+  return {w:dw,h:h};
+}
 
 function drawAll(){
   // Revenue & Profitability
@@ -907,8 +926,8 @@ function drawAll(){
 
 function drawRevStack(){
   const canvas=document.getElementById('revStackChart'),ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;ctx.scale(2,2);
-  const w=canvas.offsetWidth/2,h=canvas.offsetHeight/2;
+  resizeCanvas(canvas);
+  const dpr=window.devicePixelRatio||1;const w=canvas.width/dpr,h=canvas.height/dpr;
   const pad={t:20,r:10,b:30,l:45},mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -945,8 +964,8 @@ function drawRevStack(){
 
 function drawChannel(){
   const canvas=document.getElementById('channelChart'),ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;ctx.scale(2,2);
-  const w=canvas.offsetWidth/2,h=canvas.offsetHeight/2;
+  resizeCanvas(canvas);
+  const dpr=window.devicePixelRatio||1;const w=canvas.width/dpr,h=canvas.height/dpr;
   const pad={t:20,r:10,b:30,l:45},mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -976,8 +995,8 @@ function drawChannel(){
 
 function drawVolumePrice(){
   const canvas=document.getElementById('volumePriceChart'),ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;ctx.scale(2,2);
-  const w=canvas.offsetWidth/2,h=canvas.offsetHeight/2;
+  resizeCanvas(canvas);
+  const dpr=window.devicePixelRatio||1;const w=canvas.width/dpr,h=canvas.height/dpr;
   const pad={t:20,r:45,b:30,l:45},mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1020,8 +1039,8 @@ function drawVolumePrice(){
 
 function drawEbitTornado(){
   const canvas=document.getElementById('ebitTornadoChart'),ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;ctx.scale(2,2);
-  const w=canvas.offsetWidth/2,h=canvas.offsetHeight/2;
+  resizeCanvas(canvas);
+  const dpr=window.devicePixelRatio||1;const w=canvas.width/dpr,h=canvas.height/dpr;
   const pad={t:20,r:10,b:10,l:100},mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
 
@@ -1059,8 +1078,8 @@ function drawEbitTornado(){
 
 function drawCostPie(){
   const c=document.getElementById('costPieChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,cx=w*0.38,cy=h*0.45,r=Math.min(w,h)*0.28;
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,cx=w*0.38,cy=h*0.45,r=Math.min(w,h)*0.28;
   ctx.clearRect(0,0,w,h);
   const data=[
     {label:'原材料',val:52,color:'#00e5ff'},
@@ -1093,8 +1112,8 @@ function drawCostPie(){
 
 function drawExpense(){
   const c=document.getElementById('expenseChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:40};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:40};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1120,8 +1139,8 @@ function drawExpense(){
 
 function drawGrowth(){
   const c=document.getElementById('growthChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1159,8 +1178,8 @@ function drawGrowth(){
 
 function drawWorkingCap(){
   const c=document.getElementById('workingCapChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1185,8 +1204,8 @@ function drawWorkingCap(){
 
 function drawEarnQuality(){
   const c=document.getElementById('earnQualityChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1246,8 +1265,8 @@ function buildDuPont(){
 
 function drawFCF(){
   const c=document.getElementById('fcfChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:18,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:18,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1280,8 +1299,8 @@ function drawFCF(){
 
 function drawMScore(){
   const c=document.getElementById('mscoreChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:15,r:10,b:20,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:15,r:10,b:20,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2021','2022','2023','2024'];
@@ -1310,8 +1329,8 @@ function drawMScore(){
 
 function drawFScoreTrend(){
   const c=document.getElementById('fscoreTrendChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:15,r:10,b:20,l:30};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:15,r:10,b:20,l:30};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2021','2022','2023','2024'];
@@ -1335,8 +1354,8 @@ function drawFScoreTrend(){
 
 function drawHeatmap2(){
   const c=document.getElementById('heatmapChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:30,r:10,b:36,l:50};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:30,r:10,b:36,l:50};
   const cols=8,rows=8;
   const cw=(w-pad.l-pad.r)/cols,ch=(h-pad.t-pad.b)/rows;
   ctx.clearRect(0,0,w,h);
@@ -1381,8 +1400,8 @@ function drawHeatmap2(){
 
 function drawFCFF2(){
   const c=document.getElementById('fcffChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['Y1','Y2','Y3','Y4','Y5'];
@@ -1405,8 +1424,8 @@ function drawFCFF2(){
 
 function drawTornado2(){
   const c=document.getElementById('tornadoChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:15,r:10,b:10,l:110};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:15,r:10,b:10,l:110};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const items=[
@@ -1440,8 +1459,8 @@ function drawTornado2(){
 
 function drawPeer2(){
   const c=document.getElementById('peerChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:25,r:10,b:32,l:50};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:25,r:10,b:32,l:50};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   // Group bar chart: PE, PB, EV/EBITDA for each peer
@@ -1521,8 +1540,8 @@ function buildValLevels(){
 
 function drawZScore2(){
   const c=document.getElementById('zscoreChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:40,b:30,l:60};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:40,b:30,l:60};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const labels=['X₁ 营运\\n资本/资产','X₂ 留存\\n收益/资产','X₃ EBIT\\n/资产','X₄ 市值\\n/负债','X₅ 营收\\n/资产'];
@@ -1557,8 +1576,8 @@ function drawZScore2(){
 
 function drawGauge2(){
   const c=document.getElementById('gaugeChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,cx=w/2,cy=h*0.7,r=Math.min(w,h)*0.38;
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,cx=w/2,cy=h*0.7,r=Math.min(w,h)*0.38;
   ctx.clearRect(0,0,w,h);
   const z=25.36;
   const maxZ=30;
@@ -1592,8 +1611,8 @@ function drawGauge2(){
 
 function drawEVA(){
   const c=document.getElementById('evaChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1618,8 +1637,8 @@ function drawEVA(){
 
 function drawROICSpread(){
   const c=document.getElementById('roicSpreadChart'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:20,r:10,b:25,l:45};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:20,r:10,b:25,l:45};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const years=['2020','2021','2022','2023','2024'];
@@ -1659,8 +1678,8 @@ function drawROICSpread(){
 
 function drawRiskMatrix2(){
   const c=document.getElementById('riskMatrixChart2'),ctx=c.getContext('2d');
-  c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;ctx.scale(2,2);
-  const w=c.offsetWidth/2,h=c.offsetHeight/2,pad={t:40,r:30,b:40,l:50};
+  resizeCanvas(c);
+  const dpr=window.devicePixelRatio||1;const w=c.width/dpr,h=c.height/dpr,pad={t:40,r:30,b:40,l:50};
   const mw=w-pad.l-pad.r,mh=h-pad.t-pad.b;
   ctx.clearRect(0,0,w,h);
   const risks=[
@@ -1691,7 +1710,7 @@ function drawRiskMatrix2(){
   ctx.fillStyle=C.dim;ctx.font='9px sans-serif';ctx.textAlign='right';
   ['极高','高','中','低','极低'].forEach((v,i)=>{ctx.fillText(v,pad.l-6,pad.t+mh*(4.5-i)/5+3)});
   ctx.fillStyle=C.dim;ctx.font='10px sans-serif';ctx.textAlign='center';
-  ctx.fillText('可能性 Likelihood →',cx,pad.t+mh+28);
+  ctx.fillText('可能性 Likelihood →',pad.l+mw/2,pad.t+mh+28);
   ctx.save();ctx.translate(16,pad.t+mh/2);ctx.rotate(-Math.PI/2);ctx.fillText('影响 Impact →',0,0);ctx.restore();
 
   risks.forEach(r=>{
@@ -1756,7 +1775,7 @@ function buildFScoreGrid(){
   el.innerHTML=items.map(i=>'<div class="fscore-item '+(i.pass?'fs-true':'fs-false')+'"><div class="fs-label">'+i.label+'</div><div class="fs-val '+(i.pass?'fs-pass':'fs-fail')+'">'+(i.pass?'✅':'❌')+'</div><div style="font-size:10px;color:var(--dim)">'+i.val+'</div></div>').join('');
 }
 
-window.onload=function(){setTimeout(drawAll,200)};
+window.onload=function(){requestAnimationFrame(function(){requestAnimationFrame(drawAll)})};
 </script>
 </body>
 </html>
