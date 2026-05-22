@@ -3,516 +3,443 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
-<title>HERMES PORTFOLIO // 项目终端</title>
-<meta name="description" content="Hermes Agent 数据分析作品集 — 终端风格项目目录">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌘</text></svg>">
+<meta name="color-scheme" content="light dark">
+<title>Hermes 作品集 · 项目目录</title>
+<meta name="description" content="Hermes Agent 数据分析与咨询报告作品集">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<!-- Inline script to prevent FOUC -->
 <script>
 (function(){
-  var saved = localStorage.getItem('theme');
-  if (saved === 'light') document.documentElement.classList.add('light');
+  var cs = localStorage.getItem('color-scheme');
+  if (cs) document.querySelector('meta[name="color-scheme"]').content = cs;
+  var savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+  if (savedTheme === 'light') document.documentElement.classList.remove('dark');
 })();
 </script>
 <style>
-/* ===== RESET ===== */
+/* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cyan: #00f0ff;
-  --cyan-dim: rgba(0,240,255,0.08);
-  --cyan-glow: rgba(0,240,255,0.25);
-  --magenta: #ff2d95;
-  --blue: #4466ff;
-  --green: #00ff88;
-  --amber: #ffb347;
-  --bg-deep: #0a0a0f;
-  --bg-card: rgba(12,12,24,0.75);
-  --bg-hover: rgba(0,240,255,0.05);
-  --text-bright: #e0e8f0;
-  --text-dim: rgba(180,200,220,0.6);
-  --text-muted: rgba(120,140,160,0.5);
-  --border: rgba(0,240,255,0.12);
-  --border-active: rgba(0,240,255,0.35);
-  --radius: 8px;
-  --font-mono: 'SF Mono','Fira Code','Cascadia Code','JetBrains Mono',monospace;
-  --font-sans: -apple-system,BlinkMacSystemFont,'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  color-scheme:light dark;
+
+  /* Light tokens */
+  --bg-page: oklch(0.97 0.005 280);
+  --bg-card: oklch(1 0 0 / 0.7);
+  --bg-card-hover: oklch(1 0 0 / 0.9);
+  --bg-glass: oklch(1 0 0 / 0.4);
+  --text-primary: oklch(0.15 0.02 280);
+  --text-secondary: oklch(0.45 0.03 280);
+  --text-muted: oklch(0.6 0.02 280);
+  --border: oklch(0.85 0.01 280 / 0.5);
+  --border-hover: oklch(0.7 0.05 260 / 0.6);
+  --accent: oklch(0.55 0.2 260);
+  --accent-glow: oklch(0.55 0.2 260 / 0.15);
+  --accent-gradient: linear-gradient(135deg, oklch(0.55 0.2 260), oklch(0.6 0.18 310));
+  --green: oklch(0.55 0.18 150);
+  --amber: oklch(0.65 0.18 85);
+  --red: oklch(0.55 0.2 25);
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.08);
+  --shadow-lg: 0 8px 32px oklch(0 0 0 / 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
-:root.light{
-  --cyan: #0066ff;
-  --cyan-dim: rgba(0,102,255,0.06);
-  --cyan-glow: rgba(0,102,255,0.15);
-  --bg-deep: #f0f4f8;
-  --bg-card: rgba(255,255,255,0.7);
-  --bg-hover: rgba(0,102,255,0.04);
-  --text-bright: #0a1628;
-  --text-dim: rgba(60,80,100,0.7);
-  --text-muted: rgba(100,120,140,0.5);
-  --border: rgba(0,102,255,0.15);
-  --border-active: rgba(0,102,255,0.3);
+:root.dark{
+  --bg-page: oklch(0.13 0.015 280);
+  --bg-card: oklch(0.2 0.015 280 / 0.6);
+  --bg-card-hover: oklch(0.25 0.015 280 / 0.7);
+  --bg-glass: oklch(0.2 0.015 280 / 0.3);
+  --text-primary: oklch(0.92 0.01 280);
+  --text-secondary: oklch(0.7 0.02 280);
+  --text-muted: oklch(0.5 0.02 280);
+  --border: oklch(0.3 0.01 280 / 0.5);
+  --border-hover: oklch(0.45 0.05 260 / 0.5);
+  --accent: oklch(0.65 0.2 260);
+  --accent-glow: oklch(0.65 0.2 260 / 0.12);
+  --accent-gradient: linear-gradient(135deg, oklch(0.65 0.2 260), oklch(0.7 0.18 310));
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.2);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
+  --shadow-lg: 0 8px 32px oklch(0 0 0 / 0.4);
 }
 
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font-sans);
-  background:var(--bg-deep);
-  color:var(--text-bright);
+  background:var(--bg-page);
+  color:var(--text-primary);
   line-height:1.6;
   min-height:100dvh;
-  overflow-x:hidden;
+  transition:background 0.4s ease,color 0.4s ease;
 }
-
-/* ===== CYBER GRID BACKGROUND ===== */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  z-index:-1;
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size:48px 48px;
-  mask-image:radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent 70%);
-  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent 70%);
-  pointer-events:none;
-}
-
-/* ===== SCAN LINE ===== */
-body::after{
-  content:'';
-  position:fixed;inset:0;
-  z-index:-1;
-  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.015) 2px, rgba(0,240,255,0.015) 4px);
-  pointer-events:none;
-}
-
-/* ===== THEME TOGGLE ===== */
-.theme-toggle{
-  position:fixed;top:1rem;right:1rem;z-index:100;
-  width:36px;height:36px;border-radius:50%;
-  border:1px solid var(--border);
-  background:var(--bg-card);
-  backdrop-filter:blur(8px);
-  cursor:pointer;font-size:0.9rem;
-  display:grid;place-items:center;
-  transition:all 0.3s;
-  color:var(--text-dim);
-  font-family:var(--font-mono);
-}
-.theme-toggle:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px var(--cyan-glow)}
-.light .theme-toggle .dark-label{display:none}
-.theme-toggle .light-label{display:none}
-.light .theme-toggle .light-label{display:inline}
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--border-active)}
-
-/* ===== TERMINAL HEADER BAR ===== */
-.term-bar{
-  display:flex;align-items:center;gap:0.5rem;
-  padding:0.6rem 1.2rem;
-  border-bottom:1px solid var(--border);
-  background:var(--bg-card);
-  backdrop-filter:blur(12px);
-  position:sticky;top:0;z-index:50;
-  font-family:var(--font-mono);
-  font-size:0.75rem;
-}
-.term-dots{display:flex;gap:5px}
-.term-dot{width:8px;height:8px;border-radius:50%}
-.term-dot:nth-child(1){background:#ff5f56}
-.term-dot:nth-child(2){background:#ffbd2e}
-.term-dot:nth-child(3){background:#27c93f}
-.term-path{
-  color:var(--text-muted);margin-left:0.6rem;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.term-path .prompt{color:var(--green)}
-.term-path .dir{color:var(--cyan)}
 
 /* ===== HERO ===== */
 .hero{
-  padding:3rem 1.5rem 1.5rem;
-  text-align:center;
   position:relative;
+  padding:3rem 1.5rem 2.5rem;
+  text-align:center;
+  overflow:hidden;
 }
-.hero-glow{
-  position:absolute;top:-120px;left:50%;transform:translateX(-50%);
-  width:500px;height:300px;
-  background:radial-gradient(ellipse, var(--cyan-glow) 0%, transparent 70%);
-  pointer-events:none;
-  z-index:-1;
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--accent-gradient);
+  opacity:0.06;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
 }
+.hero-content{position:relative;max-width:700px;margin:0 auto}
 .hero-badge{
   display:inline-flex;align-items:center;gap:6px;
-  padding:3px 12px;margin-bottom:0.8rem;
+  padding:4px 14px;border-radius:100px;
+  font-size:0.75rem;font-weight:600;letter-spacing:0.3px;
+  background:var(--accent-glow);color:var(--accent);
+  margin-bottom:1rem;
   border:1px solid var(--border);
-  border-radius:var(--radius);
-  font-family:var(--font-mono);
-  font-size:0.7rem;letter-spacing:0.5px;
-  color:var(--text-dim);
-  background:var(--bg-card);
 }
-.hero-badge .blink{
-  display:inline-block;width:6px;height:6px;
-  background:var(--green);border-radius:50%;
-  animation:pulse 1.5s infinite;
-}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-
 .hero h1{
-  font-family:var(--font-mono);
-  font-size:clamp(1.6rem,5vw,2.6rem);
-  font-weight:700;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  margin-bottom:0.4rem;
+  font-size:clamp(1.8rem, 5vw, 2.8rem);
+  font-weight:800;letter-spacing:-0.02em;
+  margin-bottom:0.5rem;
+  background:var(--accent-gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
 }
-.hero h1 .hl{color:var(--cyan)}
-.hero h1 .hl2{color:var(--magenta)}
-.hero .subtitle{
-  font-family:var(--font-mono);
-  font-size:clamp(0.7rem,1.8vw,0.85rem);
-  color:var(--text-dim);
-  letter-spacing:2px;
-  margin-bottom:1.5rem;
+.hero p{
+  font-size:clamp(0.95rem, 2vw, 1.1rem);
+  color:var(--text-secondary);
+  max-width:520px;margin:0 auto 1.2rem;
 }
-.hero .subtitle .cursor{animation:blink-cursor 1s step-end infinite;color:var(--cyan)}
-@keyframes blink-cursor{50%{opacity:0}}
-
 .hero-stats{
-  display:flex;justify-content:center;gap:2.5rem;
-  padding:1rem 0;
+  display:flex;justify-content:center;gap:2rem;
+  padding-top:0.8rem;
 }
 .stat{text-align:center}
 .stat-num{
-  font-family:var(--font-mono);
-  font-size:1.5rem;font-weight:700;
-  color:var(--cyan);
+  font-size:1.6rem;font-weight:800;
   font-variant-numeric:tabular-nums;
+  background:var(--accent-gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
 }
-.stat-label{
-  font-family:var(--font-mono);
-  font-size:0.65rem;letter-spacing:1px;
-  color:var(--text-muted);margin-top:0;
-}
+.stat-label{font-size:0.8rem;color:var(--text-muted);margin-top:-2px}
 
-/* ===== SEARCH ===== */
+/* ===== THEME TOGGLE ===== */
+.theme-toggle{
+  position:fixed;top:1.2rem;right:1.2rem;z-index:100;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--bg-glass);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  cursor:pointer;font-size:1.1rem;
+  display:grid;place-items:center;
+  transition:all 0.3s ease;
+  color:var(--text-primary);
+}
+.theme-toggle:hover{
+  border-color:var(--accent);
+  transform:scale(1.08);
+}
+.theme-toggle .icon-sun{display:inline}
+.theme-toggle .icon-moon{display:none}
+:root.dark .theme-toggle .icon-sun{display:none}
+:root.dark .theme-toggle .icon-moon{display:inline}
+
+/* ===== SEARCH BAR ===== */
+.search-section{
+  padding:0 1.5rem 1.5rem;
+  max-width:1200px;margin:0 auto;
+}
 .search-wrap{
-  max-width:480px;margin:0.5rem auto 1rem;
-  padding:0 1.5rem;
   position:relative;
+  max-width:500px;margin:0 auto;
 }
 .search-wrap input{
-  width:100%;
-  padding:0.65rem 1rem 0.65rem 2.4rem;
-  background:var(--bg-card);
+  width:100%;padding:0.75rem 1rem 0.75rem 2.6rem;
   border:1px solid var(--border);
-  border-radius:var(--radius);
-  color:var(--text-bright);
-  font-family:var(--font-mono);
-  font-size:0.8rem;
-  outline:none;
-  transition:all 0.3s;
+  border-radius:var(--radius-md);
+  background:var(--bg-glass);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  font-size:0.9rem;color:var(--text-primary);
+  outline:none;transition:all 0.3s;
+  font-family:var(--font-sans);
 }
+.search-wrap input::placeholder{color:var(--text-muted)}
 .search-wrap input:focus{
-  border-color:var(--cyan);
-  box-shadow:0 0 0 2px var(--cyan-glow);
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);
 }
-.search-wrap input::placeholder{color:var(--text-muted);font-family:var(--font-mono)}
 .search-icon{
-  position:absolute;left:2rem;top:50%;transform:translateY(-50%);
-  color:var(--text-muted);font-family:var(--font-mono);font-size:0.75rem;
+  position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);
+  color:var(--text-muted);font-size:0.9rem;
   pointer-events:none;
 }
 
 /* ===== FILTER TABS ===== */
 .filter-bar{
-  display:flex;flex-wrap:wrap;gap:0.3rem;
-  justify-content:center;padding:0 1.5rem 1.2rem;
+  display:flex;flex-wrap:wrap;gap:0.4rem;
+  justify-content:center;
+  padding:0 1.5rem 1.8rem;
+  max-width:1200px;margin:0 auto;
 }
 .filter-btn{
-  padding:0.3rem 0.8rem;
-  background:transparent;
+  padding:0.35rem 0.9rem;border-radius:100px;
   border:1px solid var(--border);
-  border-radius:var(--radius);
-  color:var(--text-dim);
-  font-family:var(--font-mono);
-  font-size:0.7rem;letter-spacing:0.3px;
-  cursor:pointer;
-  transition:all 0.25s;
+  background:transparent;
+  color:var(--text-secondary);
+  font-size:0.8rem;font-weight:500;
+  cursor:pointer;transition:all 0.25s;
+  font-family:var(--font-sans);
 }
-.filter-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
 .filter-btn.active{
-  background:var(--cyan-dim);
-  border-color:var(--cyan);
-  color:var(--cyan);
-  box-shadow:0 0 8px var(--cyan-glow);
+  background:var(--accent);color:white;
+  border-color:var(--accent);
 }
 
-/* ===== GRID ===== */
-.grid-section{padding:0 1.5rem 3rem}
+/* ===== PROJECT GRID ===== */
+.grid-section{
+  padding:0 1.5rem 3rem;
+  max-width:1200px;margin:0 auto;
+}
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  gap:0.8rem;
-  max-width:1100px;margin:0 auto;
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap:1rem;
+  container-type:inline-size;
 }
 
-/* ===== CARD ===== */
+/* ===== PROJECT CARD ===== */
 .card{
   position:relative;
   background:var(--bg-card);
   backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:1.2rem 1.2rem 1rem;
+  border-radius:var(--radius-lg);
+  padding:1.5rem;
   cursor:pointer;
-  transition:all 0.3s cubic-bezier(0.22,1,0.36,1);
+  transition:all 0.35s cubic-bezier(0.22,1,0.36,1);
   overflow:hidden;
 }
 .card::before{
   content:'';
-  position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg, transparent, var(--cyan), transparent);
-  opacity:0;
-  transition:opacity 0.4s;
+  position:absolute;inset:0;
+  background:var(--accent-gradient);
+  opacity:0;transition:opacity 0.4s;
+  border-radius:inherit;
+  pointer-events:none;
 }
 .card:hover{
-  border-color:var(--border-active);
-  transform:translateY(-2px);
-  background:var(--bg-hover);
+  border-color:var(--border-hover);
+  transform:translateY(-3px);
+  box-shadow:var(--shadow-lg);
 }
-.card:hover::before{opacity:1}
-.card:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.card:hover::before{opacity:0.04}
+.card:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
 
-.card-header{
-  display:flex;align-items:center;gap:0.6rem;
-  margin-bottom:0.5rem;
-}
 .card-icon{
-  width:32px;height:32px;border-radius:4px;
-  background:var(--cyan-dim);
-  border:1px solid var(--border);
+  width:44px;height:44px;
+  border-radius:var(--radius-sm);
   display:grid;place-items:center;
-  font-size:1rem;
-  flex-shrink:0;
+  font-size:1.4rem;
+  margin-bottom:0.8rem;
+  background:var(--accent-glow);
 }
 .card h3{
-  font-family:var(--font-mono);
-  font-size:0.85rem;font-weight:600;
-  letter-spacing:0.3px;
+  font-size:1.05rem;font-weight:700;
+  margin-bottom:0.3rem;
+  letter-spacing:-0.01em;
 }
 .card p{
-  font-size:0.78rem;color:var(--text-dim);
-  line-height:1.5;
-  margin-bottom:0.7rem;
+  font-size:0.85rem;color:var(--text-secondary);
+  line-height:1.5;margin-bottom:0.8rem;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
-.card-footer{
-  display:flex;align-items:center;gap:0.5rem;
+.card-meta{
+  display:flex;align-items:center;gap:0.6rem;
   flex-wrap:wrap;
 }
 .card-badge{
   display:inline-flex;align-items:center;gap:4px;
-  padding:1px 8px;border-radius:3px;
-  font-family:var(--font-mono);font-size:0.65rem;
+  padding:2px 10px;border-radius:100px;
+  font-size:0.7rem;font-weight:600;
+  background:var(--accent-glow);color:var(--accent);
   border:1px solid var(--border);
-  color:var(--text-dim);
-  background:var(--cyan-dim);
 }
-.card-badge.ready{border-color:rgba(0,255,136,0.3);color:var(--green);background:rgba(0,255,136,0.06)}
+.card-badge.ready{background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)}
+.card-badge.draft{background:oklch(0.65 0.18 85 / 0.12);color:var(--amber);border-color:oklch(0.65 0.18 85 / 0.25)}
 .card-files{
-  font-family:var(--font-mono);
-  font-size:0.65rem;color:var(--text-muted);
+  font-size:0.75rem;color:var(--text-muted);
   margin-left:auto;
 }
 
-/* ===== DIALOG ===== */
+/* Card entrance animation */
+.card{
+  view-transition-name:auto;
+  @starting-style{opacity:0;transform:translateY(16px)}
+}
+
+/* ===== DIALOG (Project Detail) ===== */
 .dialog-overlay{
   position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,0.7);
-  backdrop-filter:blur(6px);
-  display:grid;place-items:center;
-  padding:1rem;
+  background:oklch(0 0 0 / 0.5);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
   opacity:0;visibility:hidden;
   transition:all 0.3s;
+  display:grid;place-items:center;
+  padding:1rem;
 }
 .dialog-overlay.open{opacity:1;visibility:visible}
 .dialog{
   background:var(--bg-card);
   backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
   border:1px solid var(--border);
-  border-radius:var(--radius);
-  max-width:540px;width:100%;
+  border-radius:var(--radius-lg);
+  max-width:560px;width:100%;
   max-height:85dvh;overflow-y:auto;
-  padding:1.5rem;
-  transform:scale(0.95);
-  transition:all 0.3s cubic-bezier(0.22,1,0.36,1);
+  padding:2rem;
+  transform:scale(0.92) translateY(12px);
+  transition:all 0.35s cubic-bezier(0.22,1,0.36,1);
 }
-.dialog-overlay.open .dialog{transform:scale(1)}
+.dialog-overlay.open .dialog{transform:scale(1) translateY(0)}
 .dialog-header{
   display:flex;align-items:flex-start;justify-content:space-between;
-  margin-bottom:1rem;
-  padding-bottom:0.8rem;
-  border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem;
 }
 .dialog-title{
-  display:flex;align-items:center;gap:0.5rem;
-  font-family:var(--font-mono);
+  display:flex;align-items:center;gap:0.6rem;
 }
-.dialog-title .icon{font-size:1.2rem}
-.dialog-title h2{font-size:0.95rem;font-weight:600;letter-spacing:0.5px}
+.dialog-title .icon{font-size:1.8rem}
+.dialog-title h2{font-size:1.3rem;font-weight:700}
 .dialog-close{
-  width:28px;height:28px;border-radius:4px;
+  width:32px;height:32px;border-radius:50%;
   border:1px solid var(--border);
-  background:transparent;
-  color:var(--text-dim);
-  cursor:pointer;font-size:0.8rem;
+  background:transparent;color:var(--text-secondary);
+  cursor:pointer;font-size:1rem;
   display:grid;place-items:center;
-  transition:all 0.2s;
-  font-family:var(--font-mono);
+  transition:all 0.2s;flex-shrink:0;
+  font-family:var(--font-sans);
 }
-.dialog-close:hover{border-color:var(--magenta);color:var(--magenta)}
-.dialog-desc{
-  font-size:0.8rem;color:var(--text-dim);
-  margin-bottom:1.2rem;line-height:1.6;
-}
+.dialog-close:hover{border-color:var(--accent);color:var(--accent)}
+.dialog-desc{color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6}
+.dialog-section{margin-bottom:1.2rem}
 .dialog-section h4{
-  font-family:var(--font-mono);
-  font-size:0.7rem;letter-spacing:1px;
-  color:var(--text-muted);
-  margin-bottom:0.5rem;
+  font-size:0.8rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.5px;color:var(--text-muted);
+  margin-bottom:0.6rem;
 }
-.file-list{list-style:none;display:flex;flex-direction:column;gap:0.3rem}
+.file-list{list-style:none;display:flex;flex-direction:column;gap:0.4rem}
 .file-item{
-  display:flex;align-items:center;gap:0.4rem;
-  padding:0.4rem 0.6rem;
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.5rem 0.7rem;
+  border-radius:var(--radius-sm);
+  background:var(--bg-glass);
   border:1px solid var(--border);
-  border-radius:4px;
-  background:rgba(0,0,0,0.2);
+  font-size:0.85rem;
   transition:all 0.2s;
 }
-.file-item:hover{border-color:var(--cyan);background:var(--cyan-dim)}
-.file-item .name{
-  font-family:var(--font-mono);
-  font-size:0.72rem;word-break:break-all;
-  text-decoration:none;color:inherit;flex:1;
-}
-.file-item .name:hover{color:var(--cyan)}
+.file-item:hover{border-color:var(--accent)}
+.file-item .name{font-family:var(--font-mono);font-size:0.8rem;word-break:break-all}
 .file-item .status{
-  font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.3px;
-  padding:1px 6px;border-radius:3px;
+  margin-left:auto;font-size:0.7rem;
+  padding:1px 8px;border-radius:100px;
+  background:oklch(0.65 0.18 85 / 0.12);color:var(--amber);
   white-space:nowrap;
-  border:1px solid var(--border);
-  color:var(--text-muted);
+  border:1px solid oklch(0.65 0.18 85 / 0.2);
 }
-.file-item .status.uploaded{
-  color:var(--green);
-  border-color:rgba(0,255,136,0.25);
-  background:rgba(0,255,136,0.06);
+.empty-state{
+  text-align:center;padding:2rem 1rem;
+  color:var(--text-muted);font-size:0.85rem;
 }
-
-/* ===== EMPTY STATE ===== */
-.empty-state{text-align:center;padding:1.5rem;color:var(--text-muted)}
-.empty-state .big-icon{font-size:2rem;display:block;margin-bottom:0.3rem}
+.empty-state .big-icon{font-size:2.5rem;margin-bottom:0.5rem;display:block}
 
 /* ===== FOOTER ===== */
 footer{
-  text-align:center;padding:1.5rem;
+  text-align:center;padding:2rem 1.5rem;
+  color:var(--text-muted);font-size:0.8rem;
   border-top:1px solid var(--border);
-  margin-top:1rem;
-  font-family:var(--font-mono);
-  font-size:0.65rem;letter-spacing:0.5px;
-  color:var(--text-muted);
+  margin-top:2rem;
 }
-footer a{color:var(--cyan);text-decoration:none}
-footer a:hover{text-decoration:underline}
+footer a{color:var(--accent);text-decoration:none}
 
-/* ===== GLITCH TEXT ===== */
-.glitch{position:relative}
-.glitch::before,.glitch::after{
-  content:attr(data-text);
-  position:absolute;top:0;left:0;width:100%;height:100%;
-  opacity:0;
-}
-.glitch:hover::before{
-  color:var(--magenta);
-  opacity:0.6;
-  animation:glitch1 0.3s ease;
-  clip-path:inset(20% 0 50% 0);
-}
-.glitch:hover::after{
-  color:var(--cyan);
-  opacity:0.6;
-  animation:glitch2 0.3s ease 0.05s;
-  clip-path:inset(60% 0 10% 0);
-}
-@keyframes glitch1{0%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px)}80%{transform:translate(1px,1px)}100%{transform:translate(0)}}
-@keyframes glitch2{0%{transform:translate(0)}20%{transform:translate(2px,-1px)}40%{transform:translate(-2px,1px)}60%{transform:translate(1px)}80%{transform:translate(-1px,-1px)}100%{transform:translate(0)}}
+/* ===== SCROLLBAR ===== */
+:root{scrollbar-color:var(--text-muted) transparent;scrollbar-width:thin}
 
 /* ===== RESPONSIVE ===== */
+@container (max-width: 400px){
+  .card{padding:1.2rem}
+  .card-icon{width:36px;height:36px;font-size:1.1rem}
+  .card h3{font-size:0.95rem}
+  .dialog{padding:1.2rem}
+}
 @media (max-width:640px){
-  .hero{padding:2rem 1rem 1rem}
-  .hero-stats{gap:1.5rem}
-  .grid{gap:0.6rem}
-  .term-bar{padding:0.4rem 0.8rem;font-size:0.65rem}
-  .dialog{padding:1rem}
+  .hero{padding:2rem 1rem 1.5rem}
+  .hero-stats{gap:1.2rem}
+  .grid{gap:0.8rem}
+  .filter-bar{padding-bottom:1.2rem}
+  .dialog{padding:1.2rem;max-height:90dvh}
 }
 </style>
 </head>
 <body>
 
-<!-- Terminal Header Bar -->
-<div class="term-bar">
-  <div class="term-dots">
-    <span class="term-dot"></span>
-    <span class="term-dot"></span>
-    <span class="term-dot"></span>
-  </div>
-  <div class="term-path">
-    <span class="prompt">➜</span>
-    <span class="dir">~/portfolio</span>
-    <span style="color:var(--text-muted)"> (main)</span>
-  </div>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题" style="position:static;margin-left:auto;width:28px;height:28px;font-size:0.7rem;border-radius:4px">
-    <span class="dark-label">🌙</span>
-    <span class="light-label">☀️</span>
-  </button>
-</div>
+<!-- Theme Toggle -->
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">
+  <span class="icon-sun">☀️</span>
+  <span class="icon-moon">🌙</span>
+</button>
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-badge">
-    <span class="blink"></span>
-    SYSTEM ONLINE // v2.0
-  </div>
-  <h1 class="glitch" data-text="&lt;HERMES / PORTFOLIO&gt;">
-    &lt;<span class="hl">HERMES</span> / <span class="hl2">PORTFOLIO</span>&gt;
-  </h1>
-  <div class="subtitle">
-    $ _数据分析_咨询报告_可视化看板 <span class="cursor">▌</span>
-  </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num" id="totalProjects">7</div><div class="stat-label">PROJECTS</div></div>
-    <div class="stat"><div class="stat-num" id="totalFiles">22</div><div class="stat-label">FILES</div></div>
-    <div class="stat"><div class="stat-num" id="totalVersions">12</div><div class="stat-label">MAX_ITER</div></div>
+  <div class="hero-content">
+    <div class="hero-badge">✨ Agent 出品 · 数据分析作品集</div>
+    <h1>Hermes Portfolio</h1>
+    <p>基于 Hermes Agent 深度分析生成的咨询级报告与可视化仪表板</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num" id="totalProjects">7</div>
+        <div class="stat-label">项目</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="totalFiles">22</div>
+        <div class="stat-label">报告文件</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="totalVersions">12</div>
+        <div class="stat-label">最高迭代版本</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Search -->
-<section class="search-wrap">
-  <span class="search-icon">❯</span>
-  <input type="text" id="searchInput" placeholder="grep 项目名称或描述..." oninput="filterProjects()">
+<section class="search-section">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="搜索项目名称或描述..." oninput="filterProjects()">
+  </div>
 </section>
 
-<!-- Filter -->
+<!-- Filter Tabs -->
 <section class="filter-bar" id="filterBar">
-  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">[ ALL ]</button>
-  <button class="filter-btn" data-filter="finance" onclick="setFilter('finance',this)">📈 FINANCE</button>
-  <button class="filter-btn" data-filter="audit" onclick="setFilter('audit',this)">📋 AUDIT</button>
-  <button class="filter-btn" data-filter="dashboard" onclick="setFilter('dashboard',this)">📊 DASHBOARD</button>
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">全部</button>
+  <button class="filter-btn" data-filter="finance" onclick="setFilter('finance',this)">📈 财务分析</button>
+  <button class="filter-btn" data-filter="audit" onclick="setFilter('audit',this)">📋 审计分析</button>
+  <button class="filter-btn" data-filter="dashboard" onclick="setFilter('dashboard',this)">📊 数据大屏</button>
 </section>
 
 <!-- Grid -->
@@ -520,21 +447,24 @@ footer a:hover{text-decoration:underline}
   <div class="grid" id="projectGrid"></div>
 </section>
 
-<!-- Dialog -->
+<!-- Dialog Overlay -->
 <div class="dialog-overlay" id="dialogOverlay" onclick="closeDialog(event)">
   <div class="dialog" onclick="event.stopPropagation()">
     <div class="dialog-header">
       <div class="dialog-title">
         <span class="icon" id="dialogIcon">📁</span>
-        <h2 id="dialogTitle">PROJECT</h2>
+        <h2 id="dialogTitle">项目名称</h2>
       </div>
-      <button class="dialog-close" onclick="closeDialog()">✕</button>
+      <button class="dialog-close" onclick="closeDialog()" aria-label="关闭">✕</button>
     </div>
     <div class="dialog-desc" id="dialogDesc"></div>
     <div class="dialog-section">
-      <h4>// FILE_MANIFEST</h4>
+      <h4>📄 文件列表</h4>
       <div id="dialogFiles">
-        <div class="empty-state"><span class="big-icon">∅</span>NO FILES UPLOADED</div>
+        <div class="empty-state">
+          <span class="big-icon">📭</span>
+          尚未上传文件<br>如需上传请通知 Hermes
+        </div>
       </div>
     </div>
   </div>
@@ -542,99 +472,134 @@ footer a:hover{text-decoration:underline}
 
 <!-- Footer -->
 <footer>
-  <p>BUILT WITH ❖ BY <a href="#">HERMES AGENT</a> / POWERED BY <a href="https://github.com/GoogleChrome/modern-web-guidance" target="_blank">MODERN WEB GUIDANCE</a></p>
-  <p style="margin-top:0.3rem;color:var(--text-muted)">[ SYSTEM: ONLINE ] // [ VERSION: 2.0 ] // [ STATUS: OPERATIONAL ]</p>
+  <p>Powered by <a href="https://hermes-agent.nousresearch.com" target="_blank">Hermes Agent</a> · Built with <a href="https://github.com/GoogleChrome/modern-web-guidance" target="_blank">Modern Web Guidance</a></p>
+  <p style="margin-top:0.3rem">© 2026 · 数据安全 · Cloudflare Access 保护</p>
 </footer>
 
 <script>
 // ===== DATA =====
 const projects = [
   {
-    id: '九号公司_财报分析', name: '九号公司 财报分析', icon: '📈', filter: 'finance',
-    desc: 'Ninebot 深度财报分析 — 营收结构、盈利能力、现金流质量、估值模型。12轮迭代逐步深化。',
-    files: 12, status: 'ready', versions: 12,
+    id: '九号公司_财报分析',
+    name: '九号公司 财报分析',
+    icon: '📈',
+    filter: 'finance',
+    desc: 'Ninebot 九号公司深度财报分析，覆盖营收结构、盈利能力、现金流质量、估值模型等维度。12个迭代版本逐步深化。',
+    files: 12,
+    status: 'ready',
+    versions: 12,
     filesList: [
-      {name:'ninebot_financial_analysis_v12.html',desc:'最终版 · 完整财报分析报告',uploaded:true},
-      {name:'ninebot_financial_analysis_v11.html',desc:'迭代版 v11',uploaded:true},
-      {name:'ninebot_financial_analysis_v10.html',desc:'迭代版 v10',uploaded:true},
-      {name:'ninebot_financial_analysis_v9.html',desc:'迭代版 v9',uploaded:true},
-      {name:'ninebot_financial_analysis_v8.html',desc:'迭代版 v8',uploaded:true},
-      {name:'ninebot_financial_analysis_v7.html',desc:'迭代版 v7',uploaded:true},
-      {name:'ninebot_financial_analysis_v6.html',desc:'迭代版 v6',uploaded:true},
-      {name:'ninebot_financial_analysis_v5.html',desc:'迭代版 v5',uploaded:true},
-      {name:'ninebot_financial_analysis_v4.html',desc:'迭代版 v4',uploaded:true},
-      {name:'ninebot_financial_analysis_v3.html',desc:'迭代版 v3',uploaded:true},
-      {name:'ninebot_financial_analysis_v2.html',desc:'迭代版 v2',uploaded:true},
-      {name:'ninebot_financial_analysis_v1.html',desc:'初始版',uploaded:true}
+      {name: 'ninebot_financial_analysis_v12.html', desc: '最终版 · 完整财报分析报告', uploaded: true},
+      {name: 'ninebot_financial_analysis_v11.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v10.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v9.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v8.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v7.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v6.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v5.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v4.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v3.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v2.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v1.html', desc: '初版', uploaded: true}
     ]
   },
   {
-    id: '贵州茅台_投行级分析', name: '贵州茅台 投行级分析', icon: '🍶', filter: 'finance',
-    desc: '茅台投行级估值 — DCF模型、可比公司分析、财务健康度评分卡、敏感性分析仪表板。',
-    files: 3, status: 'ready', versions: 3,
+    id: '贵州茅台_投行级分析',
+    name: '贵州茅台 投行级分析',
+    icon: '🍶',
+    filter: 'finance',
+    desc: '贵州茅台投行级估值分析，包含DCF模型、可比公司分析、财务健康度评分卡、敏感性分析仪表板。',
+    files: 3,
+    status: 'ready',
+    versions: 3,
     filesList: [
-      {name:'moutai_ib_dashboard_v2.html',desc:'投行级分析仪表板 v2',uploaded:true},
-      {name:'moutai_complete_dashboard.html',desc:'完整版分析报告',uploaded:true},
-      {name:'maotai_dashboard.html',desc:'基础版分析看板',uploaded:true}
+      {name: 'moutai_ib_dashboard_v2.html', desc: '投行级分析仪表板 v2', uploaded: true},
+      {name: 'moutai_complete_dashboard.html', desc: '完整版分析报告', uploaded: true},
+      {name: 'maotai_dashboard.html', desc: '基础版分析看板', uploaded: true}
     ]
   },
   {
-    id: '中国平安_审计分析', name: '中国平安 审计分析', icon: '🛡️', filter: 'audit',
-    desc: '内部控制审计评估 — COSO框架、SOX 404合规、ICFR评估、控制测试与缺陷分析。',
-    files: 2, status: 'ready', versions: 2,
+    id: '腾讯控股_投行级分析',
+    name: '腾讯控股 投行级分析',
+    icon: '🐧',
+    filter: 'finance',
+    desc: '腾讯控股投行级分析报告，包含四层估值体系、财务健康度评分、同业对标矩阵与情景分析。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
     filesList: [
-      {name:'A5_中国平安2024审计智慧大屏.html',desc:'2024审计智慧大屏',uploaded:true},
-      {name:'中国平安_内部控制审计报告_dashboard.html',desc:'内控审计报告看板',uploaded:true}
+      {name: '腾讯控股_投行级分析_v1.html', desc: '投行级完整分析报告', uploaded: true}
     ]
   },
   {
-    id: '腾讯控股_投行级分析', name: '腾讯控股 投行级分析', icon: '🐧', filter: 'finance',
-    desc: '腾讯控股投行级分析 — 四层估值体系、财务健康度评分、同业对标矩阵与情景分析。',
-    files: 1, status: 'ready', versions: 1,
+    id: '中国平安_审计分析',
+    name: '中国平安 审计分析',
+    icon: '🛡️',
+    filter: 'audit',
+    desc: '中国平安内部控制审计评估，覆盖COSO框架、SOX 404合规、ICFR评估、控制测试与缺陷分析。',
+    files: 2,
+    status: 'ready',
+    versions: 2,
     filesList: [
-      {name:'腾讯控股_投行级分析_v1.html',desc:'投行级完整分析报告',uploaded:true}
+      {name: 'A5_中国平安2024审计智慧大屏.html', desc: '2024审计智慧大屏', uploaded: true},
+      {name: '中国平安_内部控制审计报告_dashboard.html', desc: '内控审计报告看板', uploaded: true}
     ]
   },
   {
-    id: '财务共享中心_FSSC', name: '财务共享中心 FSSC', icon: '🏢', filter: 'dashboard',
-    desc: '财务共享服务中心运营管理大屏 — 7大模块架构、SVG过程流转动图、单据流转实时可视化。',
-    files: 2, status: 'ready', versions: 2,
+    id: '财务共享中心_FSSC',
+    name: '财务共享中心 FSSC',
+    icon: '🏢',
+    filter: 'dashboard',
+    desc: '财务共享服务中心(FSSC)运营管理大屏，7大模块架构，SVG过程流转动图，单据流转实时可视化。',
+    files: 2,
+    status: 'ready',
+    versions: 2,
     filesList: [
-      {name:'华兴集团·财务共享中心智慧大屏 v3.0.html',desc:'FSSC 智慧大屏 v3.0'},
-      {name:'fssc_dashboard.html',desc:'FSSC 运营看板'}
+      {name: '华兴集团·财务共享中心智慧大屏 v3.0.html', desc: 'FSSC 智慧大屏 v3.0'},
+      {name: 'fssc_dashboard.html', desc: 'FSSC 运营看板'}
     ]
   },
   {
-    id: '通用财务分析', name: '通用财务分析', icon: '📊', filter: 'finance',
-    desc: '通用财务分析仪表板 — 盈利能力、偿债能力、运营效率指标可视化，适配多行业。',
-    files: 1, status: 'ready', versions: 1,
+    id: '通用财务分析',
+    name: '通用财务分析',
+    icon: '📊',
+    filter: 'finance',
+    desc: '通用财务分析仪表板，覆盖盈利能力、偿债能力、运营效率指标可视化，适配多行业分析。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
     filesList: [
-      {name:'financial-analysis-dashboard.html',desc:'财务分析仪表板'}
+      {name: 'financial-analysis-dashboard.html', desc: '财务分析仪表板'}
     ]
   },
   {
-    id: '金融分析师团队', name: '金融分析师团队', icon: '👥', filter: 'dashboard',
-    desc: '金融分析师团队协作看板 — 多分析师成果聚合展示，工作量和产出质量可视化。',
-    files: 1, status: 'ready', versions: 1,
+    id: '金融分析师团队',
+    name: '金融分析师团队',
+    icon: '👥',
+    filter: 'dashboard',
+    desc: '金融分析师团队协作看板，多分析师成果聚合展示，含团队工作量与产出质量可视化。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
     filesList: [
-      {name:'analyst_team_dashboard.html',desc:'分析师团队看板'}
+      {name: 'analyst_team_dashboard.html', desc: '分析师团队看板'}
     ]
   }
 ];
 
 // ===== RENDER =====
 function renderGrid(list){
-  document.getElementById('projectGrid').innerHTML = list.map(p => `
+  const grid = document.getElementById('projectGrid');
+  grid.innerHTML = list.map(p => `
     <div class="card" tabindex="0" role="button"
-         onclick="openDialog('${p.id}')" onkeydown="if(event.key==='Enter')openDialog('${p.id}')">
-      <div class="card-header">
-        <div class="card-icon">${p.icon}</div>
-        <h3>${p.name}</h3>
-      </div>
+         onclick="openDialog('${p.id}')" onkeydown="if(event.key==='Enter')openDialog('${p.id}')"
+         data-filter="${p.filter}" data-name="${p.name}">
+      <div class="card-icon">${p.icon}</div>
+      <h3>${p.name}</h3>
       <p>${p.desc}</p>
-      <div class="card-footer">
-        <span class="card-badge ${p.status}">${p.status==='ready'?'● ONLINE':'○ DRAFT'}</span>
-        <span class="card-files">${p.files} FILE${p.files!==1?'S':''}</span>
+      <div class="card-meta">
+        <span class="card-badge ${p.status}">${p.status === 'ready' ? '✅ 已就绪' : '📝 草稿'}</span>
+        <span class="card-files">${p.files} 个文件</span>
       </div>
     </div>
   `).join('');
@@ -642,19 +607,22 @@ function renderGrid(list){
 
 // ===== FILTER =====
 let currentFilter = 'all';
+
 function setFilter(filter, btn){
   currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   filterProjects();
 }
+
 function filterProjects(){
   const q = document.getElementById('searchInput').value.toLowerCase();
-  renderGrid(projects.filter(p => {
-    const mf = currentFilter === 'all' || p.filter === currentFilter;
-    const ms = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
-    return mf && ms;
-  }));
+  const filtered = projects.filter(p => {
+    const matchFilter = currentFilter === 'all' || p.filter === currentFilter;
+    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+  renderGrid(filtered);
 }
 
 // ===== DIALOG =====
@@ -662,22 +630,32 @@ function openDialog(id){
   const p = projects.find(x => x.id === id);
   if(!p) return;
   document.getElementById('dialogIcon').textContent = p.icon;
-  document.getElementById('dialogTitle').textContent = p.name.toUpperCase();
+  document.getElementById('dialogTitle').textContent = p.name;
   document.getElementById('dialogDesc').textContent = p.desc;
+
   const list = document.getElementById('dialogFiles');
   if(p.filesList && p.filesList.length > 0){
-    list.innerHTML = '<div class="file-list">' + p.filesList.map(f => {
-      const cls = f.uploaded ? 'uploaded' : '';
-      const label = f.uploaded ? 'ONLINE' : 'PENDING';
-      const href = f.uploaded ? `projects/${encodeURIComponent(p.id)}/${encodeURIComponent(f.name)}` : '#';
-      return `<div class="file-item"><span>📄</span><a href="${href}" target="_blank" class="name">${f.name}</a><span class="status ${cls}">${label}</span></div>`;
-    }).join('') + '</div>';
+    list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => {
+      const status = f.uploaded
+        ? '<span class="status" style="background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)">✅ 已上传</span>'
+        : '<span class="status">待上传</span>';
+      const href = f.uploaded ? `projects/${p.id}/${encodeURIComponent(f.name)}` : '#';
+      return `
+        <li class="file-item">
+          <span>📄</span>
+          <a href="${href}" target="_blank" class="name" style="text-decoration:none;color:inherit;flex:1">${f.name}</a>
+          ${status}
+        </li>
+      `;
+    }).join('') + '</ul>';
   } else {
-    list.innerHTML = '<div class="empty-state"><span class="big-icon">∅</span>NO FILES UPLOADED</div>';
+    list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
   }
+
   document.getElementById('dialogOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeDialog(e){
   if(e && e.target !== document.getElementById('dialogOverlay')) return;
   document.getElementById('dialogOverlay').classList.remove('open');
@@ -687,9 +665,16 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog({
 
 // ===== THEME =====
 function toggleTheme(){
-  document.documentElement.classList.toggle('light');
-  const isLight = document.documentElement.classList.contains('light');
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  const isDark = document.documentElement.classList.toggle('dark');
+  const meta = document.querySelector('meta[name="color-scheme"]');
+  if(isDark){
+    meta.content = 'dark';
+    localStorage.setItem('theme','dark');
+  } else {
+    meta.content = 'light dark';
+    localStorage.removeItem('theme');
+  }
+  localStorage.setItem('color-scheme', meta.content);
 }
 
 // ===== INIT =====
