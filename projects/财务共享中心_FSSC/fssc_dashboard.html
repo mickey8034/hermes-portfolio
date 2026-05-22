@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>华兴集团 · 财务共享中心智慧大屏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Microsoft YaHei',system-ui,sans-serif}
+body{background:#0a0e1a;color:#e0e6f0;overflow-x:hidden}
+.container{max-width:1600px;margin:0 auto;padding:16px 24px}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(0,200,255,.15);margin-bottom:20px}
+.header h1{font-size:24px;font-weight:700;background:linear-gradient(135deg,#00c8ff,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .subtitle{color:#8896b0;font-size:13px}
+.header .time-badge{background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;padding:8px 16px;font-size:13px;color:#00c8ff}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:10px 22px;border:none;background:rgba(22,30,55,.8);color:#8896b0;font-size:14px;cursor:pointer;border-radius:8px 8px 0 0;transition:all .3s;position:relative}
+.tab-btn:hover{color:#c0d0f0;background:rgba(30,42,70,.9)}
+.tab-btn.active{color:#00c8ff;background:rgba(0,200,255,.1);border-bottom:2px solid #00c8ff}
+.tab-btn .badge{background:#7b61ff;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.tab-content{display:none;animation:fadeIn .4s}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Cards */
+.card{background:linear-gradient(135deg,rgba(22,30,55,.85),rgba(14,20,40,.85));border:1px solid rgba(0,200,255,.1);border-radius:12px;padding:20px;margin-bottom:16px;backdrop-filter:blur(10px)}
+.card-title{font-size:15px;font-weight:600;color:#00c8ff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:18px}
+.card-subtitle{font-size:12px;color:#8896b0;margin-top:-10px;margin-bottom:14px}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+.grid-team{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+
+/* KPI Cards */
+.kpi-card{text-align:center;padding:16px 12px;background:rgba(0,200,255,.03);border:1px solid rgba(0,200,255,.08);border-radius:10px}
+.kpi-card .value{font-size:28px;font-weight:700;color:#fff}
+.kpi-card .value.green{color:#00e676}
+.kpi-card .value.yellow{color:#ffd740}
+.kpi-card .value.orange{color:#ff9100}
+.kpi-card .value.red{color:#ff5252}
+.kpi-card .value.blue{color:#00c8ff}
+.kpi-card .label{font-size:12px;color:#8896b0;margin-top:4px}
+.kpi-card .delta{font-size:11px;margin-top:2px;display:flex;align-items:center;justify-content:center;gap:4px}
+.kpi-card .delta.up{color:#00e676}
+.kpi-card .delta.down{color:#ff5252}
+
+/* Team Cards */
+.team-card{background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.08);border-radius:10px;padding:14px;transition:all .3s}
+.team-card:hover{background:rgba(0,200,255,.08);border-color:rgba(0,200,255,.3);transform:translateY(-2px)}
+.team-card .team-icon{font-size:28px;margin-bottom:6px}
+.team-card .team-name{font-size:14px;font-weight:600;color:#e0e6f0;margin-bottom:4px}
+.team-card .team-desc{font-size:11px;color:#8896b0;margin-bottom:8px}
+.team-card .team-stats{display:flex;gap:8px;flex-wrap:wrap}
+.team-card .stat-tag{background:rgba(0,200,255,.1);border-radius:4px;padding:2px 8px;font-size:10px;color:#00c8ff}
+
+/* Canvas wrapper */
+canvas.chart-canvas{width:100%!important;height:auto!important;max-height:260px;border-radius:6px}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{text-align:left;padding:8px 10px;color:#8896b0;border-bottom:1px solid rgba(0,200,255,.1);font-weight:500}
+.data-table td{padding:7px 10px;border-bottom:1px solid rgba(0,200,255,.05);color:#c0d0f0}
+.data-table tr:hover td{background:rgba(0,200,255,.03)}
+.data-table .highlight{color:#00c8ff;font-weight:600}
+
+/* Progress bar */
+.progress-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin:4px 0}
+.progress-bar .fill{height:100%;border-radius:3px;transition:width 1.5s}
+.progress-bar .fill.green{background:linear-gradient(90deg,#00e676,#00c853)}
+.progress-bar .fill.blue{background:linear-gradient(90deg,#00c8ff,#2979ff)}
+.progress-bar .fill.yellow{background:linear-gradient(90deg,#ffd740,#ffab00)}
+.progress-bar .fill.orange{background:linear-gradient(90deg,#ff9100,#ff6d00)}
+.progress-bar .fill.red{background:linear-gradient(90deg,#ff5252,#d50000)}
+
+/* Badge */
+.badge-sla{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.badge-sla.excellent{background:rgba(0,230,118,.15);color:#00e676}
+.badge-sla.good{background:rgba(0,200,255,.15);color:#00c8ff}
+.badge-sla.warning{background:rgba(255,215,64,.15);color:#ffd740}
+.badge-sla.critical{background:rgba(255,82,82,.15);color:#ff5252}
+
+/* Org Chart */
+.org-chart{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0}
+.org-level{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.org-node{background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:8px;padding:6px 14px;font-size:12px;text-align:center;min-width:90px}
+.org-node.root{background:linear-gradient(135deg,rgba(123,97,255,.2),rgba(0,200,255,.2));border-color:#7b61ff;padding:10px 24px;font-size:15px;font-weight:600}
+.org-node .node-sub{font-size:10px;color:#8896b0;margin-top:2px}
+.org-connector{display:flex;gap:12px;justify-content:center;align-items:center;width:100%}
+.org-connector .line{height:16px;width:2px;background:rgba(0,200,255,.2)}
+.org-connector .branch{flex:1;height:2px;background:rgba(0,200,255,.15);max-width:80px}
+
+/* Status indicator */
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+.status-dot.green{background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.4)}
+.status-dot.yellow{background:#ffd740;box-shadow:0 0 6px rgba(255,215,64,.4)}
+.status-dot.red{background:#ff5252;box-shadow:0 0 6px rgba(255,82,82,.4)}
+
+/* Section divider */
+.section-title{font-size:16px;font-weight:600;color:#e0e6f0;margin:20px 0 12px;padding-left:12px;border-left:3px solid #00c8ff}
+
+/* Responsive */
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;gap:12px}}
+@media(max-width:600px){.header{flex-direction:column;gap:8px;text-align:center}.tab-btn{padding:8px 12px;font-size:12px}}
+
+/* Tab sub-nav */
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.sub-tab{background:transparent;border:none;color:#8896b0;padding:6px 14px;font-size:12px;cursor:pointer;border-radius:6px;transition:all .3s}
+.sub-tab:hover{background:rgba(0,200,255,.08);color:#c0d0f0}
+.sub-tab.active{background:rgba(0,200,255,.12);color:#00c8ff}
+.sub-panel{display:none;animation:fadeIn .3s}
+.sub-panel.active{display:block}
+
+/* Tooltip */
+.tooltip{position:relative;cursor:help;border-bottom:1px dashed rgba(0,200,255,.2)}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <h1>🏢 华兴集团 · 财务共享服务中心</h1>
+      <div class="subtitle">HuaXing Group FSSC · 运营管理平台 · 模拟数据展示</div>
+    </div>
+    <div class="time-badge" id="headerTime">📅 加载中...</div>
+  </div>
+
+  <!-- Top KPIs -->
+  <div class="grid-4" style="margin-bottom:20px">
+    <div class="kpi-card">
+      <div class="value blue" id="kpiStaff">158</div>
+      <div class="label">共享中心总人数</div>
+      <div class="delta up">▲ 8人 (年度扩编)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value green" id="kpiVolume">126,847</div>
+      <div class="label">本月已处理单据数</div>
+      <div class="delta up">▲ +15.3% vs 上月</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value yellow" id="kpiSla">98.62%</div>
+      <div class="label">SLA综合达标率</div>
+      <div class="delta up">▲ +0.8pp vs 目标97%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value green" id="kpiCost">¥3,280万</div>
+      <div class="label">年度累计节约成本</div>
+      <div class="delta up">▲ 全年目标¥4,200万</div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tabs" id="tabNav">
+    <button class="tab-btn active" data-tab="tab1">🏢 共享架构</button>
+    <button class="tab-btn" data-tab="tab2">📈 处理效率 <span class="badge">实时</span></button>
+    <button class="tab-btn" data-tab="tab3">⚡ 业绩提升</button>
+    <button class="tab-btn" data-tab="tab4">📑 报表中心</button>
+    <button class="tab-btn" data-tab="tab5">🏆 团队业绩</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1: 共享架构 -->
+  <!-- ============================================================ -->
+  <div class="tab-content active" id="tab1">
+    <div class="card">
+      <div class="card-title"><span class="icon">🏛️</span> 华兴集团 FSSC 组织架构</div>
+      <div style="padding:10px 0">
+        <div class="org-chart">
+          <div class="org-level"><div class="org-node root">👑 FSSC 总经理</div></div>
+          <div class="org-connector">
+            <div class="branch"></div><div class="line"></div><div class="branch"></div>
+          </div>
+          <div class="org-level">
+            <div class="org-node">📊 运营管理部</div>
+            <div class="org-node">🤖 技术支撑部</div>
+            <div class="org-node">✅ 质量控制部</div>
+          </div>
+          <div class="org-connector">
+            <div class="branch"></div><div class="line"></div><div class="branch"></div>
+          </div>
+          <div class="org-level">
+            <div class="org-node">🖼️ 影像管理组<small>12人</small></div>
+            <div class="org-node">💰 费用报销组<small>28人</small></div>
+            <div class="org-node">📋 应付结算组<small>24人</small></div>
+            <div class="org-node">💳 应收结算组<small>18人</small></div>
+            <div class="org-node">📊 总账报表组<small>22人</small></div>
+            <div class="org-node">🏦 资金结算组<small>16人</small></div>
+            <div class="org-node">🗂️ 档案管理组<small>10人</small></div>
+          </div>
+          <div class="org-connector">
+            <div class="branch"></div>
+          </div>
+          <div class="org-level">
+            <div class="org-node" style="border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.05)">🏭 制造板块<br><small>6家公司 · 80亿营收</small></div>
+            <div class="org-node" style="border-color:rgba(255,215,64,.3);background:rgba(255,215,64,.05)">🏘️ 地产板块<br><small>4家公司 · 45亿营收</small></div>
+            <div class="org-node" style="border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.05)">🚢 贸易板块<br><small>3家公司 · 35亿营收</small></div>
+            <div class="org-node" style="border-color:rgba(123,97,255,.3);background:rgba(123,97,255,.05)">💻 科技板块<br><small>2家公司 · 20亿营收</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">📋 各团队职责与关键指标</div>
+    <div class="grid-team">
+      <div class="team-card"><div class="team-icon">🖼️</div><div class="team-name">影像管理组</div><div class="team-desc">原始凭证影像化、OCR识别、完整性校验、电子归档</div><div class="team-stats"><span class="stat-tag">12人</span><span class="stat-tag">日均扫描3,200份</span><span class="stat-tag">OCR正确率97.2%</span></div></div>
+      <div class="team-card"><div class="team-icon">💰</div><div class="team-name">费用报销组</div><div class="team-desc">员工借款、费用报销审核、差旅标准控制、预算校验</div><div class="team-stats"><span class="stat-tag">28人</span><span class="stat-tag">月均7,200单</span><span class="stat-tag">平均2.8天/单</span></div></div>
+      <div class="team-card"><div class="team-icon">📋</div><div class="team-name">应付结算组</div><div class="team-desc">供应商发票校验、三单匹配、付款排程、应付账款管理</div><div class="team-stats"><span class="stat-tag">24人</span><span class="stat-tag">月均5,600单</span><span class="stat-tag">三单匹配率99.1%</span></div></div>
+      <div class="team-card"><div class="team-icon">💳</div><div class="team-name">应收结算组</div><div class="team-desc">客户开票、收款核销、账龄跟踪、应收账款管理</div><div class="team-stats"><span class="stat-tag">18人</span><span class="stat-tag">月均4,200单</span><span class="stat-tag">回款及时率96.3%</span></div></div>
+      <div class="team-card"><div class="team-icon">📊</div><div class="team-name">总账报表组</div><div class="team-desc">凭证审核、月末关账、单体报表、合并报表出具</div><div class="team-stats"><span class="stat-tag">22人</span><span class="stat-tag">关账5工作日</span><span class="stat-tag">报表自动化率82%</span></div></div>
+      <div class="team-card"><div class="team-icon">🏦</div><div class="team-name">资金结算组</div><div class="team-desc">银企直连、资金池调度、大额支付审核、银行余额调节</div><div class="team-stats"><span class="stat-tag">16人</span><span class="stat-tag">月均8,500笔</span><span class="stat-tag">支付自动化率91%</span></div></div>
+      <div class="team-card"><div class="team-icon">🗂️</div><div class="team-name">档案管理组</div><div class="team-desc">电子档案借阅、审计配合、销毁管理、档案数字化</div><div class="team-stats"><span class="stat-tag">10人</span><span class="stat-tag">管理42万卷</span><span class="stat-tag">数字化率96%</span></div></div>
+      <div class="team-card"><div class="team-icon">⚙️</div><div class="team-name">运营管理组</div><div class="team-desc">SLA监控、质量管理、绩效分析、流程优化、系统运维</div><div class="team-stats"><span class="stat-tag">28人</span><span class="stat-tag">30项SLA指标</span><span class="stat-tag">综合达标率98.6%</span></div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">🔄</span> FSSC 协作流程</div>
+        <div style="font-size:12px;line-height:2">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 0">
+            <span style="background:rgba(0,200,255,.12);padding:4px 10px;border-radius:6px">📄 原始单据</span>
+            <span style="color:#8896b0">→</span>
+            <span style="background:rgba(123,97,255,.12);padding:4px 10px;border-radius:6px">🖼️ 影像扫描+OCR</span>
+            <span style="color:#8896b0">→</span>
+            <span style="background:rgba(0,230,118,.12);padding:4px 10px;border-radius:6px">🤖 自动分流引擎</span>
+          </div>
+          <div style="padding-left:20px;border-left:2px solid rgba(0,200,255,.15);margin:6px 20px">
+            <div>├─ 💰 费用报销组 → 预算校验 → 审批流 → 支付</div>
+            <div>├─ 📋 应付结算组 → 三单匹配 → 排程 → 付款</div>
+            <div>├─ 💳 应收结算组 → 开票 → 收款核销 → 催收</div>
+            <div>├─ 🏦 资金结算组 → 银企直连 → 支付执行 → 对账</div>
+            <div>└─ 📊 总账报表组 → 凭证生成 → 关账 → 合并报表</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 0">
+            <span style="background:rgba(255,215,64,.12);padding:4px 10px;border-radius:6px">🗂️ 档案归档</span>
+            <span style="color:#8896b0">→</span>
+            <span style="background:rgba(255,82,82,.12);padding:4px 10px;border-radius:6px">🔍 质量控制</span>
+            <span style="color:#8896b0">→</span>
+            <span style="background:rgba(0,200,255,.12);padding:4px 10px;border-radius:6px">📊 运营分析</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🏢</span> 纳入共享范围</div>
+        <div class="grid-2" style="gap:8px">
+          <div><div style="font-size:11px;color:#8896b0">纳入实体</div><div style="font-size:22px;font-weight:700">15 <span style="font-size:12px;color:#8896b0">家公司</span></div></div>
+          <div><div style="font-size:11px;color:#8896b0">覆盖营收</div><div style="font-size:22px;font-weight:700">¥180 <span style="font-size:12px;color:#8896b0">亿元</span></div></div>
+          <div><div style="font-size:11px;color:#8896b0">业务类型</div><div style="font-size:22px;font-weight:700">4 <span style="font-size:12px;color:#8896b0">大板块</span></div></div>
+          <div><div style="font-size:11px;color:#8896b0">上线时长</div><div style="font-size:22px;font-weight:700">26 <span style="font-size:12px;color:#8896b0">个月</span></div></div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:#8896b0">共享业务范围：费用报销、应付账款、应收账款、总账核算、资金结算、档案管理、财务报表出具</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2: 处理效率 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab2">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p2a">📊 效率总览</button>
+      <button class="sub-tab" data-panel="p2b">📈 趋势分析</button>
+      <button class="sub-tab" data-panel="p2c">⏱️ 处理延迟</button>
+    </div>
+
+    <div class="sub-panel active" id="p2a">
+      <div class="grid-4">
+        <div class="kpi-card"><div class="value blue">8.2<small style="font-size:14px;color:#8896b0">万/月</small></div><div class="label">月均处理总量</div><div class="delta up">▲ 同比+18.6%</div></div>
+        <div class="kpi-card"><div class="value green">2.1<small style="font-size:14px;color:#8896b0">天</small></div><div class="label">平均处理周期</div><div class="delta up">▼ -0.6天 YoY</div></div>
+        <div class="kpi-card"><div class="value green">99.12%</div><div class="label">一次性通过率</div><div class="delta up">▲ +1.8pp</div></div>
+        <div class="kpi-card"><div class="value yellow">0.43%</div><div class="label">差错率</div><div class="delta down">▼ +0.05pp MoM</div></div>
+      </div>
+      <div class="grid-3" style="margin-top:8px">
+        <div class="kpi-card"><div class="value blue">97.2%</div><div class="label">OCR识别正确率</div><div class="delta up">▲ +2.1pp (AI优化)</div></div>
+        <div class="kpi-card"><div class="value green">91%</div><div class="label">支付自动化率</div><div class="delta up">▲ 目标95%</div></div>
+        <div class="kpi-card"><div class="value green">82%</div><div class="label">报表自动化率</div><div class="delta up">▲ 目标90%</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">📊 各组月度处理量 (5月)</div>
+          <canvas id="ch2a_volume" class="chart-canvas" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">⏱️ 各组平均处理天数</div>
+          <canvas id="ch2a_days" class="chart-canvas" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p2b">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📈 月度处理量趋势 (近12月)</div>
+          <canvas id="ch2b_trend" class="chart-canvas" height="240"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">📉 SLA达标率趋势</div>
+          <canvas id="ch2b_sla" class="chart-canvas" height="240"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 各板块月度单据分布</div>
+        <canvas id="ch2b_sector" class="chart-canvas" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p2c">
+      <div class="card">
+        <div class="card-title">⏱️ 各业务类型处理周期明细</div>
+        <canvas id="ch2c_period" class="chart-canvas" height="220"></canvas>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">⏳ 超时单据分布</div>
+          <canvas id="ch2c_overtime" class="chart-canvas" height="200"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 处理时效SLA详情</div>
+          <table class="data-table">
+            <thead><tr><th>业务类型</th><th>SLA(天)</th><th>实际(天)</th><th>达标率</th><th>超时单</th></tr></thead>
+            <tbody>
+              <tr><td>费用报销-差旅</td><td>5</td><td class="highlight">3.2</td><td><span class="badge-sla excellent">99.2%</span></td><td>42</td></tr>
+              <tr><td>费用报销-非差旅</td><td>5</td><td class="highlight">2.8</td><td><span class="badge-sla excellent">99.5%</span></td><td>28</td></tr>
+              <tr><td>供应商发票</td><td>7</td><td class="highlight">4.1</td><td><span class="badge-sla excellent">98.8%</span></td><td>67</td></tr>
+              <tr><td>客户开票</td><td>3</td><td class="highlight">1.8</td><td><span class="badge-sla excellent">99.6%</span></td><td>18</td></tr>
+              <tr><td>付款执行</td><td>1</td><td class="highlight">0.5</td><td><span class="badge-sla excellent">99.9%</span></td><td>5</td></tr>
+              <tr><td>总账凭证</td><td>2</td><td class="highlight">1.2</td><td><span class="badge-sla excellent">99.8%</span></td><td>12</td></tr>
+              <tr><td>银行对账</td><td>1</td><td class="highlight">0.3</td><td><span class="badge-sla excellent">100%</span></td><td>0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3: 业绩提升 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab3">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p3a">💰 成本节约</button>
+      <button class="sub-tab" data-panel="p3b">🤖 自动化提升</button>
+      <button class="sub-tab" data-panel="p3c">📊 对标分析</button>
+    </div>
+
+    <div class="sub-panel active" id="p3a">
+      <div class="grid-4">
+        <div class="kpi-card"><div class="value green">¥3,280<small style="font-size:14px;color:#8896b0">万</small></div><div class="label">累计成本节约</div><div class="delta up">▲ 目标4,200万</div></div>
+        <div class="kpi-card"><div class="value blue">32.6%</div><div class="label">人工成本节约率</div><div class="delta up">▲ 行业平均28%</div></div>
+        <div class="kpi-card"><div class="value yellow">¥157</div><div class="label">单笔处理成本</div><div class="delta up">▼ FSSC前¥328</div></div>
+        <div class="kpi-card"><div class="value green">18.2<small style="font-size:14px;color:#8896b0">月</small></div><div class="label">投资回收期</div><div class="delta up">▲ 行业平均22月</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">📉 单笔处理成本对比 (FSSC前 vs 后)</div>
+          <canvas id="ch3a_cost" class="chart-canvas" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">💰 年度成本节约分解</div>
+          <canvas id="ch3a_save" class="chart-canvas" height="220"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 FSSC 建设前后效率对比</div>
+        <table class="data-table">
+          <thead><tr><th>指标</th><th>FSSC前</th><th>FSSC当前</th><th>改善幅度</th><th>行业标杆</th></tr></thead>
+          <tbody>
+            <tr><td>月均处理单据量</td><td>3.8万</td><td>8.2万</td><td class="highlight">+115.8%</td><td>10万+</td></tr>
+            <tr><td>平均处理周期</td><td>4.8天</td><td>2.1天</td><td class="highlight">-56.3%</td><td>1.8天</td></tr>
+            <tr><td>单笔处理成本</td><td>¥328</td><td>¥157</td><td class="highlight">-52.1%</td><td>¥120</td></tr>
+            <tr><td>财务人员数量</td><td>286人(各公司)</td><td>158人(共享)</td><td class="highlight">-44.8%</td><td>-50%</td></tr>
+            <tr><td>差错率</td><td>1.85%</td><td>0.43%</td><td class="highlight">-76.8%</td><td>0.3%</td></tr>
+            <tr><td>报表出具天数</td><td>12天</td><td>5天</td><td class="highlight">-58.3%</td><td>4天</td></tr>
+            <tr><td>财务标准化率</td><td>45%</td><td>92%</td><td class="highlight">+104.4%</td><td>95%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p3b">
+      <div class="grid-4">
+        <div class="kpi-card"><div class="value blue">18</div><div class="label">RPA机器人数量</div><div class="delta up">▲ 年底目标22台</div></div>
+        <div class="kpi-card"><div class="value green">42%</div><div class="label">流程自动化率</div><div class="delta up">▲ +15pp YoY</div></div>
+        <div class="kpi-card"><div class="value yellow">126</div><div class="label">自动化场景数</div><div class="delta up">▲ +32个今年</div></div>
+        <div class="kpi-card"><div class="value green">6,800<small style="font-size:14px;color:#8896b0">h/月</small></div><div class="label">节约人工工时</div><div class="delta up">▲ 相当于34人</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">🤖 各组自动化覆盖率</div>
+          <canvas id="ch3b_auto" class="chart-canvas" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 自动化率提升路线图</div>
+          <canvas id="ch3b_road" class="chart-canvas" height="220"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔧 已上线自动化场景Top 8</div>
+        <table class="data-table">
+          <thead><tr><th>场景名称</th><th>所属组</th><th>月处理量</th><th>节省工时/月</th><th>上线时间</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">供应商三单匹配</td><td>应付组</td><td>4,200笔</td><td>1,050h</td><td>2024.03</td></tr>
+            <tr><td class="highlight">银行流水自动对账</td><td>资金组</td><td>8,500笔</td><td>980h</td><td>2024.01</td></tr>
+            <tr><td class="highlight">发票OCR识别录入</td><td>影像组</td><td>6,800份</td><td>820h</td><td>2023.11</td></tr>
+            <tr><td class="highlight">费用报销智能审核</td><td>费用组</td><td>4,500单</td><td>750h</td><td>2024.06</td></tr>
+            <tr><td class="highlight">自动生成凭证</td><td>总账组</td><td>3,600笔</td><td>620h</td><td>2024.04</td></tr>
+            <tr><td class="highlight">客户自动开票</td><td>应收组</td><td>2,800张</td><td>560h</td><td>2024.02</td></tr>
+            <tr><td class="highlight">银企直连支付</td><td>资金组</td><td>6,200笔</td><td>520h</td><td>2023.09</td></tr>
+            <tr><td class="highlight">智能档案分类归档</td><td>档案组</td><td>3,200份</td><td>480h</td><td>2024.05</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p3c">
+      <div class="card">
+        <div class="card-title">📊 FSSC 行业对标分析 (华为/中兴/行业平均)</div>
+        <canvas id="ch3c_bench" class="chart-canvas" height="240"></canvas>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">🎯 下一步重点提升</div>
+          <div style="font-size:12px;line-height:2.2">
+            <div>• <span style="color:#00c8ff">应付流程端到端自动化</span> — 目标三单匹配100%</div>
+            <div>• <span style="color:#00e676">AI辅助报销审核</span> — 智能校验+风险预警</div>
+            <div>• <span style="color:#ffd740">RPA+AI融合</span> — 智能文档处理(IDP)</div>
+            <div>• <span style="color:#7b61ff">合并报表自动化</span> — 目标自动化率90%+</div>
+            <div>• <span style="color:#ff9100">智能资金预测</span> — 基于ML的资金流预测</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 对标差距</div>
+          <table class="data-table" style="font-size:11px">
+            <thead><tr><th>维度</th><th>华兴</th><th>标杆</th><th>差距</th></tr></thead>
+            <tbody>
+              <tr><td>自动化率</td><td>42%</td><td>60%</td><td style="color:#ff5252">-18pp</td></tr>
+              <tr><td>人均处理量(单/月)</td><td>519</td><td>650</td><td style="color:#ff5252">-131</td></tr>
+              <tr><td>单笔成本(¥)</td><td>157</td><td>120</td><td style="color:#ff5252">+¥37</td></tr>
+              <tr><td>SLA达标率</td><td>98.6%</td><td>99.2%</td><td style="color:#ffd740">-0.6pp</td></tr>
+              <tr><td>报表自动化</td><td>82%</td><td>90%</td><td style="color:#ff5252">-8pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">💡 业绩提升空间估算</div>
+          <div style="font-size:12px">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+              <span>自动化提升至60%</span><span style="color:#00e676">+¥520万/年</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+              <span>单笔成本降至¥120</span><span style="color:#00e676">+¥380万/年</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+              <span>关账缩短至4天</span><span style="color:#00e676">效率+20%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+              <span>AI审核降低差错率</span><span style="color:#00e676">节约¥180万/年</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0">
+              <span style="font-weight:600">合计提升空间</span><span style="color:#00e676;font-weight:600">≈ ¥1,080万/年</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 4: 报表中心 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab4">
+    <div class="grid-4" style="margin-bottom:12px">
+      <div class="kpi-card"><div class="value blue" id="rptDate">2026年4月</div><div class="label">报表期间</div></div>
+      <div class="kpi-card"><div class="value green" id="rptCloseDays">M+5</div><div class="label">关账天数</div><div class="delta up">▲ 标准M+7，提前2天</div></div>
+      <div class="kpi-card"><div class="value green">15/15</div><div class="label">已关账公司</div><div class="delta up">✅ 全部完成</div></div>
+      <div class="kpi-card"><div class="value blue" id="rptProgress">100%</div><div class="label">合并报表完成度</div><div class="delta up">已完成出具</div></div>
+    </div>
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p4a">📋 合并报表</button>
+      <button class="sub-tab" data-panel="p4b">📊 财务分析</button>
+      <button class="sub-tab" data-panel="p4c">📅 关账日历</button>
+    </div>
+
+    <div class="sub-panel active" id="p4a">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📋 华兴集团合并利润表 (2026年4月)</div>
+          <div style="font-size:12px">
+            <table class="data-table">
+              <thead><tr><th>项目</th><th>本月(万元)</th><th>本年累计(万元)</th><th>同比</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">营业收入</td><td>156,800</td><td>612,500</td><td style="color:#00e676">+12.3%</td></tr>
+                <tr><td>营业成本</td><td>94,080</td><td>367,500</td><td style="color:#ff5252">+10.8%</td></tr>
+                <tr><td>毛利润</td><td>62,720</td><td>245,000</td><td style="color:#00e676">+15.1%</td></tr>
+                <tr><td>销售费用</td><td>14,112</td><td>55,125</td><td style="color:#ff5252">+8.2%</td></tr>
+                <tr><td>管理费用</td><td>9,408</td><td>36,750</td><td style="color:#00e676">-2.5%</td></tr>
+                <tr><td>研发费用</td><td>7,840</td><td>30,625</td><td style="color:#ff5252">+18.6%</td></tr>
+                <tr><td>财务费用</td><td>2,352</td><td>9,188</td><td style="color:#00e676">-8.3%</td></tr>
+                <tr><td>营业利润</td><td>29,008</td><td>113,313</td><td style="color:#00e676">+28.4%</td></tr>
+                <tr><td style="font-weight:600">净利润</td><td style="font-weight:600;color:#00c8ff">21,756</td><td style="font-weight:600;color:#00c8ff">84,984</td><td style="color:#00e676">+26.7%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 华兴集团合并资产负债表 (2026.4.30)</div>
+          <div style="font-size:12px">
+            <table class="data-table">
+              <thead><tr><th>项目</th><th>期末(万元)</th><th>期初(万元)</th><th>变动</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">流动资产合计</td><td>458,000</td><td>426,000</td><td style="color:#00e676">+7.5%</td></tr>
+                <tr><td>其中：货币资金</td><td>86,000</td><td>92,000</td><td style="color:#ff5252">-6.5%</td></tr>
+                <tr><td>应收账款</td><td>128,000</td><td>112,000</td><td style="color:#ff5252">+14.3%</td></tr>
+                <tr><td>存货</td><td>156,000</td><td>148,000</td><td style="color:#ff5252">+5.4%</td></tr>
+                <tr><td class="highlight">非流动资产合计</td><td>792,000</td><td>774,000</td><td style="color:#00e676">+2.3%</td></tr>
+                <tr><td style="font-weight:600;color:#00c8ff">资产总计</td><td style="font-weight:600;color:#00c8ff">1,250,000</td><td>1,200,000</td><td style="color:#00e676">+4.2%</td></tr>
+                <tr><td class="highlight">负债合计</td><td>685,000</td><td>668,000</td><td style="color:#ff5252">+2.5%</td></tr>
+                <tr><td class="highlight">股东权益合计</td><td>565,000</td><td>532,000</td><td style="color:#00e676">+6.2%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p4b">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📊 各板块营收构成</div>
+          <canvas id="ch4b_income" class="chart-canvas" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 关键财务指标趋势</div>
+          <canvas id="ch4b_kpi" class="chart-canvas" height="220"></canvas>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
+        <div class="kpi-card"><div class="value blue">51.33%</div><div class="label">综合毛利率</div><div class="delta up">YoY +1.2pp</div></div>
+        <div class="kpi-card"><div class="value green">13.87%</div><div class="label">净利率</div><div class="delta up">YoY +1.6pp</div></div>
+        <div class="kpi-card"><div class="value yellow">45.2%</div><div class="label">资产负债率</div><div class="delta down">期初44.7%</div></div>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p4c">
+      <div class="card">
+        <div class="card-title">📅 月度关账日历 (M+5日完成)</div>
+        <canvas id="ch4c_cal" class="chart-canvas" height="280"></canvas>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">📋 各公司关账状态</div>
+          <table class="data-table">
+            <thead><tr><th>公司名称</th><th>板块</th><th>关账状态</th><th>完成时间</th><th>关账天数</th></tr></thead>
+            <tbody>
+              <tr><td>华兴精密制造</td><td>制造</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴智能装备</td><td>制造</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴新材料</td><td>制造</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+5</td><td>5天</td></tr>
+              <tr><td>华兴置业</td><td>地产</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴物业管理</td><td>地产</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴国际贸易</td><td>贸易</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+3</td><td>3天</td></tr>
+              <tr><td>华兴科技</td><td>科技</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+5</td><td>5天</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 合并抵消与调整</div>
+          <canvas id="ch4c_consol" class="chart-canvas" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 5: 团队业绩 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab5">
+    <div class="grid-4" style="margin-bottom:12px">
+      <div class="kpi-card"><div class="value blue">519</div><div class="label">人均月处理单量</div><div class="delta up">▲ 行业平均450</div></div>
+      <div class="kpi-card"><div class="value green">96.8</div><div class="label">综合质量评分(100分)</div><div class="delta up">▲ 目标96分</div></div>
+      <div class="kpi-card"><div class="value yellow">92%</div><div class="label">员工综合满意度</div><div class="delta up">▲ +5pp YoY</div></div>
+      <div class="kpi-card"><div class="value blue">42</div><div class="label">本季度培训学时/人</div><div class="delta up">▲ 目标40h</div></div>
+    </div>
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p5a">🏆 各组排名</button>
+      <button class="sub-tab" data-panel="p5b">👥 个人绩效</button>
+      <button class="sub-tab" data-panel="p5c">📊 质量分析</button>
+    </div>
+
+    <div class="sub-panel active" id="p5a">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🏆 各组综合绩效评分</div>
+          <canvas id="ch5a_score" class="chart-canvas" height="240"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 各组处理量对比</div>
+          <canvas id="ch5a_vol" class="chart-canvas" height="240"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 各组月度绩效考核表</div>
+        <table class="data-table">
+          <thead><tr><th>团队</th><th>处理量</th><th>平均天数</th><th>差错率</th><th>质量分</th><th>SLA达标</th><th>综合评分</th><th>排名</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">💰 费用报销组</td><td>7,200</td><td>2.8天</td><td>0.38%</td><td>98.2</td><td>99.5%</td><td><span style="color:#00e676;font-weight:600">96.5</span></td><td>🥇</td></tr>
+            <tr><td class="highlight">📋 应付结算组</td><td>5,600</td><td>4.1天</td><td>0.32%</td><td>97.8</td><td>98.8%</td><td><span style="color:#00e676;font-weight:600">95.2</span></td><td>🥈</td></tr>
+            <tr><td class="highlight">🏦 资金结算组</td><td>8,500</td><td>0.5天</td><td>0.08%</td><td>99.5</td><td>99.9%</td><td><span style="color:#00e676;font-weight:600">94.8</span></td><td>🥉</td></tr>
+            <tr><td>💳 应收结算组</td><td>4,200</td><td>1.8天</td><td>0.45%</td><td>96.5</td><td>99.6%</td><td>93.6</td><td>4</td></tr>
+            <tr><td>📊 总账报表组</td><td>3,800</td><td>1.2天</td><td>0.52%</td><td>95.8</td><td>99.8%</td><td>92.4</td><td>5</td></tr>
+            <tr><td>🖼️ 影像管理组</td><td>6,400</td><td>0.3天</td><td>0.62%</td><td>94.2</td><td>99.6%</td><td>91.8</td><td>6</td></tr>
+            <tr><td>🗂️ 档案管理组</td><td>2,200</td><td>0.2天</td><td>0.15%</td><td>98.8</td><td>100%</td><td>90.5</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p5b">
+      <div class="card">
+        <div class="card-title">👑 本月之星</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          <div style="background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,180,0,.05));border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px">
+            <div style="font-size:32px">🥇</div>
+            <div style="font-size:15px;font-weight:600;color:#ffd740;margin:4px 0">张明华</div>
+            <div style="font-size:11px;color:#8896b0">费用报销组 · 组长</div>
+            <div style="font-size:11px;color:#00e676;margin-top:4px">处理量: 486单 · 差错: 0 · 质量: 99.5</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(192,192,192,.08),rgba(160,160,160,.04));border:1px solid rgba(192,192,192,.25);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px">
+            <div style="font-size:32px">🥈</div>
+            <div style="font-size:15px;font-weight:600;color:#c0d0f0;margin:4px 0">李雪梅</div>
+            <div style="font-size:11px;color:#8896b0">应付结算组 · 高级专员</div>
+            <div style="font-size:11px;color:#00e676;margin-top:4px">处理量: 412单 · 差错: 1 · 质量: 98.8</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(205,127,50,.08),rgba(180,100,30,.04));border:1px solid rgba(205,127,50,.25);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px">
+            <div style="font-size:32px">🥉</div>
+            <div style="font-size:15px;font-weight:600;color:#cd7f32;margin:4px 0">王建国</div>
+            <div style="font-size:11px;color:#8896b0">资金结算组 · 高级专员</div>
+            <div style="font-size:11px;color:#00e676;margin-top:4px">处理量: 568笔 · 差错: 0 · 质量: 100</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 团队人员分布</div>
+        <canvas id="ch5b_staff" class="chart-canvas" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p5c">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📊 各组质量评分趋势 (近6月)</div>
+          <canvas id="ch5c_quality" class="chart-canvas" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">🔍 差错类型分析</div>
+          <canvas id="ch5c_errtype" class="chart-canvas" height="220"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 月度质量稽查结果</div>
+        <table class="data-table">
+          <thead><tr><th>稽查项目</th><th>样本量</th><th>合格数</th><th>合格率</th><th>趋势</th></tr></thead>
+          <tbody>
+            <tr><td>凭证附件完整性</td><td>1,200</td><td>1,186</td><td class="highlight">98.83%</td><td><span class="badge-sla excellent">↑ 持续改善</span></td></tr>
+            <tr><td>会计分录准确性</td><td>800</td><td>794</td><td class="highlight">99.25%</td><td><span class="badge-sla excellent">↑ 稳定</span></td></tr>
+            <tr><td>审批流程合规性</td><td>600</td><td>593</td><td class="highlight">98.83%</td><td><span class="badge-sla good">→ 维持</span></td></tr>
+            <tr><td>发票验证准确性</td><td>900</td><td>887</td><td class="highlight">98.56%</td><td><span class="badge-sla good">→ 维持</span></td></tr>
+            <tr><td>归档及时性</td><td>500</td><td>496</td><td class="highlight">99.20%</td><td><span class="badge-sla excellent">↑ 改善中</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== 初始化时间 ======
+function updateTime(){const n=new Date;document.getElementById('headerTime').innerHTML='📅 '+n.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})+' '+n.toLocaleTimeString('zh-CN')}updateTime();setInterval(updateTime,60e3);
+
+// ====== 页签切换 ======
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active');
+  setTimeout(renderAll,50);
+})});
+
+// ====== 子页签切换 ======
+document.querySelectorAll('.sub-tabs').forEach(parent=>{
+  parent.querySelectorAll('.sub-tab').forEach(b=>{b.addEventListener('click',()=>{
+    parent.querySelectorAll('.sub-tab').forEach(x=>x.classList.remove('active'));
+    parent.closest('.tab-content').querySelectorAll('.sub-panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');document.getElementById(b.dataset.panel).classList.add('active');
+    setTimeout(renderAll,50);
+  })})
+});
+
+// ====== Canvas 渲染工具箱 ======
+function resizeCanvas(c){const p=c.parentElement;const w=Math.max(p.clientWidth-4,200);const h=parseInt(c.getAttribute('height'))||220;const dpr=window.devicePixelRatio||1;c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);c.style.width=w+'px';c.style.height=h+'px';c.getContext('2d').setTransform(dpr,0,0,dpr,0,0)}
+function darken(r,g,b,a=1){return `rgba(${r},${g},${b},${a})`}
+
+// Colors
+const C={
+  blue:['#00c8ff','#2979ff','#448aff','#0d47a1'],
+  green:['#00e676','#00c853','#69f0ae','#1b5e20'],
+  yellow:['#ffd740','#ffab00','#ffe57f','#f57f17'],
+  purple:['#7b61ff','#b388ff','#536dfe','#311b92'],
+  orange:['#ff9100','#ff6d00','#ffab40','#e65100'],
+  red:['#ff5252','#d50000','#ff8a80','#b71c1c'],
+  teal:['#1de9b6','#00bfa5','#64ffda','#004d40'],
+  pink:['#ff4081','#f50057','#ff80ab','#c51162'],
+};
+const allColors=[C.blue[0],C.green[0],C.yellow[0],C.purple[0],C.orange[0],C.red[0],C.teal[0],C.pink[0],C.blue[1],C.green[1],C.yellow[1],C.purple[1]];
+
+function renderAll(){
+  document.querySelectorAll('canvas.chart-canvas').forEach(c=>{
+    const id=c.id;if(typeof window['draw_'+id]==='function'){window['draw_'+id](c)}else{console.log('No drawer for',id)}
+  });
+}
+
+// ====== 通用绘图函数 ======
+function drawBar(c,labels,datasets,opts={}){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  const pad={t:30,b:40,l:50,r:20};if(opts.hideX)pad.b=20;if(opts.hideY)pad.l=30;
+  const cw= Math.max(pw-pad.l-pad.r,10),ch=Math.max(ph-pad.t-pad.b,10);
+  const n=labels.length;const ds=datasets.length;
+  if(ds===0||n===0){ctx.clearRect(0,0,pw,ph);ctx.fillStyle='#8896b0';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('无数据',pw/2,ph/2);return;}
+  const maxV=Math.max(...datasets.flatMap(d=>d.data),0.001)*1.2;
+  const zero=pad.t+ch;
+  function y(v){return pad.t+ch-(v/maxV*ch)}
+  ctx.clearRect(0,0,pw,ph);
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pw-pad.r,yy);ctx.stroke()}
+
+  // Y-labels
+  ctx.fillStyle='#8896b0';ctx.font='11px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.fillText(Math.round(maxV*(1-i/4)),pad.l-6,yy+4)}
+
+  // Bars
+  const bw=cw/n/ds*0.7;const gap=cw/n*0.15;
+  datasets.forEach((d,di)=>{
+    ctx.fillStyle=d.color||allColors[di];
+    d.data.forEach((v,i)=>{
+      const bx=pad.l+i*cw/n+gap+di*bw;
+      if(opts.horizontal){
+        // Horizontal bar
+        const bw2=cw*(v/maxV);ctx.fillRect(pad.l,yy,bw2,ch/n*0.7);
+      } else {
+        const bh=y(0)-y(v);ctx.fillRect(bx,y(v),bw,bh);
+      }
+    });
+  });
+
+  // X-labels
+  if(!opts.hideX){
+    ctx.fillStyle='#8896b0';ctx.font='10px sans-serif';ctx.textAlign='center';
+    labels.forEach((l,i)=>{ctx.fillText(l,pad.l+i*cw/n+cw/n/2,H-10)})
+  }
+
+  // Legend
+  if(ds>1){
+    const lx=pad.l,ly=10;let lx2=lx;ctx.font='10px sans-serif';
+    datasets.forEach((d,i)=>{
+      ctx.fillStyle=d.color||allColors[i];ctx.fillRect(lx2,ly,10,10);
+      ctx.fillStyle='#8896b0';ctx.textAlign='left';ctx.fillText(d.label||'S'+(i+1),lx2+14,ly+9);lx2+=ctx.measureText(d.label||' ').width+34;
+    });
+  }
+}
+
+function drawPie(c,labels,data,colors){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  ctx.clearRect(0,0,pw,ph);const cx=pw/2-60,cy=ph/2,r=Math.min(cx-20,cy-20,100);
+  const total=data.reduce((a,b)=>a+b,0);let start=-Math.PI/2;
+  const pieColors=colors||allColors;
+  data.forEach((v,i)=>{
+    const angle=v/total*2*Math.PI;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,start+angle);
+    ctx.closePath();ctx.fillStyle=pieColors[i%pieColors.length];ctx.fill();
+    ctx.strokeStyle='#0a0e1a';ctx.lineWidth=2;ctx.stroke();
+    start+=angle;
+  });
+  // Center text
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('总计',cx,cy-4);
+  ctx.fillStyle='#fff';ctx.font='16px sans-serif';ctx.fillText(total.toLocaleString(),cx,cy+14);
+
+  // Legend on right
+  let ly=ph/2-labels.length*14;ctx.font='11px sans-serif';
+  labels.forEach((l,i)=>{
+    ctx.fillStyle=pieColors[i%pieColors.length];ctx.fillRect(pw-120,ly,10,10);
+    ctx.fillStyle='#c0d0f0';ctx.textAlign='left';ctx.fillText(l,pw-106,ly+9);
+    ctx.fillStyle='#8896b0';ctx.textAlign='right';ctx.fillText(Math.round(data[i]/total*100)+'%',pw-16,ly+9);
+    ly+=20;
+  });
+}
+
+function drawLine(c,labels,datasets,opts={}){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  const pad={t:30,b:40,l:50,r:20};const cw=Math.max(pw-pad.l-pad.r,10),ch=Math.max(ph-pad.t-pad.b,10);
+  const allV=datasets.flatMap(d=>d.data);const maxV=Math.max(...allV,0.001)*1.15,minV=Math.min(...allV,0)*0.85;
+  const range=maxV-minV||1;
+  function y(v){return pad.t+ch-(v-minV)/range*ch}
+  ctx.clearRect(0,0,pw,ph);
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pw-pad.r,yy);ctx.stroke()}
+  // Y-labels
+  ctx.fillStyle='#8896b0';ctx.font='10px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.fillText(Math.round((maxV-(maxV-minV)*i/4)*10)/10,pad.l-4,yy+3)}
+  // Lines
+  datasets.forEach((d,di)=>{
+    const color=d.color||allColors[di];ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();
+    d.data.forEach((v,i)=>{const x=pad.l+i*cw/(labels.length-1||1);i===0?ctx.moveTo(x,y(v)):ctx.lineTo(x,y(v))});
+    ctx.stroke();
+    // Dots
+    d.data.forEach((v,i)=>{const x=pad.l+i*cw/(labels.length-1||1);ctx.beginPath();ctx.arc(x,y(v),3,0,2*Math.PI);ctx.fillStyle=color;ctx.fill()});
+    // Label end
+    if(!opts.hideLabel){const lx=pad.l+(labels.length-1)*cw/(labels.length-1||1);ctx.fillStyle=color;ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText(' '+d.label,lx+4,y(d.data[d.data.length-1]))}
+  });
+  // X-labels
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='center';
+  labels.forEach((l,i)=>{const x=pad.l+i*cw/(labels.length-1||1);ctx.fillText(l,x,ph-12)})
+
+  // Baseline target line
+  if(opts.target){ctx.strokeStyle='rgba(255,82,82,.5)';ctx.setLineDash([4,4]);ctx.lineWidth=1;const ty=y(opts.target);ctx.beginPath();ctx.moveTo(pad.l,ty);ctx.lineTo(pw-pad.r,ty);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,82,82,.6)';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText('目标',pw-pad.r-24,ty-2)}
+}
+
+// ====== 具体绘图实现 ======
+
+// T2a: 各组月度处理量
+window.draw_ch2a_volume=function(c){
+  drawBar(c,['影像组','费用组','应付组','应收组','总账组','资金组','档案组'],[
+    {label:'处理量',data:[6400,7200,5600,4200,3800,8500,2200],color:'#00c8ff'}
+  ],{hideY:false});
+};
+
+// T2a: 各组平均处理天数
+window.draw_ch2a_days=function(c){
+  drawBar(c,['影像','费用','应付','应收','总账','资金','档案'],[
+    {label:'天数',data:[0.3,2.8,4.1,1.8,1.2,0.5,0.2],color:'#00e676'}
+  ],{hideY:false});
+};
+
+// T2b: 月度处理量趋势
+window.draw_ch2b_trend=function(c){
+  drawLine(c,['6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月'],[
+    {label:'总处理量(万)',data:[6.2,6.5,6.8,7.0,7.2,7.5,7.8,7.6,7.0,7.8,8.0,8.2],color:'#00c8ff'}
+  ]);
+};
+
+// T2b: SLA达标率趋势
+window.draw_ch2b_sla=function(c){
+  drawLine(c,['6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月'],[
+    {label:'达标率',data:[96.2,96.5,96.8,97.2,97.5,97.8,98.0,97.6,97.2,98.2,98.4,98.6],color:'#00e676'}
+  ],{target:97});
+};
+
+// T2b: 各板块月度单据分布
+window.draw_ch2b_sector=function(c){
+  drawBar(c,['制造','地产','贸易','科技'],[
+    {label:'单据量(千)',data:[38,22,15,7],color:'#7b61ff'}
+  ]);
+};
+
+// T2c: 各业务类型处理周期
+window.draw_ch2c_period=function(c){
+  drawBar(c,['差旅报销','非差旅','供应商','客户开票','付款执行','总账凭证','银行对账'],[
+    {label:'SLA(天)',data:[5,5,7,3,1,2,1],color:'#ff5252'},
+    {label:'实际(天)',data:[3.2,2.8,4.1,1.8,0.5,1.2,0.3],color:'#00e676'}
+  ]);
+};
+
+// T2c: 超时单据分布
+window.draw_ch2c_overtime=function(c){
+  drawPie(c,['费用报销','供应商发票','总账凭证','客户开票','其他'],[42,67,12,18,15],[C.orange[0],C.red[0],C.blue[0],C.green[0],C.purple[0]]);
+};
+
+// T3a: 单笔处理成本对比
+window.draw_ch3a_cost=function(c){
+  drawBar(c,['费用报销','应付结算','应收结算','总账核算','资金结算','平均'],[
+    {label:'FSSC前(¥)',data:[380,420,350,280,250,328],color:'#ff5252'},
+    {label:'FSSC后(¥)',data:[180,200,160,140,110,157],color:'#00e676'}
+  ]);
+};
+
+// T3a: 年度成本节约分解
+window.draw_ch3a_save=function(c){
+  drawPie(c,['人力成本','流程效率','资金收益','差错减少','其他'],[1280,860,520,380,240],[C.blue[0],C.green[0],C.yellow[0],C.purple[0],C.orange[0]]);
+};
+
+// T3b: 各组自动化覆盖率
+window.draw_ch3b_auto=function(c){
+  drawBar(c,['影像','费用','应付','应收','总账','资金','档案'],[
+    {label:'自动化率%',data:[55,38,52,45,42,65,35],color:'#7b61ff'}
+  ]);
+};
+
+// T3b: 自动化率提升路线图
+window.draw_ch3b_road=function(c){
+  drawLine(c,['2023Q1','2023Q3','2024Q1','2024Q3','2025Q1','2025Q3','2026Q1'],[
+    {label:'自动化率%',data:[18,24,30,36,38,40,42],color:'#ffd740'}
+  ]);
+};
+
+// T3c: 行业对标
+window.draw_ch3c_bench=function(c){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  const pad={t:30,b:50,l:60,r:30};const cw=Math.max(pw-pad.l-pad.r,10),ch=Math.max(ph-pad.t-pad.b,10);
+  ctx.clearRect(0,0,pw,ph);
+  const metrics=['自动化率','人均月处理','单笔成本','SLA达标率','报表自动化'];
+  const hua=[60,650,120,99.2,90]; // 华为标准
+  const zte=[55,580,135,99.0,88]; // 中兴标准
+  const huaxing=[42,519,157,98.6,82]; // 华兴
+  const maxV=120;
+
+  function y(v){return pad.t+ch-(v/maxV*ch)}
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pw-pad.r,yy);ctx.stroke()}
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){ctx.fillText(Math.round(maxV*(1-i/4)),pad.l-4,pad.t+ch*i/4+3)}
+
+  const bw=cw/metrics.length/3*0.6;const names=[{d:hua,c:'#ff9100',l:'华为'},{d:zte,c:'#ffd740',l:'中兴'},{d:huaxing,c:'#00c8ff',l:'华兴'}];
+  names.forEach((g,gi)=>{
+    g.d.forEach((v,i)=>{
+      const bx=pad.l+i*cw/metrics.length+bw*gi+4;
+      ctx.fillStyle=g.c;ctx.fillRect(bx,y(v),bw,y(0)-y(v));
+    });
+  });
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='center';
+  metrics.forEach((m,i)=>{ctx.fillText(m,pad.l+i*cw/metrics.length+cw/metrics.length/2,ph-10)});
+
+  // Legend
+  let lx=pad.l;
+  names.forEach((g,i)=>{
+    ctx.fillStyle=g.c;ctx.fillRect(lx,8,10,10);
+    ctx.fillStyle='#8896b0';ctx.textAlign='left';ctx.font='10px sans-serif';
+    ctx.fillText(g.l,lx+14,17);lx+=ctx.measureText(g.l).width+30;
+  });
+};
+
+// T4b: 各板块营收构成
+window.draw_ch4b_income=function(c){
+  drawPie(c,['制造板块','地产板块','贸易板块','科技板块'],[80000,45000,35000,20000],[C.blue[0],C.green[0],C.yellow[0],C.purple[0]]);
+};
+
+// T4b: 关键财务指标趋势
+window.draw_ch4b_kpi=function(c){
+  drawLine(c,['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],[
+    {label:'营收(亿)',data:[14.2,13.8,15.6,15.7,16.2,16.8,15.4,16.6,17.2,16.8,17.5,18.0],color:'#00c8ff'},
+    {label:'毛利率%',data:[50.2,50.5,50.8,51.3,51.0,51.5,51.2,51.8,52.0,51.6,52.2,52.5],color:'#00e676'}
+  ]);
+};
+
+// T4c: 关账日历甘特图式
+window.draw_ch4c_cal=function(c){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  ctx.clearRect(0,0,pw,ph);const pad={t:20,b:5,l:120,r:20};
+  const cw=Math.max(pw-pad.l-pad.r,10);const companies=['制造-精密','制造-智能','制造-新材料','地产-置业','地产-物业','贸易-国际','科技'];
+  const starts=[1,1,2,1,1,0,2];const days=[3,3,3,3,3,3,3];const colors=[C.blue[0],C.blue[0],C.blue[1],C.green[0],C.green[0],C.yellow[0],C.purple[0]];
+  const barH=24,gap=8;const totalH=companies.length*(barH+gap);
+  const dayW=cw/8;
+  // Day labels
+  ctx.fillStyle='#8896b0';ctx.font='10px sans-serif';ctx.textAlign='center';
+  ['M','M+1','M+2','M+3','M+4','M+5','M+6','M+7'].forEach((d,i)=>{ctx.fillText(d,pad.l+i*dayW+dayW/2,18)});
+  // Bars
+  companies.forEach((name,i)=>{
+    const y=pad.t+30+i*(barH+gap);
+    ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(pad.l,y,cw,barH);
+    const sx=pad.l+starts[i]*dayW,sw=days[i]*dayW;
+    ctx.fillStyle=colors[i];ctx.globalAlpha=.8;ctx.beginPath();
+    ctx.roundRect(sx,y,sw,barH,4);ctx.fill();ctx.globalAlpha=1;
+    ctx.fillStyle='#fff';ctx.font='11px sans-serif';ctx.textAlign='left';
+    ctx.fillText(name,8,y+barH/2+4);
+    ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='10px sans-serif';ctx.textAlign='center';
+    const endDay=starts[i]+days[i];ctx.fillText('M+'+endDay,sx+sw/2,y+barH/2+4);
+  });
+  // Close milestone
+  ctx.strokeStyle='rgba(0,230,118,.5)';ctx.setLineDash([4,3]);ctx.lineWidth=1.5;
+  const mx=pad.l+5*dayW;ctx.beginPath();ctx.moveTo(mx,pad.t+20);ctx.lineTo(mx,pad.t+30+companies.length*(barH+gap));ctx.stroke();
+  ctx.setLineDash([]);ctx.fillStyle='#00e676';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('🎯 M+5关账',mx,pad.t+12);
+};
+
+// T4c: 合并抵消
+window.draw_ch4c_consol=function(c){
+  resizeCanvas(c);const ctx=c.getContext('2d');const W=c.width;const H=c.height;
+  const dpr=window.devicePixelRatio||1;ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W/dpr,H/dpr);
+  const labels=['内部收入','内部采购','资金往来','股利','投资'];
+  const pos=[12.5,8.2,15.6,3.8,5.2];const neg=[12.5,8.2,15.6,3.8,5.2];
+  const pad={t:20,b:30,l:40,r:10};const cw=W/dpr-pad.l-pad.r,ch=H/dpr-pad.t-pad.b;
+  const n=labels.length;const bw=cw/n*0.7;const maxV=Math.max(...pos)*1.3;
+  function y(v){return pad.t+ch/2-(v/maxV*ch/2)}
+  // Zero line
+  ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,pad.t+ch/2);ctx.lineTo(W/dpr-pad.r,pad.t+ch/2);ctx.stroke();
+  // Positive bars
+  pos.forEach((v,i)=>{const bx=pad.l+i*cw/n+cw/n/2-bw/2;const bh=v/maxV*ch/2;ctx.fillStyle='rgba(0,200,255,.75)';ctx.fillRect(bx,pad.t+ch/2-bh,bw,bh);});
+  // Negative bars  
+  neg.forEach((v,i)=>{const bx=pad.l+i*cw/n+cw/n/2-bw/2;const bh=v/maxV*ch/2;ctx.fillStyle='rgba(255,82,82,.5)';ctx.fillRect(bx,pad.t+ch/2,bw,bh);});
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='center';
+  labels.forEach((l,i)=>{ctx.fillText(l,pad.l+i*cw/n+cw/n/2,H-4);});
+  ctx.fillStyle='rgba(0,200,255,.7)';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText('▲ 集团内(亿)',pad.l,pad.t+10);
+  ctx.fillStyle='rgba(255,82,82,.7)';ctx.fillText('▼ 抵消(亿)',pad.l+70,pad.t+10);
+};
+
+// T5a: 各组综合绩效评分
+window.draw_ch5a_score=function(c){
+  drawBar(c,['费用组','应付组','资金组','应收组','总账组','影像组','档案组'],[
+    {label:'综合评分',data:[96.5,95.2,94.8,93.6,92.4,91.8,90.5],color:'#7b61ff'}
+  ]);
+};
+
+// T5a: 各组处理量对比
+window.draw_ch5a_vol=function(c){
+  drawBar(c,['费用组','应付组','资金组','影像组','应收组','总账组','档案组'],[
+    {label:'处理量',data:[7200,5600,8500,6400,4200,3800,2200],color:'#00c8ff'}
+  ]);
+};
+
+// T5b: 团队人员分布
+window.draw_ch5b_staff=function(c){
+  drawPie(c,['费用组','应付组','总账组','运营组','资金组','应收组','影像组','档案组'],[28,24,22,28,16,18,12,10],[C.blue[0],C.green[0],C.orange[0],C.purple[0],C.teal[0],C.yellow[0],C.pink[0],C.red[0]]);
+};
+
+// T5c: 各组质量评分趋势
+window.draw_ch5c_quality=function(c){
+  drawLine(c,['12月','1月','2月','3月','4月','5月'],[
+    {label:'费用组',data:[96,96.2,96.5,97,97.8,98.2],color:'#00c8ff'},
+    {label:'应付组',data:[95.5,95.8,96,96.5,97,97.8],color:'#00e676'},
+    {label:'资金组',data:[98,98.2,98.5,98.8,99.2,99.5],color:'#ffd740'},
+    {label:'应收组',data:[94,94.5,95,95.5,96,96.5],color:'#7b61ff'},
+    {label:'总账组',data:[93,93.5,94,94.5,95.2,95.8],color:'#ff9100'}
+  ]);
+};
+
+// T5c: 差错类型分析
+window.draw_ch5c_errtype=function(c){
+  drawPie(c,['附件缺失','科目错误','金额不符','审批缺失','其他'],[38,22,28,15,12],[C.red[0],C.orange[0],C.yellow[0],C.blue[0],C.purple[0]]);
+};
+
+// ====== roundRect polyfill ======
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){if(w<2*r)r=w/2;if(h<2*r)r=h/2;this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);return this}}
+
+// ====== 初始渲染 ======
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(renderAll,100)});
+window.addEventListener('resize',()=>{setTimeout(renderAll,200)});
+</script>
+</body>
+</html>

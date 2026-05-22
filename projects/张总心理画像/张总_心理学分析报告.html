@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>心理学分析报告 · 完整版</title>
+<title>心理学分析报告 · 完整版 v1.1</title>
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans SC','Inter',-apple-system,sans-serif;background:#0a0a14;color:#e2e8f0;line-height:1.6}
@@ -61,13 +62,6 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 .disc-legend-item{display:flex;align-items:center;gap:6px;margin-bottom:4px}
 .disc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-/* Risk score gauge */
-.gauge{display:flex;align-items:center;gap:16px;padding:10px 0}
-.gauge-ring{width:80px;height:80px;border-radius:50%;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.gauge-ring svg{transform:rotate(-90deg)}
-.gauge-ring .val{position:absolute;font-size:18px;font-weight:700}
-.gauge-info{font-size:13px;color:#94a3b8}
-
 /* Severity badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
 
@@ -89,6 +83,7 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn .5s ease forwards}
+
 </style>
 </head>
 <body>
@@ -96,7 +91,7 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 
 <!-- Hero -->
 <div class="hero">
-  <div class="tag">🧠 PSYCHOLOGY ANALYSIS v1.0</div>
+  <div class="tag">🧠 PSYCHOLOGY ANALYSIS v1.1</div>
   <h1>心理学分析报告</h1>
   <p>Big Five 人格 · DISC 交叉验证 · 认知偏误检测 · 心理学决策矩阵</p>
   <div class="meta">
@@ -121,9 +116,7 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 <div class="card">
   <div class="card-title">🧬 大五人格剖面 / Big Five (OCEAN) Profile</div>
   <div class="subtle">基于行为观察推论 · 连续维度描述 · 百分位参考</div>
-
   <div class="bar-container">
-
     <div class="bar-item">
       <span class="label">开放性 / Openness <span style="color:#a78bfa;font-size:11px">高</span></span>
       <div class="bar"><div class="bar-fill" style="width:85%;background:#a78bfa"></div></div><span class="pct">85%</span>
@@ -194,7 +187,10 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 <div class="card">
   <div class="card-title">👥 团队搭配建议 / Team Composition</div>
   <table>
-    <tr><th>角色</th><th>建议人格</th><th>原因</th></tr><tr><td style='font-weight:600'>COO（运营）</td><td>高C + 高A + 中E</td><td style='color:#94a3b8;font-size:12px'>补充低A的摩擦，落地执行</td></tr><tr><td style='font-weight:600'>CTO（技术）</td><td>高O + 低E + 中C</td><td style='color:#94a3b8;font-size:12px'>独立技术决策，不被高E带偏</td></tr><tr><td style='font-weight:600'>HRVP（人力）</td><td>高A + 高E</td><td style='color:#94a3b8;font-size:12px'>团队温度计、文化守护者</td></tr>
+    <tr><th>角色</th><th>建议人格</th><th>原因</th></tr>
+<tr><td style='font-weight:600'>COO（运营）</td><td>高C + 高A + 中E</td><td style='color:#94a3b8;font-size:12px'>补充低A的摩擦，落地执行</td></tr>
+<tr><td style='font-weight:600'>CTO（技术）</td><td>高O + 低E + 中C</td><td style='color:#94a3b8;font-size:12px'>独立技术决策，不被高E带偏</td></tr>
+<tr><td style='font-weight:600'>HRVP（人力）</td><td>高A + 高E</td><td style='color:#94a3b8;font-size:12px'>团队温度计、文化守护者</td></tr>
   </table>
 </div>
 
@@ -211,7 +207,10 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
     </div>
   </div>
   <table style="margin-top:10px">
-    <tr><th>场景</th><th>推荐风格</th><th>模式</th></tr><tr><td>核心业务</td><td style='font-weight:600'>放权 S4</td><td style='color:#94a3b8'>低指导低支持</td></tr><tr><td>新业务探索</td><td style='font-weight:600'>参与 S3</td><td style='color:#94a3b8'>低指导高支持</td></tr><tr><td>危机/变革</td><td style='font-weight:600'>命令 S1</td><td style='color:#94a3b8'>高指导低支持</td></tr>
+    <tr><th>场景</th><th>推荐风格</th><th>模式</th></tr>
+<tr><td>核心业务</td><td style='font-weight:600'>放权 S4</td><td style='color:#94a3b8'>低指导低支持</td></tr>
+<tr><td>新业务探索</td><td style='font-weight:600'>参与 S3</td><td style='color:#94a3b8'>低指导高支持</td></tr>
+<tr><td>危机/变革</td><td style='font-weight:600'>命令 S1</td><td style='color:#94a3b8'>高指导低支持</td></tr>
   </table>
 </div>
 
@@ -224,26 +223,31 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 <div class="card">
   <div class="card-title">🎯 DISC 交叉验证 / Cross-validation</div>
   <div class="subtle">Big Five → DISC 映射，验证人格描述的一致性</div>
-  <div class="disc-chart">
-    <div class="disc-donut">
-      <div class="disc-donut-inner">
-        <div class="type">DI</div>
-        <div class="sub">DI 型</div>
+
+    <div class="disc-chart">
+      <div class="disc-donut">
+        <div class="disc-donut-inner">
+          <div class="type">DI</div>
+          <div class="sub">DI 型</div>
+        </div>
+      </div>
+      <div class="disc-legend">
+        <div class="disc-legend-item"><span class="disc-dot" style="background:#ef4444"></span> D 85% Dominance</div>
+        <div class="disc-legend-item"><span class="disc-dot" style="background:#f59e0b"></span> I 72% Influence</div>
+        <div class="disc-legend-item"><span class="disc-dot" style="background:#3b82f6"></span> S 30% Steadiness</div>
+        <div class="disc-legend-item"><span class="disc-dot" style="background:#10b981"></span> C 55% Conscientiousness</div>
+        <div style="margin-top:8px;font-size:12px;color:#94a3b8">结果导向 + 社交活跃 — 典型的创业CEO风格</div>
       </div>
     </div>
-    <div class="disc-legend">
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#ef4444"></span> D 85% Dominance</div>
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#f59e0b"></span> I 72% Influence</div>
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#3b82f6"></span> S 30% Steadiness</div>
-      <div class="disc-legend-item"><span class="disc-dot" style="background:#10b981"></span> C 55% Conscientiousness</div>
-      <div style="margin-top:8px;font-size:12px;color:#94a3b8">结果导向 + 社交活跃 — 典型的创业CEO风格</div>
-    </div>
-  </div>
 </div>
 
 <div class="card">
   <div class="card-title">🔗 Big Five ↔ DISC 一致性验证</div>
-  <table><tr><td style='font-weight:600;width:200px'>D ↔ 低A + 高E</td><td style='color:#94a3b8'>高度一致：直言不讳 + 社交活跃</td></tr><tr><td style='font-weight:600;width:200px'>I ↔ 高E</td><td style='color:#94a3b8'>高度一致：喜欢说服和影响他人</td></tr><tr><td style='font-weight:600;width:200px'>S ↔ 低A</td><td style='color:#94a3b8'>一致性高：耐心不足、不喜欢细节管理</td></tr><tr><td style='font-weight:600;width:200px'>C ↔ 高C</td><td style='color:#94a3b8'>部分一致：有系统性但非极端</td></tr>
+  <table>
+<tr><td style='font-weight:600;width:200px'>D ↔ 低A + 高E</td><td style='color:#94a3b8'>高度一致：直言不讳 + 社交活跃</td></tr>
+<tr><td style='font-weight:600;width:200px'>I ↔ 高E</td><td style='color:#94a3b8'>高度一致：喜欢说服和影响他人</td></tr>
+<tr><td style='font-weight:600;width:200px'>S ↔ 低A</td><td style='color:#94a3b8'>一致性高：耐心不足、不喜欢细节管理</td></tr>
+<tr><td style='font-weight:600;width:200px'>C ↔ 高C</td><td style='color:#94a3b8'>部分一致：有系统性但非极端</td></tr>
   </table>
 </div>
 
@@ -278,13 +282,13 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 <div class="card">
   <div class="card-title">⚠️ 认知偏误检测 / Cognitive Bias Detection</div>
   <div class="subtle">基于语言特征的模式匹配，对商业决策文本进行偏误评分</div>
-
   <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
       <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"This strategy will undoubtedly succeed — we have clearly identified the only via..."</span>
       <span class="badge" style="background:#f59e0b22;color:#f59e0b;margin-left:8px">MEDIUM 1.6</span>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#ef444418;color:#ef4444">过度自信 / Overconfidence</span>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+<span class="badge" style="background:#ef444418;color:#ef4444">过度自信 / Overconfidence</span>
     </div>
   </div>
   <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
@@ -292,7 +296,8 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
       <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"We've already invested $5 million in this project, so we can't stop now even tho..."</span>
       <span class="badge" style="background:#10b98122;color:#10b981;margin-left:8px">LOW 0.9</span>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#ef444418;color:#ef4444">沉没成本 / Sunk Cost</span>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+<span class="badge" style="background:#ef444418;color:#ef4444">沉没成本 / Sunk Cost</span>
     </div>
   </div>
   <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
@@ -308,7 +313,9 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
       <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"As expected, this confirms our hypothesis. If we don't act now, we risk losing e..."</span>
       <span class="badge" style="background:#f59e0b22;color:#f59e0b;margin-left:8px">MEDIUM 1.3</span>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#f59e0b18;color:#f59e0b">确认偏误 / Confirmation Bias</span><span class="badge" style="background:#f59e0b18;color:#f59e0b">框架效应 / Framing</span>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+<span class="badge" style="background:#f59e0b18;color:#f59e0b">确认偏误 / Confirmation Bias</span>
+<span class="badge" style="background:#f59e0b18;color:#f59e0b">框架效应 / Framing</span>
     </div>
   </div>
   <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
@@ -316,7 +323,8 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
       <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"Based on last quarter's performance, we should increase spending by 50%. Our com..."</span>
       <span class="badge" style="background:#10b98122;color:#10b981;margin-left:8px">LOW 0.8</span>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#ef444418;color:#ef4444">过度自信 / Overconfidence</span>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+<span class="badge" style="background:#ef444418;color:#ef4444">过度自信 / Overconfidence</span>
     </div>
   </div>
 </div>
@@ -332,6 +340,7 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
   <div class="subtle">供应商选择模拟 · 集成损失厌恶修正 + 不确定性折扣 + 时间折现</div>
 
   <div class="grid3" style="margin-bottom:12px">
+
     <div style="text-align:center;padding:10px;background:rgba(16,185,129,.06);border-radius:8px">
       <div style="font-size:11px;color:#64748b">推荐选项</div>
       <div style="font-weight:700;font-size:16px;color:#34d399;margin-top:4px">Vendor B (创新型)</div>
@@ -342,14 +351,40 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
     </div>
     <div style="text-align:center;padding:10px;background:rgba(245,158,11,.06);border-radius:8px">
       <div style="font-size:11px;color:#64748b">过度自信折扣</div>
-      <div style="font-weight:700;font-size:16px;color:#f59e0b;margin-top:4px">0.92</div>
+      <div style="font-weight:700;font-size:16px;color:#f59e0b;margin-top:4px">0.8</div>
     </div>
   </div>
 
-  <table>
-    <tr><th>选项</th><th>总分</th><th>排名</th><th>Cost</th><th>Quality</th><th>Risk</th><th>Innovation</th><th>Timeline</th>
-    </tr><tr><td style='font-weight:600'>Vendor B (创新型)</td><td style='font-weight:700;color:#a78bfa'>4.53</td><td>🥇</td><td style='color:#ef4444'>5 → 1.23</td><td style='color:#ef4444'>9 → 2.36</td><td style='color:#34d399'>-1 → -0.3</td><td style='color:#ef4444'>8 → 0.61</td><td style='color:#ef4444'>5 → 0.64</td></tr><tr><td style='font-weight:600'>Vendor A (稳定型)</td><td style='font-weight:700;color:#a78bfa'>4.25</td><td>🥈</td><td style='color:#ef4444'>8 → 1.96</td><td style='color:#ef4444'>7 → 1.83</td><td style='color:#34d399'>-3 → -0.89</td><td style='color:#ef4444'>6 → 0.46</td><td style='color:#ef4444'>7 → 0.9</td></tr><tr><td style='font-weight:600'>Vendor C (性价比)</td><td style='font-weight:700;color:#a78bfa'>3.65</td><td>🥉</td><td style='color:#ef4444'>9 → 2.2</td><td style='color:#ef4444'>5 → 1.31</td><td style='color:#34d399'>-4 → -1.19</td><td style='color:#ef4444'>4 → 0.3</td><td style='color:#ef4444'>8 → 1.03</td></tr>
-  </table>
+<table>
+    <tr><th>选项</th><th>总分</th><th>排名</th>
+    <th>Cost</th>
+    <th>Quality</th>
+    <th>Risk</th>
+    <th>Innovation</th>
+    <th>Timeline</th>
+    </tr>
+    <tr><td style='font-weight:600'>Vendor B (创新型)</td><td style='font-weight:700;color:#a78bfa'>4.53</td><td>🥇</td>
+    <td style='color:#ef4444'>5 → 1.23</td>
+    <td style='color:#ef4444'>9 → 2.36</td>
+    <td style='color:#34d399'>-1 → -0.3</td>
+    <td style='color:#ef4444'>8 → 0.61</td>
+    <td style='color:#ef4444'>5 → 0.64</td>
+    </tr>
+    <tr><td style='font-weight:600'>Vendor A (稳定型)</td><td style='font-weight:700;color:#a78bfa'>4.25</td><td>🥈</td>
+    <td style='color:#ef4444'>8 → 1.96</td>
+    <td style='color:#ef4444'>7 → 1.83</td>
+    <td style='color:#34d399'>-3 → -0.89</td>
+    <td style='color:#ef4444'>6 → 0.46</td>
+    <td style='color:#ef4444'>7 → 0.9</td>
+    </tr>
+    <tr><td style='font-weight:600'>Vendor C (性价比)</td><td style='font-weight:700;color:#a78bfa'>3.65</td><td>🥉</td>
+    <td style='color:#ef4444'>9 → 2.2</td>
+    <td style='color:#ef4444'>5 → 1.31</td>
+    <td style='color:#34d399'>-4 → -1.19</td>
+    <td style='color:#ef4444'>4 → 0.3</td>
+    <td style='color:#ef4444'>8 → 1.03</td>
+    </tr>
+    </table>
 </div>
 
 </div>
@@ -361,7 +396,11 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 <div class="card">
   <div class="card-title">💡 综合建议 / Action Plan</div>
   <table>
-    <tr><th>优先级</th><th>建议</th><th>预期效果</th></tr><tr><td><span class='badge' style='background:#ef444422;color:#ef4444'>🔴 高</span></td><td style='font-weight:600'>搭建高A的COO搭档</td><td style='color:#94a3b8;font-size:12px'>弥补低A在团队管理上的短板</td></tr><tr><td><span class='badge' style='background:#f59e0b22;color:#f59e0b'>🟡 中</span></td><td style='font-weight:600'>设立正式魔鬼代言人制度</td><td style='color:#94a3b8;font-size:12px'>防范高O+低A带来的决策盲区</td></tr><tr><td><span class='badge' style='background:#f59e0b22;color:#f59e0b'>🟡 中</span></td><td style='font-weight:600'>每季度匿名组织温度计</td><td style='color:#94a3b8;font-size:12px'>监测对团队心理安全感的影响</td></tr><tr><td><span class='badge' style='background:#10b98122;color:#10b981'>🟢 低</span></td><td style='font-weight:600'>刻意练习'情绪标记'话术</td><td style='color:#94a3b8;font-size:12px'>提升高E沟通中的同理心</td></tr>
+    <tr><th>优先级</th><th>建议</th><th>预期效果</th></tr>
+<tr><td><span class='badge' style='background:#ef444422;color:#ef4444'>🔴 高</span></td><td style='font-weight:600'>搭建高A的COO搭档</td><td style='color:#94a3b8;font-size:12px'>弥补低A在团队管理上的短板</td></tr>
+<tr><td><span class='badge' style='background:#f59e0b22;color:#f59e0b'>🟡 中</span></td><td style='font-weight:600'>设立正式魔鬼代言人制度</td><td style='color:#94a3b8;font-size:12px'>防范高O+低A带来的决策盲区</td></tr>
+<tr><td><span class='badge' style='background:#f59e0b22;color:#f59e0b'>🟡 中</span></td><td style='font-weight:600'>每季度匿名组织温度计</td><td style='color:#94a3b8;font-size:12px'>监测对团队心理安全感的影响</td></tr>
+<tr><td><span class='badge' style='background:#10b98122;color:#10b981'>🟢 低</span></td><td style='font-weight:600'>刻意练习'情绪标记'话术</td><td style='color:#94a3b8;font-size:12px'>提升高E沟通中的同理心</td></tr>
   </table>
 </div>
 
@@ -380,8 +419,9 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align
 </div>
 <!-- ====== END TAB 5 ====== -->
 
+
 <div class="footer">
-  Psychology Analysis Report · Generated by Hermes Agent · 2026-05-21<br>
+  Psychology Analysis Report v1.1 · Generated by Hermes Agent · 2026-05-21<br>
   数据仅供决策参考，不构成专业心理诊断
 </div>
 

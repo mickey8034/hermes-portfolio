@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)http://localhost:8765/fssc_dashboard.html -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>华兴集团 · 财务共享中心智慧大屏 v3.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Microsoft YaHei',system-ui,sans-serif}
+body{background:#0a0e1a;color:#e0e6f0;overflow-x:hidden}
+.container{max-width:1600px;margin:0 auto;padding:16px 24px}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(0,200,255,.15);margin-bottom:20px;flex-wrap:wrap;gap:8px}
+.header h1{font-size:24px;font-weight:700;background:linear-gradient(135deg,#00c8ff,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:8px}
+.header .subtitle{color:#8896b0;font-size:13px}
+.header .time-badge{background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;padding:8px 16px;font-size:13px;color:#00c8ff}
+.header .version-badge{background:rgba(123,97,255,.15);border:1px solid rgba(123,97,255,.3);border-radius:6px;padding:4px 10px;font-size:11px;color:#b388ff}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:10px 20px;border:none;background:rgba(22,30,55,.8);color:#8896b0;font-size:13px;cursor:pointer;border-radius:8px 8px 0 0;transition:all .3s;position:relative}
+.tab-btn:hover{color:#c0d0f0;background:rgba(30,42,70,.9)}
+.tab-btn.active{color:#00c8ff;background:rgba(0,200,255,.1);border-bottom:2px solid #00c8ff}
+.tab-btn .badge{background:#7b61ff;color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.tab-btn .badge-gold{background:linear-gradient(135deg,#ffd740,#ffab00);color:#1a1a2e;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:6px;vertical-align:middle;font-weight:600}
+.tab-content{display:none;animation:fadeIn .4s}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+
+/* Cards */
+.card{background:linear-gradient(135deg,rgba(22,30,55,.85),rgba(14,20,40,.85));border:1px solid rgba(0,200,255,.1);border-radius:12px;padding:20px;margin-bottom:16px;backdrop-filter:blur(10px)}
+.card-title{font-size:15px;font-weight:600;color:#00c8ff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:18px}
+.card-subtitle{font-size:12px;color:#8896b0;margin-top:-10px;margin-bottom:14px}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+.grid-team{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.grid-flow{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:900px){.grid-flow{grid-template-columns:1fr}}
+
+/* KPI Cards */
+.kpi-card{text-align:center;padding:16px 12px;background:rgba(0,200,255,.03);border:1px solid rgba(0,200,255,.08);border-radius:10px;transition:all .3s}
+.kpi-card:hover{background:rgba(0,200,255,.06);border-color:rgba(0,200,255,.2);transform:translateY(-2px)}
+.kpi-card .value{font-size:28px;font-weight:700;color:#fff}
+.kpi-card .value.green{color:#00e676}
+.kpi-card .value.yellow{color:#ffd740}
+.kpi-card .value.orange{color:#ff9100}
+.kpi-card .value.red{color:#ff5252}
+.kpi-card .value.blue{color:#00c8ff}
+.kpi-card .value.purple{color:#b388ff}
+.kpi-card .label{font-size:12px;color:#8896b0;margin-top:4px}
+.kpi-card .delta{font-size:11px;margin-top:2px;display:flex;align-items:center;justify-content:center;gap:4px}
+.kpi-card .delta.up{color:#00e676}
+.kpi-card .delta.down{color:#ff5252}
+
+/* Team Cards */
+.team-card{background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.08);border-radius:10px;padding:14px;transition:all .3s}
+.team-card:hover{background:rgba(0,200,255,.08);border-color:rgba(0,200,255,.3);transform:translateY(-2px)}
+.team-card .team-icon{font-size:28px;margin-bottom:6px}
+.team-card .team-name{font-size:14px;font-weight:600;color:#e0e6f0;margin-bottom:4px}
+.team-card .team-desc{font-size:11px;color:#8896b0;margin-bottom:8px}
+.team-card .team-stats{display:flex;gap:8px;flex-wrap:wrap}
+.team-card .stat-tag{background:rgba(0,200,255,.1);border-radius:4px;padding:2px 8px;font-size:10px;color:#00c8ff}
+
+/* Canvas */
+canvas.chart-canvas{width:100%!important;height:auto!important;max-height:260px;border-radius:6px}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{text-align:left;padding:8px 10px;color:#8896b0;border-bottom:1px solid rgba(0,200,255,.1);font-weight:500}
+.data-table td{padding:7px 10px;border-bottom:1px solid rgba(0,200,255,.05);color:#c0d0f0}
+.data-table tr:hover td{background:rgba(0,200,255,.03)}
+.data-table .highlight{color:#00c8ff;font-weight:600}
+
+/* Progress bar */
+.progress-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin:4px 0}
+.progress-bar .fill{height:100%;border-radius:3px;transition:width 1.5s}
+.progress-bar .fill.green{background:linear-gradient(90deg,#00e676,#00c853)}
+.progress-bar .fill.blue{background:linear-gradient(90deg,#00c8ff,#2979ff)}
+.progress-bar .fill.yellow{background:linear-gradient(90deg,#ffd740,#ffab00)}
+.progress-bar .fill.orange{background:linear-gradient(90deg,#ff9100,#ff6d00)}
+.progress-bar .fill.red{background:linear-gradient(90deg,#ff5252,#d50000)}
+.progress-bar .fill.purple{background:linear-gradient(90deg,#7b61ff,#536dfe)}
+
+/* Badge */
+.badge-sla{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.badge-sla.excellent{background:rgba(0,230,118,.15);color:#00e676}
+.badge-sla.good{background:rgba(0,200,255,.15);color:#00c8ff}
+.badge-sla.warning{background:rgba(255,215,64,.15);color:#ffd740}
+.badge-sla.critical{background:rgba(255,82,82,.15);color:#ff5252}
+.badge-sla.processing{background:rgba(123,97,255,.15);color:#b388ff}
+
+/* Org Chart */
+.org-chart{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0}
+.org-level{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.org-node{background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:8px;padding:6px 14px;font-size:12px;text-align:center;min-width:90px}
+.org-node.root{background:linear-gradient(135deg,rgba(123,97,255,.2),rgba(0,200,255,.2));border-color:#7b61ff;padding:10px 24px;font-size:15px;font-weight:600}
+.org-node .node-sub{font-size:10px;color:#8896b0;margin-top:2px}
+.org-connector{display:flex;gap:12px;justify-content:center;align-items:center;width:100%}
+.org-connector .line{height:16px;width:2px;background:rgba(0,200,255,.2)}
+.org-connector .branch{flex:1;height:2px;background:rgba(0,200,255,.15);max-width:80px}
+
+/* Status indicator */
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
+.status-dot.green{background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.4)}
+.status-dot.yellow{background:#ffd740;box-shadow:0 0 6px rgba(255,215,64,.4)}
+.status-dot.red{background:#ff5252;box-shadow:0 0 6px rgba(255,82,82,.4)}
+.status-dot.blue{background:#00c8ff;box-shadow:0 0 6px rgba(0,200,255,.4)}
+.status-dot.purple{background:#7b61ff;box-shadow:0 0 6px rgba(123,97,255,.4)}
+
+/* Section divider */
+.section-title{font-size:16px;font-weight:600;color:#e0e6f0;margin:20px 0 12px;padding-left:12px;border-left:3px solid #00c8ff}
+.section-subtitle{font-size:13px;color:#8896b0;margin:-8px 0 16px 15px}
+
+/* Responsive */
+@media(max-width:900px){.grid-2,.grid-3,.grid-4,.grid-flow{grid-template-columns:1fr;gap:12px}}
+@media(max-width:600px){.header{flex-direction:column;gap:8px;text-align:center}.tab-btn{padding:8px 12px;font-size:12px}}
+
+/* Animated Flow SVG */
+.flow-box{background:rgba(22,30,55,.85);border:1px solid rgba(0,200,255,.1);border-radius:12px;padding:18px;position:relative;overflow:hidden}
+.flow-box:hover{border-color:rgba(0,200,255,.3)}
+.flow-box-title{font-size:14px;font-weight:600;color:#00c8ff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.flow-svg{width:100%;height:auto;display:block}
+.flow-node{fill:rgba(0,200,255,.08);stroke:#00c8ff;stroke-width:1.5;rx:8;ry:8;transition:all .3s}
+.flow-node:hover{fill:rgba(0,200,255,.18);stroke:#7b61ff;stroke-width:2}
+.flow-node-text{fill:#e0e6f0;font-size:11px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.flow-node-icon{font-size:16px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.flow-node-sub{fill:#8896b0;font-size:8px;text-anchor:middle;dominant-baseline:hanging;pointer-events:none}
+.flow-arrow{stroke:#8896b0;stroke-width:1.5;fill:none;marker-end:url(#arrowhead)}
+.flow-arrow-anim{stroke:#00c8ff;stroke-width:2.5;fill:none;stroke-dasharray:8 5;animation:dashMove .8s linear infinite}
+.flow-arrow-accent{stroke:#7b61ff;stroke-width:2.5;fill:none;stroke-dasharray:10 6;animation:dashMove 1s linear infinite}
+.flow-arrow-gold{stroke:#ffd740;stroke-width:2.5;fill:none;stroke-dasharray:8 5;animation:dashMove .7s linear infinite}
+.flow-arrow-green{stroke:#00e676;stroke-width:2.5;fill:none;stroke-dasharray:6 4;animation:dashMove .9s linear infinite}
+.flow-arrow-red{stroke:#ff5252;stroke-width:2;fill:none;stroke-dasharray:4 4;animation:dashMove .6s linear infinite}
+.flow-dot{fill:#00c8ff;animation:pulseDot 1.5s ease-in-out infinite}
+.flow-dot-slow{fill:#7b61ff;animation:pulseDot 2.5s ease-in-out infinite}
+.flow-dot-gold{fill:#ffd740;animation:pulseDot 1.8s ease-in-out infinite}
+.flow-dot-green{fill:#00e676;animation:pulseDot 2s ease-in-out infinite}
+.flow-glow{fill:url(#glowGrad);animation:glowPulse 2s ease-in-out infinite}
+.flow-node-process{fill:rgba(0,230,118,.08);stroke:#00e676;stroke-width:1.5;rx:12;ry:12}
+.flow-node-check{fill:rgba(255,215,64,.08);stroke:#ffd740;stroke-width:1.5;rx:8;ry:8}
+.flow-node-end{fill:rgba(255,82,82,.08);stroke:#ff5252;stroke-width:1.5;rx:10;ry:10}
+@keyframes dashMove{to{stroke-dashoffset:-24}}
+@keyframes pulseDot{0%,100%{opacity:.2;r:2.5}50%{opacity:.9;r:5}}
+@keyframes glowPulse{0%,100%{opacity:.15}50%{opacity:.4}}
+@keyframes floatDoc{0%,100%{transform:translate(0,0)}50%{transform:translate(4px,-4px)}}
+@keyframes spinDoc{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.flow-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,200,255,.08);font-size:11px;color:#8896b0}
+.flow-legend-item{display:flex;align-items:center;gap:6px}
+
+/* Tab sub-nav */
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.sub-tab{background:transparent;border:none;color:#8896b0;padding:6px 14px;font-size:12px;cursor:pointer;border-radius:6px;transition:all .3s}
+.sub-tab:hover{background:rgba(0,200,255,.08);color:#c0d0f0}
+.sub-tab.active{background:rgba(0,200,255,.12);color:#00c8ff}
+.sub-panel{display:none;animation:fadeIn .3s}
+.sub-panel.active{display:block}
+
+/* Tooltip */
+.tooltip{position:relative;cursor:help;border-bottom:1px dashed rgba(0,200,255,.2)}
+
+/* Kanban mini board */
+.mini-kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.kanban-col{background:rgba(22,30,55,.5);border-radius:8px;padding:10px;border:1px solid rgba(0,200,255,.06)}
+.kanban-col-title{text-align:center;font-size:11px;color:#8896b0;padding:4px;border-radius:4px;margin-bottom:8px}
+.kanban-card-mini{background:rgba(0,200,255,.08);border-radius:4px;padding:4px 6px;font-size:10px;color:#c0d0f0;margin:4px 0;border-left:2px solid #00c8ff;animation:slideIn .3s}
+
+/* Timeline */
+.timeline{position:relative;padding:10px 0}
+.timeline::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:2px;background:rgba(0,200,255,.15)}
+.timeline-item{display:flex;gap:12px;padding:6px 0;animation:fadeIn .5s}
+.timeline-dot{flex:0 0 12px;height:12px;border-radius:50%;margin-top:4px;position:relative;z-index:1}
+.timeline-dot.green{background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.4)}
+.timeline-dot.blue{background:#00c8ff;box-shadow:0 0 6px rgba(0,200,255,.4)}
+.timeline-dot.gold{background:#ffd740;box-shadow:0 0 6px rgba(255,215,64,.4)}
+.timeline-content{flex:1;font-size:12px;padding-bottom:4px}
+.timeline-content .time{font-size:10px;color:#8896b0}
+.timeline-content .label{color:#e0e6f0}
+
+/* ====== Interactive Flow Module ====== */
+.bizflow-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:1100px){.bizflow-grid{grid-template-columns:1fr}}
+.bizflow-card{background:linear-gradient(135deg,rgba(22,30,55,.9),rgba(14,20,40,.9));border-radius:14px;padding:20px;position:relative;overflow:hidden;border:1px solid rgba(0,200,255,.1);transition:all .4s}
+.bizflow-card:hover{border-color:rgba(0,200,255,.25);box-shadow:0 0 30px rgba(0,200,255,.05)}
+.bizflow-card.green-theme{border-color:rgba(0,230,118,.15)}
+.bizflow-card.green-theme:hover{border-color:rgba(0,230,118,.3);box-shadow:0 0 30px rgba(0,230,118,.06)}
+.bizflow-card.purple-theme{border-color:rgba(123,97,255,.15)}
+.bizflow-card.purple-theme:hover{border-color:rgba(123,97,255,.3);box-shadow:0 0 30px rgba(123,97,255,.06)}
+.bizflow-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.bizflow-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.bizflow-title.green{color:#00e676}
+.bizflow-title.purple{color:#b388ff}
+.bizflow-stats{display:flex;gap:12px;font-size:11px;color:#8896b0}
+.bizflow-stats span{display:flex;align-items:center;gap:4px}
+.bizflow-stats .num{color:#e0e6f0;font-weight:600}
+.bizflow-svg{width:100%;height:auto;display:block;border-radius:8px;cursor:pointer}
+.bizflow-node{transition:all .3s;cursor:pointer}
+.bizflow-node:hover{filter:brightness(1.3) drop-shadow(0 0 8px rgba(0,200,255,.4))}
+.bizflow-node.green:hover{filter:brightness(1.3) drop-shadow(0 0 8px rgba(0,230,118,.4))}
+.bizflow-node.purple:hover{filter:brightness(1.3) drop-shadow(0 0 8px rgba(123,97,255,.4))}
+.bizflow-node rect{transition:all .4s}
+.bizflow-node-text{pointer-events:none;user-select:none}
+.bizflow-arrow{fill:none;stroke-width:2;animation:bizDashMove 1s linear infinite}
+.bizflow-arrow.green{stroke:#00e676;stroke-dasharray:8 5}
+.bizflow-arrow.purple{stroke:#b388ff;stroke-dasharray:8 5}
+.bizflow-particle{animation:bizParticle 2s ease-in-out infinite;opacity:.7}
+.bizflow-particle.green{fill:#00e676}
+.bizflow-particle.purple{fill:#b388ff}
+.bizflow-particle.r2{animation-delay:.5s;opacity:.5}
+.bizflow-particle.r3{animation-delay:1s;opacity:.4}
+@keyframes bizDashMove{to{stroke-dashoffset:-26}}
+@keyframes bizParticle{0%,100%{opacity:.1;r:2.5}50%{opacity:.9;r:5}}
+.bizflow-pulse{animation:bizPulse 2s ease-in-out infinite;transform-origin:center}
+.bizflow-pulse.d2{animation-delay:.5s}.bizflow-pulse.d3{animation-delay:1s}.bizflow-pulse.d4{animation-delay:1.5s}
+.bizflow-pulse.green{--pulse-color:rgba(0,230,118,.15)}
+.bizflow-pulse.purple{--pulse-color:rgba(123,97,255,.15)}
+@keyframes bizPulse{0%,100%{opacity:.3;r:12}50%{opacity:.7;r:18}}
+.bizflow-glow{animation:bizGlow 3s ease-in-out infinite;transform-origin:center}
+@keyframes bizGlow{0%,100%{opacity:.15;r:8}50%{opacity:.4;r:12}}
+.bizflow-breathe{animation:bizBreathe 3s ease-in-out infinite;transform-origin:center}
+@keyframes bizBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.bizflow-tag{cursor:pointer;transition:all .2s}
+.bizflow-tag:hover{filter:brightness(1.2)}
+.bizflow-status-bar{display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);font-size:11px;color:#8896b0;flex-wrap:wrap}
+.bizflow-status-item{display:flex;align-items:center;gap:4px}
+
+/* Modal */
+.flow-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:9999;justify-content:center;align-items:center;animation:fadeIn .25s}
+.flow-modal-overlay.show{display:flex}
+.flow-modal{background:linear-gradient(135deg,rgba(22,30,55,.98),rgba(14,20,40,.98));border:1px solid rgba(0,200,255,.2);border-radius:16px;padding:28px 32px;max-width:420px;width:90%;position:relative;animation:fadeIn .3s;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.flow-modal-close{position:absolute;top:12px;right:16px;background:rgba(255,255,255,.05);border:none;color:#8896b0;font-size:20px;cursor:pointer;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.flow-modal-close:hover{background:rgba(255,82,82,.15);color:#ff5252}
+.flow-modal-icon{font-size:36px;margin-bottom:8px}
+.flow-modal-name{font-size:20px;font-weight:700;color:#e0e6f0;margin-bottom:4px}
+.flow-modal-desc{font-size:12px;color:#8896b0;margin-bottom:16px}
+.flow-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flow-modal-item{background:rgba(0,200,255,.04);border-radius:8px;padding:10px;text-align:center}
+.flow-modal-item .label2{font-size:10px;color:#8896b0;margin-bottom:2px}
+.flow-modal-item .value2{font-size:16px;font-weight:700;color:#e0e6f0}
+.flow-modal-item .value2.green{color:#00e676}
+.flow-modal-item .value2.blue{color:#00c8ff}
+.flow-modal-item .value2.gold{color:#ffd740}
+.flow-modal-item .value2.purple{color:#b388ff}
+.flow-modal-team{background:rgba(123,97,255,.08);border:1px solid rgba(123,97,255,.15);border-radius:8px;padding:8px 12px;margin-top:12px;font-size:12px;display:flex;align-items:center;gap:8px;color:#c0d0f0}
+.flow-modal-team .tag{background:rgba(123,97,255,.2);padding:2px 8px;border-radius:4px;font-size:10px;color:#b388ff}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <h1>🏢 华兴集团 · 财务共享服务中心智慧大屏</h1>
+      <div class="subtitle">HuaXing Group FSSC · 运营管理平台 · 7大模块 · 全流程动态可视化</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span class="version-badge">v3.0 · 多维度运营</span>
+      <div class="time-badge" id="headerTime">📅 2026年5月19日星期二 22:41:30</div>
+    </div>
+  </div>
+
+  <!-- Top KPIs -->
+  <div class="grid-4" style="margin-bottom:20px">
+    <div class="kpi-card">
+      <div class="value blue" id="kpiStaff">158</div>
+      <div class="label">🏛️ 共享中心总人数</div>
+      <div class="delta up">▲ 8人 (年度扩编)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value green" id="kpiVolume">126,847</div>
+      <div class="label">📄 本月已处理单据数</div>
+      <div class="delta up">▲ +15.3% vs 上月</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value yellow" id="kpiSla">98.62%</div>
+      <div class="label">✅ SLA综合达标率</div>
+      <div class="delta up">▲ +0.8pp vs 目标97%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="value green" id="kpiCost">¥3,280万</div>
+      <div class="label">💰 年度累计节约成本</div>
+      <div class="delta up">▲ 全年目标¥4,200万</div>
+    </div>
+  </div>
+
+  <!-- ====== 交互式业务流转动图 ====== -->
+  <div class="section-title">🏭 供产销 + 💳 费用管控 · 全链路交互流转动图</div>
+  <div class="section-subtitle">点击任一节点查看详情 · 脉冲粒子沿链路双向流动 · 呼吸动效</div>
+
+  <div class="bizflow-grid">
+    <!-- 供产销业务流 S → 绿色主题 -->
+    <div class="bizflow-card green-theme">
+      <div class="bizflow-header">
+        <div class="bizflow-title green">🏭 供产销业务流 · Supply Chain</div>
+        <div class="bizflow-stats">
+          <span>📊 <span class="num">8</span> 节点</span>
+          <span>📄 <span class="num">12.8万</span> 单/月</span>
+          <span>⏱ <span class="num">6.2</span> 天全链路</span>
+          <span>🤖 <span class="num">68%</span> 自动化率</span>
+        </div>
+      </div>
+      <svg class="bizflow-svg" viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="argn" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0L7,2.5L0,5Z" fill="#00e676"></path></marker>
+          <radialgradient id="glowGn"><stop offset="0%" stop-color="rgba(0,230,118,.3)"></stop><stop offset="100%" stop-color="rgba(0,230,118,0)"></stop></radialgradient>
+        </defs>
+        <!-- Background grid lines -->
+        <line x1="20" y1="110" x2="580" y2="110" stroke="rgba(0,230,118,.04)" stroke-width="1"></line>
+        <line x1="20" y1="175" x2="580" y2="175" stroke="rgba(0,230,118,.04)" stroke-width="1"></line>
+        <!-- Row 1 connections: N1→N2→N3→N4 -->
+        <line x1="120" y1="82" x2="208" y2="82" stroke="#00e676" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow green"></line>
+        <line x1="278" y1="82" x2="368" y2="82" stroke="#00e676" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow green"></line>
+        <line x1="440" y1="82" x2="530" y2="82" stroke="#00e676" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow green"></line>
+        <!-- Vertical connectors -->
+        <line x1="243" y1="104" x2="243" y2="145" stroke="#00e676" stroke-width="2" stroke-dasharray="5 4" class="bizflow-arrow green"></line>
+        <line x1="485" y1="104" x2="485" y2="145" stroke="#00e676" stroke-width="2" stroke-dasharray="5 4" class="bizflow-arrow green"></line>
+        <!-- Row 2 connections: N8←N7←N6←N5 -->
+        <line x1="530" y1="208" x2="440" y2="208" stroke="#00e676" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow green"></line>
+        <line x1="368" y1="208" x2="278" y2="208" stroke="#00e676" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow green"></line>
+        <line x1="208" y1="208" x2="120" y2="208" stroke="#00e676" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow green"></line>
+
+        <!-- Pulse particles on each connection -->
+        <circle r="0" class="bizflow-particle green"><animatemotion dur="2s" repeatCount="indefinite" path="M135,82 L208,82"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green r2"><animatemotion dur="2s" repeatCount="indefinite" path="M278,82 L368,82"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green r3"><animatemotion dur="2s" repeatCount="indefinite" path="M440,82 L530,82"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple"><animatemotion dur="2.5s" repeatCount="indefinite" path="M243,104 L243,145" rotate="auto"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green r2"><animatemotion dur="2s" repeatCount="indefinite" path="M485,104 L485,145" rotate="auto"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green r3"><animatemotion dur="2s" repeatCount="indefinite" path="M530,208 L440,208"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green"><animatemotion dur="2s" repeatCount="indefinite" path="M368,208 L278,208"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green r2"><animatemotion dur="2s" repeatCount="indefinite" path="M208,208 L120,208"></animatemotion></circle>
+        <!-- Bidirectional reverse particles -->
+        <circle r="0" class="bizflow-particle purple r2"><animatemotion dur="2.8s" repeatCount="indefinite" path="M120,208 L208,208"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple r3"><animatemotion dur="3s" repeatCount="indefinite" path="M208,82 L120,82"></animatemotion></circle>
+
+        <!-- N1: 采购申请 -->
+        <g class="bizflow-node green bizflow-breathe" onclick="showFlowModal(&#39;sc1&#39;)">
+          <rect x="30" y="55" width="90" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="75" cy="82" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="75" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">📋</text>
+          <text x="75" y="66" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">采购申请</text>
+          <text x="75" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">3,800单/月</text>
+        </g>
+        <!-- N2: 采购订单 -->
+        <g class="bizflow-node green bizflow-breathe" onclick="showFlowModal(&#39;sc2&#39;)">
+          <rect x="208" y="55" width="70" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="243" cy="82" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="243" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">📄</text>
+          <text x="243" y="66" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">采购订单</text>
+          <text x="243" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">3,200单/月</text>
+        </g>
+        <!-- N3: 收货入库 -->
+        <g class="bizflow-node green" onclick="showFlowModal(&#39;sc3&#39;)">
+          <rect x="368" y="55" width="72" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="404" cy="82" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="404" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">📦</text>
+          <text x="404" y="66" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">收货入库</text>
+          <text x="404" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">2,800单/月</text>
+        </g>
+        <!-- N4: 生产领料 -->
+        <g class="bizflow-node green" onclick="showFlowModal(&#39;sc4&#39;)">
+          <rect x="530" y="55" width="70" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="565" cy="82" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="565" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">⚙️</text>
+          <text x="565" y="66" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">生产领料</text>
+          <text x="565" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">4,200批/月</text>
+        </g>
+        <!-- N5: 完工入库 -->
+        <g class="bizflow-node green" onclick="showFlowModal(&#39;sc5&#39;)">
+          <rect x="530" y="182" width="70" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="565" cy="209" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="565" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">🏭</text>
+          <text x="565" y="193" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">完工入库</text>
+          <text x="565" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">3,600批/月</text>
+        </g>
+        <!-- N6: 销售出库 -->
+        <g class="bizflow-node green" onclick="showFlowModal(&#39;sc6&#39;)">
+          <rect x="365" y="182" width="75" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="402" cy="209" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="402" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">🚚</text>
+          <text x="402" y="193" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">销售出库</text>
+          <text x="402" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">3,200单/月</text>
+        </g>
+        <!-- N7: 开票结算 -->
+        <g class="bizflow-node green" onclick="showFlowModal(&#39;sc7&#39;)">
+          <rect x="205" y="182" width="73" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="241" cy="209" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="241" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">🧾</text>
+          <text x="241" y="193" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">开票结算</text>
+          <text x="241" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">2,800张/月</text>
+        </g>
+        <!-- N8: 回款核销 -->
+        <g class="bizflow-node green" onclick="showFlowModal(&#39;sc8&#39;)">
+          <rect x="30" y="182" width="90" height="54" rx="10" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1.8"></rect>
+          <circle cx="75" cy="209" r="14" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="75" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">💰</text>
+          <text x="75" y="193" text-anchor="middle" class="bizflow-node-text" fill="#00e676" font-size="9" font-weight="600">回款核销</text>
+          <text x="75" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">¥8.6亿/月</text>
+        </g>
+
+        <!-- Status bar at bottom -->
+        <rect x="30" y="258" width="540" height="18" rx="9" fill="rgba(0,230,118,.04)" stroke="rgba(0,230,118,.08)" stroke-width="1"></rect>
+        <text x="300" y="270" text-anchor="middle" fill="#8896b0" font-size="9">⬤ 采购→生产 cycle: 4.2天  ⬤ 销售→回款 cycle: 2.0天  ⬤ 全链路时效: 6.2天</text>
+      </svg>
+      <div class="bizflow-status-bar">
+        <span class="bizflow-status-item"><span class="status-dot green"></span>采购—仓—产—销 全链路</span>
+        <span class="bizflow-status-item">🤖 自动化匹配率 <span style="color:#00e676">92%</span></span>
+        <span class="bizflow-status-item">🔄 三单匹配率 <span style="color:#00e676">99.1%</span></span>
+        <span class="bizflow-status-item">📈 回款及时率 <span style="color:#00e676">96.3%</span></span>
+      </div>
+    </div>
+
+    <!-- 费控业务流 F → 紫色主题 -->
+    <div class="bizflow-card purple-theme">
+      <div class="bizflow-header">
+        <div class="bizflow-title purple">📋 费用管控业务流 · Expense Control</div>
+        <div class="bizflow-stats">
+          <span>📊 <span class="num">8</span> 节点</span>
+          <span>📄 <span class="num">9.6万</span> 单/月</span>
+          <span>⏱ <span class="num">4.8</span> 天全链路</span>
+          <span>🤖 <span class="num">72%</span> 自动化率</span>
+        </div>
+      </div>
+      <svg class="bizflow-svg" viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arpp" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0L7,2.5L0,5Z" fill="#b388ff"></path></marker>
+          <radialgradient id="glowPp"><stop offset="0%" stop-color="rgba(123,97,255,.3)"></stop><stop offset="100%" stop-color="rgba(123,97,255,0)"></stop></radialgradient>
+        </defs>
+        <!-- Background grid -->
+        <line x1="20" y1="110" x2="580" y2="110" stroke="rgba(123,97,255,.04)" stroke-width="1"></line>
+        <line x1="20" y1="175" x2="580" y2="175" stroke="rgba(123,97,255,.04)" stroke-width="1"></line>
+        <!-- Row 1: N1→N2→N3→N4 -->
+        <line x1="120" y1="82" x2="208" y2="82" stroke="#b388ff" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow purple"></line>
+        <line x1="278" y1="82" x2="368" y2="82" stroke="#b388ff" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow purple"></line>
+        <line x1="440" y1="82" x2="530" y2="82" stroke="#b388ff" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow purple"></line>
+        <!-- Vertical connectors -->
+        <line x1="243" y1="104" x2="243" y2="145" stroke="#b388ff" stroke-width="2" stroke-dasharray="5 4" class="bizflow-arrow purple"></line>
+        <line x1="485" y1="104" x2="485" y2="145" stroke="#b388ff" stroke-width="2" stroke-dasharray="5 4" class="bizflow-arrow purple"></line>
+        <!-- Row 2: N8←N7←N6←N5 -->
+        <line x1="530" y1="208" x2="440" y2="208" stroke="#b388ff" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow purple"></line>
+        <line x1="368" y1="208" x2="278" y2="208" stroke="#b388ff" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow purple"></line>
+        <line x1="208" y1="208" x2="120" y2="208" stroke="#b388ff" stroke-width="2.5" stroke-dasharray="7 4" class="bizflow-arrow purple"></line>
+
+        <!-- Pulse particles on connections -->
+        <circle r="0" class="bizflow-particle purple"><animatemotion dur="2.2s" repeatCount="indefinite" path="M135,82 L208,82"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple r3"><animatemotion dur="2.2s" repeatCount="indefinite" path="M278,82 L368,82"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple r2"><animatemotion dur="2.2s" repeatCount="indefinite" path="M440,82 L530,82"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green"><animatemotion dur="2.8s" repeatCount="indefinite" path="M243,104 L243,145" rotate="auto"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple r2"><animatemotion dur="2.8s" repeatCount="indefinite" path="M485,104 L485,145" rotate="auto"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple"><animatemotion dur="2.2s" repeatCount="indefinite" path="M530,208 L440,208"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple r3"><animatemotion dur="2.2s" repeatCount="indefinite" path="M368,208 L278,208"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle purple r2"><animatemotion dur="2.2s" repeatCount="indefinite" path="M208,208 L120,208"></animatemotion></circle>
+        <!-- Reverse -->
+        <circle r="0" class="bizflow-particle green r2"><animatemotion dur="3s" repeatCount="indefinite" path="M120,208 L208,208"></animatemotion></circle>
+        <circle r="0" class="bizflow-particle green r3"><animatemotion dur="3.2s" repeatCount="indefinite" path="M208,82 L120,82"></animatemotion></circle>
+
+        <!-- F1: 预算编制 -->
+        <g class="bizflow-node purple bizflow-breathe" onclick="showFlowModal(&#39;fc1&#39;)">
+          <rect x="30" y="55" width="90" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="75" cy="82" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="75" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">📊</text>
+          <text x="75" y="66" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">预算编制</text>
+          <text x="75" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">120份/年</text>
+        </g>
+        <!-- F2: 费用申请 -->
+        <g class="bizflow-node purple" onclick="showFlowModal(&#39;fc2&#39;)">
+          <rect x="208" y="55" width="70" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="243" cy="82" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="243" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">✍️</text>
+          <text x="243" y="66" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">费用申请</text>
+          <text x="243" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">3,600单/月</text>
+        </g>
+        <!-- F3: 发票提交 -->
+        <g class="bizflow-node purple" onclick="showFlowModal(&#39;fc3&#39;)">
+          <rect x="368" y="55" width="72" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="404" cy="82" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="404" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">🧾</text>
+          <text x="404" y="66" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">发票提交</text>
+          <text x="404" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">7,200份/月</text>
+        </g>
+        <!-- F4: 智能审核 -->
+        <g class="bizflow-node purple bizflow-breathe" onclick="showFlowModal(&#39;fc4&#39;)">
+          <rect x="530" y="55" width="70" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="565" cy="82" r="16" fill="rgba(123,97,255,.15)" stroke="#b388ff" stroke-width="1.5"></circle>
+          <text x="565" y="86" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="14">🤖</text>
+          <text x="565" y="66" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">智能审核</text>
+          <text x="565" y="103" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">AI规则引擎</text>
+        </g>
+        <!-- F5: 预算扣减 -->
+        <g class="bizflow-node purple" onclick="showFlowModal(&#39;fc5&#39;)">
+          <rect x="530" y="182" width="70" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="565" cy="209" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="565" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">📉</text>
+          <text x="565" y="193" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">预算扣减</text>
+          <text x="565" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">自动执行</text>
+        </g>
+        <!-- F6: 凭证生成 -->
+        <g class="bizflow-node purple" onclick="showFlowModal(&#39;fc6&#39;)">
+          <rect x="365" y="182" width="75" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="402" cy="209" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="402" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">📝</text>
+          <text x="402" y="193" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">凭证生成</text>
+          <text x="402" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">自动RPA</text>
+        </g>
+        <!-- F7: 付款结算 -->
+        <g class="bizflow-node purple" onclick="showFlowModal(&#39;fc7&#39;)">
+          <rect x="205" y="182" width="73" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="241" cy="209" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="241" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">🏦</text>
+          <text x="241" y="193" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">付款结算</text>
+          <text x="241" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">8,500笔/月</text>
+        </g>
+        <!-- F8: 账务归档 -->
+        <g class="bizflow-node purple bizflow-breathe" onclick="showFlowModal(&#39;fc8&#39;)">
+          <rect x="30" y="182" width="90" height="54" rx="10" fill="rgba(123,97,255,.08)" stroke="#b388ff" stroke-width="1.8"></rect>
+          <circle cx="75" cy="209" r="14" fill="rgba(123,97,255,.12)" stroke="#b388ff" stroke-width="1" class="bizflow-glow"></circle>
+          <text x="75" y="213" text-anchor="middle" class="bizflow-node-text" fill="#fff" font-size="13">🗂️</text>
+          <text x="75" y="193" text-anchor="middle" class="bizflow-node-text" fill="#b388ff" font-size="9" font-weight="600">账务归档</text>
+          <text x="75" y="230" text-anchor="middle" class="bizflow-node-text" fill="#8896b0" font-size="7">42万卷</text>
+        </g>
+
+        <!-- Status bar -->
+        <rect x="30" y="258" width="540" height="18" rx="9" fill="rgba(123,97,255,.04)" stroke="rgba(123,97,255,.08)" stroke-width="1"></rect>
+        <text x="300" y="270" text-anchor="middle" fill="#8896b0" font-size="9">⬤ 预算→申请 cycle: 1.2天 ⬤ 审核→支付 cycle: 2.8天 ⬤ 全链路时效: 4.8天</text>
+      </svg>
+      <div class="bizflow-status-bar">
+        <span class="bizflow-status-item"><span class="status-dot purple"></span>预算—申请—审核—支付 全链路</span>
+        <span class="bizflow-status-item">🤖 AI自动审核率 <span style="color:#b388ff">82%</span></span>
+        <span class="bizflow-status-item">🔄 一次性通过率 <span style="color:#b388ff">99.12%</span></span>
+        <span class="bizflow-status-item">📈 预算偏差率 &lt;<span style="color:#b388ff">3.5%</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div class="flow-modal-overlay" id="flowModal">
+    <div class="flow-modal">
+      <button class="flow-modal-close" onclick="closeFlowModal()">✕</button>
+      <div class="flow-modal-icon" id="fmIcon">📋</div>
+      <div class="flow-modal-name" id="fmName">节点名称</div>
+      <div class="flow-modal-desc" id="fmDesc">功能描述</div>
+      <div class="flow-modal-grid">
+        <div class="flow-modal-item"><div class="label2">📄 月均处理量</div><div class="value2 blue" id="fmVol">--</div></div>
+        <div class="flow-modal-item"><div class="label2">⏱ 处理时效</div><div class="value2 green" id="fmTime">--</div></div>
+        <div class="flow-modal-item"><div class="label2">🤖 自动化率</div><div class="value2 gold" id="fmAuto">--</div></div>
+        <div class="flow-modal-item"><div class="label2">✅ SLA达标</div><div class="value2 purple" id="fmSla">--</div></div>
+      </div>
+      <div class="flow-modal-team">👥 负责团队：<span id="fmTeam">--</span><span class="tag" id="fmFlowType">--</span></div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tabs" id="tabNav">
+    <button class="tab-btn" data-tab="tab1">🏢 共享架构</button>
+    <button class="tab-btn" data-tab="tab2">📈 处理效率 <span class="badge">实时</span></button>
+    <button class="tab-btn" data-tab="tab3">⚡ 业绩提升</button>
+    <button class="tab-btn" data-tab="tab4">📑 报表中心</button>
+    <button class="tab-btn" data-tab="tab5">🏆 团队业绩</button>
+    <button class="tab-btn" data-tab="tab6">🔄 业务流程 <span class="badge-gold">动图</span></button>
+    <button class="tab-btn active" data-tab="tab7">📋 单据流转 <span class="badge-gold">实时</span></button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1: 共享架构 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab1">
+    <div class="card">
+      <div class="card-title"><span class="icon">🏛️</span> 华兴集团 FSSC 组织架构</div>
+      <div style="padding:10px 0">
+        <div class="org-chart">
+          <div class="org-level"><div class="org-node root">👑 FSSC 总经理 · 赵总</div></div>
+          <div class="org-connector">
+            <div class="branch"></div><div class="line"></div><div class="branch"></div>
+          </div>
+          <div class="org-level">
+            <div class="org-node">📊 运营管理部<br><span class="node-sub">12人 · SLA监控/质检/培训</span></div>
+            <div class="org-node">🤖 技术支撑部<br><span class="node-sub">8人 · RPA/系统/数据</span></div>
+            <div class="org-node">✅ 质量控制部<br><span class="node-sub">6人 · 合规/审计/标准化</span></div>
+          </div>
+          <div class="org-connector">
+            <div class="branch"></div><div class="line"></div><div class="branch"></div>
+          </div>
+          <div class="org-level">
+            <div class="org-node">🖼️ 影像管理组<br><span class="node-sub">12人</span></div>
+            <div class="org-node">💰 费用报销组<br><span class="node-sub">28人</span></div>
+            <div class="org-node">📋 应付结算组<br><span class="node-sub">24人</span></div>
+            <div class="org-node">💳 应收结算组<br><span class="node-sub">18人</span></div>
+            <div class="org-node">📊 总账报表组<br><span class="node-sub">22人</span></div>
+            <div class="org-node">🏦 资金结算组<br><span class="node-sub">16人</span></div>
+            <div class="org-node">🗂️ 档案管理组<br><span class="node-sub">10人</span></div>
+          </div>
+          <div class="org-connector">
+            <div class="branch"></div>
+          </div>
+          <div class="org-level">
+            <div class="org-node" style="border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.05)">🏭 制造板块<br><small>6家公司 · 80亿营收</small></div>
+            <div class="org-node" style="border-color:rgba(255,215,64,.3);background:rgba(255,215,64,.05)">🏘️ 地产板块<br><small>4家公司 · 45亿营收</small></div>
+            <div class="org-node" style="border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.05)">🚢 贸易板块<br><small>3家公司 · 35亿营收</small></div>
+            <div class="org-node" style="border-color:rgba(123,97,255,.3);background:rgba(123,97,255,.05)">💻 科技板块<br><small>2家公司 · 20亿营收</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">📋 8大专业组 · 职责与关键指标</div>
+    <div class="grid-team">
+      <div class="team-card"><div class="team-icon">🖼️</div><div class="team-name">影像管理组</div><div class="team-desc">原始凭证影像化、OCR识别、完整性校验、电子归档</div><div class="team-stats"><span class="stat-tag">12人</span><span class="stat-tag">日均扫描3,200份</span><span class="stat-tag">OCR正确率97.2%</span></div></div>
+      <div class="team-card"><div class="team-icon">💰</div><div class="team-name">费用报销组</div><div class="team-desc">员工借款、费用报销审核、差旅标准控制、预算校验</div><div class="team-stats"><span class="stat-tag">28人</span><span class="stat-tag">月均7,200单</span><span class="stat-tag">平均2.8天/单</span></div></div>
+      <div class="team-card"><div class="team-icon">📋</div><div class="team-name">应付结算组</div><div class="team-desc">供应商发票校验、三单匹配、付款排程、AP管理</div><div class="team-stats"><span class="stat-tag">24人</span><span class="stat-tag">月均5,600单</span><span class="stat-tag">三单匹配率99.1%</span></div></div>
+      <div class="team-card"><div class="team-icon">💳</div><div class="team-name">应收结算组</div><div class="team-desc">客户开票、收款核销、账龄跟踪、AR管理</div><div class="team-stats"><span class="stat-tag">18人</span><span class="stat-tag">月均4,200单</span><span class="stat-tag">回款及时率96.3%</span></div></div>
+      <div class="team-card"><div class="team-icon">📊</div><div class="team-name">总账报表组</div><div class="team-desc">凭证审核、月末关账、单体报表、合并报表出具</div><div class="team-stats"><span class="stat-tag">22人</span><span class="stat-tag">关账5工作日</span><span class="stat-tag">报表自动化率82%</span></div></div>
+      <div class="team-card"><div class="team-icon">🏦</div><div class="team-name">资金结算组</div><div class="team-desc">银企直连、资金池调度、大额支付审核、银企对账</div><div class="team-stats"><span class="stat-tag">16人</span><span class="stat-tag">月均8,500笔</span><span class="stat-tag">支付自动化率91%</span></div></div>
+      <div class="team-card"><div class="team-icon">🗂️</div><div class="team-name">档案管理组</div><div class="team-desc">电子档案借阅、审计配合、销毁管理、档案数字化</div><div class="team-stats"><span class="stat-tag">10人</span><span class="stat-tag">管理42万卷</span><span class="stat-tag">数字化率96%</span></div></div>
+      <div class="team-card"><div class="team-icon">⚙️</div><div class="team-name">运营管理组</div><div class="team-desc">SLA监控、质量管理、绩效分析、流程优化、系统运维</div><div class="team-stats"><span class="stat-tag">28人</span><span class="stat-tag">30项SLA指标</span><span class="stat-tag">综合达标率98.6%</span></div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">🔄</span> FSSC 全链条协作流程图</div>
+        <svg width="100%" height="110" viewBox="0 0 660 110" style="display:block;margin:6px 0">
+          <defs><marker id="ar1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0L8,3L0,6Z" fill="#8896b0"></path></marker><marker id="ar2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0L8,3L0,6Z" fill="#00c8ff"></path></marker></defs>
+          <rect x="4" y="12" width="68" height="30" rx="6" fill="rgba(255,255,255,.06)" stroke="#8896b0" stroke-width="1.2"></rect>
+          <text x="38" y="32" text-anchor="middle" fill="#e0e6f0" font-size="10">📄 原始</text>
+          <line x1="72" y1="27" x2="96" y2="27" stroke="#8896b0" stroke-width="1.5" marker-end="url(#ar1)"></line>
+          <rect x="96" y="12" width="88" height="30" rx="6" fill="rgba(123,97,255,.1)" stroke="#7b61ff" stroke-width="1.2"></rect>
+          <text x="140" y="32" text-anchor="middle" fill="#e0e6f0" font-size="10">🖼️ 影像+OCR识别</text>
+          <line x1="184" y1="27" x2="208" y2="27" stroke="#00c8ff" stroke-width="1.5" marker-end="url(#ar2)" class="flow-arrow-anim"></line>
+          <rect x="208" y="5" width="80" height="44" rx="10" fill="rgba(0,200,255,.08)" stroke="#00c8ff" stroke-width="1.5"></rect>
+          <text x="248" y="22" text-anchor="middle" fill="#00c8ff" font-size="10" font-weight="600">🤖 自动分流引擎</text>
+          <text x="248" y="38" text-anchor="middle" fill="#8896b0" font-size="8">按类型智能分配</text>
+          <line x1="288" y1="16" x2="316" y2="16" stroke="#8896b0" stroke-width="1.2" marker-end="url(#ar1)"></line>
+          <line x1="288" y1="38" x2="316" y2="38" stroke="#8896b0" stroke-width="1.2" marker-end="url(#ar1)"></line>
+          <rect x="316" y="3" width="60" height="26" rx="5" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="346" y="20" text-anchor="middle" fill="#00e676" font-size="9">💰 费用组</text>
+          <rect x="316" y="32" width="60" height="26" rx="5" fill="rgba(255,215,64,.08)" stroke="#ffd740" stroke-width="1"></rect>
+          <text x="346" y="49" text-anchor="middle" fill="#ffd740" font-size="9">📋 应付组</text>
+          <rect x="380" y="3" width="60" height="26" rx="5" fill="rgba(0,200,255,.08)" stroke="#00c8ff" stroke-width="1"></rect>
+          <text x="410" y="20" text-anchor="middle" fill="#00c8ff" font-size="9">💳 应收组</text>
+          <rect x="380" y="32" width="60" height="26" rx="5" fill="rgba(123,97,255,.08)" stroke="#7b61ff" stroke-width="1"></rect>
+          <text x="410" y="49" text-anchor="middle" fill="#b388ff" font-size="9">🏦 资金组</text>
+          <rect x="316" y="62" width="124" height="26" rx="5" fill="rgba(255,82,82,.08)" stroke="#ff5252" stroke-width="1"></rect>
+          <text x="378" y="79" text-anchor="middle" fill="#ff5252" font-size="9">📊 总账报表组</text>
+          <line x1="440" y1="16" x2="468" y2="16" stroke="#8896b0" stroke-width="1.2" marker-end="url(#ar1)"></line>
+          <line x1="440" y1="38" x2="468" y2="38" stroke="#8896b0" stroke-width="1.2" marker-end="url(#ar1)"></line>
+          <rect x="468" y="3" width="68" height="30" rx="6" fill="rgba(255,215,64,.08)" stroke="#ffd740" stroke-width="1"></rect>
+          <text x="502" y="23" text-anchor="middle" fill="#ffd740" font-size="9">🗂️ 档案归档</text>
+          <line x1="536" y1="18" x2="560" y2="18" stroke="#8896b0" stroke-width="1.2" marker-end="url(#ar1)"></line>
+          <rect x="560" y="3" width="55" height="30" rx="6" fill="rgba(255,82,82,.08)" stroke="#ff5252" stroke-width="1"></rect>
+          <text x="587" y="23" text-anchor="middle" fill="#ff5252" font-size="9">🔍 质控</text>
+          <line x1="560+55" y1="18" x2="640" y2="18" stroke="#00c8ff" stroke-width="1.5" class="flow-arrow-anim"></line>
+          <rect x="630" y="12" width="28" height="70" rx="8" fill="rgba(0,200,255,.06)" stroke="#00c8ff" stroke-width="1.2"></rect>
+          <text x="644" y="35" text-anchor="middle" fill="#00c8ff" font-size="12" font-weight="700">📊</text>
+          <text x="644" y="55" text-anchor="middle" fill="#00c8ff" font-size="8">运营</text>
+          <text x="644" y="68" text-anchor="middle" fill="#00c8ff" font-size="8">分析</text>
+        </svg>
+        <div class="flow-legend">
+          <span class="flow-legend-item"><span class="status-dot blue"></span>自动分流</span>
+          <span class="flow-legend-item"><span class="status-dot green"></span>费用报销线</span>
+          <span class="flow-legend-item"><span class="status-dot yellow"></span>应付结算线</span>
+          <span class="flow-legend-item"><span class="status-dot purple"></span>资金结算线</span>
+          <span class="flow-legend-item"><span style="color:#ff5252">●</span>质控终点</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🏢</span> 纳入共享范围</div>
+        <div class="grid-2" style="gap:8px">
+          <div><div style="font-size:11px;color:#8896b0">纳入实体</div><div style="font-size:22px;font-weight:700">15 <span style="font-size:12px;color:#8896b0">家公司</span></div></div>
+          <div><div style="font-size:11px;color:#8896b0">覆盖营收</div><div style="font-size:22px;font-weight:700">¥180 <span style="font-size:12px;color:#8896b0">亿元</span></div></div>
+          <div><div style="font-size:11px;color:#8896b0">业务类型</div><div style="font-size:22px;font-weight:700">4 <span style="font-size:12px;color:#8896b0">大板块</span></div></div>
+          <div><div style="font-size:11px;color:#8896b0">上线时长</div><div style="font-size:22px;font-weight:700">26 <span style="font-size:12px;color:#8896b0">个月</span></div></div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:#8896b0">共享业务范围：费用报销 | 应付账款 | 应收账款 | 总账核算 | 资金结算 | 档案管理 | 财务报表出具</div>
+        <div style="margin-top:8px;font-size:11px;color:#8896b0">服务企业：华兴精密制造、华兴智能装备、华兴新材料、华兴置业、华兴物业管理、华兴国际贸易、华兴科技</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2: 处理效率 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab2">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p2a">📊 效率总览</button>
+      <button class="sub-tab" data-panel="p2b">📈 趋势分析</button>
+      <button class="sub-tab" data-panel="p2c">⏱️ 处理延迟</button>
+    </div>
+
+    <div class="sub-panel active" id="p2a">
+      <div class="grid-4">
+        <div class="kpi-card"><div class="value blue">8.2<small style="font-size:14px;color:#8896b0">万/月</small></div><div class="label">月均处理总量</div><div class="delta up">▲ 同比+18.6%</div></div>
+        <div class="kpi-card"><div class="value green">2.1<small style="font-size:14px;color:#8896b0">天</small></div><div class="label">平均处理周期</div><div class="delta up">▼ -0.6天 YoY</div></div>
+        <div class="kpi-card"><div class="value green">99.12%</div><div class="label">一次性通过率</div><div class="delta up">▲ +1.8pp</div></div>
+        <div class="kpi-card"><div class="value yellow">0.43%</div><div class="label">差错率</div><div class="delta down">▼ +0.05pp MoM</div></div>
+      </div>
+      <div class="grid-3" style="margin-top:8px">
+        <div class="kpi-card"><div class="value blue">97.2%</div><div class="label">OCR识别正确率</div><div class="delta up">▲ +2.1pp (AI优化)</div></div>
+        <div class="kpi-card"><div class="value green">91%</div><div class="label">支付自动化率</div><div class="delta up">▲ 目标95%</div></div>
+        <div class="kpi-card"><div class="value green">82%</div><div class="label">报表自动化率</div><div class="delta up">▲ 目标90%</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card"><div class="card-title">📊 各组月度处理量 (5月)</div><canvas id="ch2a_volume" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+        <div class="card"><div class="card-title">⏱️ 各组平均处理天数</div><canvas id="ch2a_days" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p2b">
+      <div class="grid-2">
+        <div class="card"><div class="card-title">📈 月度处理量趋势 (近12月)</div><canvas id="ch2b_trend" class="chart-canvas" height="240" width="200" style="width: 200px; height: 240px;"></canvas></div>
+        <div class="card"><div class="card-title">📉 SLA达标率趋势</div><canvas id="ch2b_sla" class="chart-canvas" height="240" width="200" style="width: 200px; height: 240px;"></canvas></div>
+      </div>
+      <div class="card"><div class="card-title">📋 各板块月度单据分布</div><canvas id="ch2b_sector" class="chart-canvas" height="200" width="200" style="width: 200px; height: 200px;"></canvas></div>
+    </div>
+
+    <div class="sub-panel" id="p2c">
+      <div class="card"><div class="card-title">⏱️ 各业务类型处理周期明细</div><canvas id="ch2c_period" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+      <div class="grid-2">
+        <div class="card"><div class="card-title">⏳ 超时单据分布</div><canvas id="ch2c_overtime" class="chart-canvas" height="200" width="200" style="width: 200px; height: 200px;"></canvas></div>
+        <div class="card">
+          <div class="card-title">📊 处理时效SLA详情</div>
+          <table class="data-table">
+            <thead><tr><th>业务类型</th><th>SLA(天)</th><th>实际(天)</th><th>达标率</th><th>超时单</th></tr></thead>
+            <tbody>
+              <tr><td>费用报销-差旅</td><td>5</td><td class="highlight">3.2</td><td><span class="badge-sla excellent">99.2%</span></td><td>42</td></tr>
+              <tr><td>费用报销-非差旅</td><td>5</td><td class="highlight">2.8</td><td><span class="badge-sla excellent">99.5%</span></td><td>28</td></tr>
+              <tr><td>供应商发票</td><td>7</td><td class="highlight">4.1</td><td><span class="badge-sla excellent">98.8%</span></td><td>67</td></tr>
+              <tr><td>客户开票</td><td>3</td><td class="highlight">1.8</td><td><span class="badge-sla excellent">99.6%</span></td><td>18</td></tr>
+              <tr><td>付款执行</td><td>1</td><td class="highlight">0.5</td><td><span class="badge-sla excellent">99.9%</span></td><td>5</td></tr>
+              <tr><td>总账凭证</td><td>2</td><td class="highlight">1.2</td><td><span class="badge-sla excellent">99.8%</span></td><td>12</td></tr>
+              <tr><td>银行对账</td><td>1</td><td class="highlight">0.3</td><td><span class="badge-sla excellent">100%</span></td><td>0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3: 业绩提升 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab3">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p3a">💰 成本节约</button>
+      <button class="sub-tab" data-panel="p3b">🤖 自动化提升</button>
+      <button class="sub-tab" data-panel="p3c">📊 对标分析</button>
+    </div>
+
+    <div class="sub-panel active" id="p3a">
+      <div class="grid-4">
+        <div class="kpi-card"><div class="value green">¥3,280<small style="font-size:14px;color:#8896b0">万</small></div><div class="label">累计成本节约</div><div class="delta up">▲ 目标4,200万</div></div>
+        <div class="kpi-card"><div class="value blue">32.6%</div><div class="label">人工成本节约率</div><div class="delta up">▲ 行业平均28%</div></div>
+        <div class="kpi-card"><div class="value yellow">¥157</div><div class="label">单笔处理成本</div><div class="delta up">▼ FSSC前¥328</div></div>
+        <div class="kpi-card"><div class="value green">18.2<small style="font-size:14px;color:#8896b0">月</small></div><div class="label">投资回收期</div><div class="delta up">▲ 行业平均22月</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card"><div class="card-title">📉 单笔处理成本对比 (FSSC前 vs 后)</div><canvas id="ch3a_cost" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+        <div class="card"><div class="card-title">💰 年度成本节约分解</div><canvas id="ch3a_save" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 FSSC 建设前后效率对比</div>
+        <table class="data-table">
+          <thead><tr><th>指标</th><th>FSSC前</th><th>FSSC当前</th><th>改善幅度</th><th>行业标杆</th></tr></thead>
+          <tbody>
+            <tr><td>月均处理单据量</td><td>3.8万</td><td>8.2万</td><td class="highlight">+115.8%</td><td>10万+</td></tr>
+            <tr><td>平均处理周期</td><td>4.8天</td><td>2.1天</td><td class="highlight">-56.3%</td><td>1.8天</td></tr>
+            <tr><td>单笔处理成本</td><td>¥328</td><td>¥157</td><td class="highlight">-52.1%</td><td>¥120</td></tr>
+            <tr><td>财务人员数量</td><td>286人</td><td>158人</td><td class="highlight">-44.8%</td><td>-50%</td></tr>
+            <tr><td>差错率</td><td>1.85%</td><td>0.43%</td><td class="highlight">-76.8%</td><td>0.3%</td></tr>
+            <tr><td>报表出具天数</td><td>12天</td><td>5天</td><td class="highlight">-58.3%</td><td>4天</td></tr>
+            <tr><td>财务标准化率</td><td>45%</td><td>92%</td><td class="highlight">+104.4%</td><td>95%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p3b">
+      <div class="grid-4">
+        <div class="kpi-card"><div class="value blue">18</div><div class="label">RPA机器人数量</div><div class="delta up">▲ 年底目标22台</div></div>
+        <div class="kpi-card"><div class="value green">42%</div><div class="label">流程自动化率</div><div class="delta up">▲ +15pp YoY</div></div>
+        <div class="kpi-card"><div class="value yellow">126</div><div class="label">自动化场景数</div><div class="delta up">▲ +32个今年</div></div>
+        <div class="kpi-card"><div class="value green">6,800<small style="font-size:14px;color:#8896b0">h/月</small></div><div class="label">节约人工工时</div><div class="delta up">▲ 相当于34人</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card"><div class="card-title">🤖 各组自动化覆盖率</div><canvas id="ch3b_auto" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+        <div class="card"><div class="card-title">📈 自动化率提升路线图</div><canvas id="ch3b_road" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔧 已上线自动化场景Top 8</div>
+        <table class="data-table">
+          <thead><tr><th>场景名称</th><th>所属组</th><th>月处理量</th><th>节省工时/月</th><th>上线时间</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">供应商三单匹配</td><td>应付组</td><td>4,200笔</td><td>1,050h</td><td>2024.03</td></tr>
+            <tr><td class="highlight">银行流水自动对账</td><td>资金组</td><td>8,500笔</td><td>980h</td><td>2024.01</td></tr>
+            <tr><td class="highlight">发票OCR识别录入</td><td>影像组</td><td>6,800份</td><td>820h</td><td>2023.11</td></tr>
+            <tr><td class="highlight">费用报销智能审核</td><td>费用组</td><td>4,500单</td><td>750h</td><td>2024.06</td></tr>
+            <tr><td class="highlight">自动生成凭证</td><td>总账组</td><td>3,600笔</td><td>620h</td><td>2024.04</td></tr>
+            <tr><td class="highlight">客户自动开票</td><td>应收组</td><td>2,800张</td><td>560h</td><td>2024.02</td></tr>
+            <tr><td class="highlight">银企直连支付</td><td>资金组</td><td>6,200笔</td><td>520h</td><td>2023.09</td></tr>
+            <tr><td class="highlight">智能档案分类归档</td><td>档案组</td><td>3,200份</td><td>480h</td><td>2024.05</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p3c">
+      <div class="card"><div class="card-title">📊 FSSC 行业对标分析 (华为/中兴/行业平均)</div><canvas id="ch3c_bench" class="chart-canvas" height="240" width="200" style="width: 200px; height: 240px;"></canvas></div>
+      <div class="grid-3" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">🎯 下一步重点提升</div>
+          <div style="font-size:12px;line-height:2.2">
+            <div>• <span style="color:#00c8ff">应付流程端到端自动化</span> — 目标三单匹配100%</div>
+            <div>• <span style="color:#00e676">AI辅助报销审核</span> — 智能校验+风险预警</div>
+            <div>• <span style="color:#ffd740">RPA+AI融合</span> — 智能文档处理(IDP)</div>
+            <div>• <span style="color:#7b61ff">合并报表自动化</span> — 目标自动化率90%+</div>
+            <div>• <span style="color:#ff9100">智能资金预测</span> — 基于ML的资金流预测</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 对标差距</div>
+          <table class="data-table" style="font-size:11px">
+            <thead><tr><th>维度</th><th>华兴</th><th>标杆</th><th>差距</th></tr></thead>
+            <tbody>
+              <tr><td>自动化率</td><td>42%</td><td>60%</td><td style="color:#ff5252">-18pp</td></tr>
+              <tr><td>人均处理量(单/月)</td><td>519</td><td>650</td><td style="color:#ff5252">-131</td></tr>
+              <tr><td>单笔成本(¥)</td><td>157</td><td>120</td><td style="color:#ff5252">+¥37</td></tr>
+              <tr><td>SLA达标率</td><td>98.6%</td><td>99.2%</td><td style="color:#ffd740">-0.6pp</td></tr>
+              <tr><td>报表自动化</td><td>82%</td><td>90%</td><td style="color:#ff5252">-8pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">💡 业绩提升空间估算</div>
+          <div style="font-size:12px">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span>自动化提升至60%</span><span style="color:#00e676">+¥520万/年</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span>单笔成本降至¥120</span><span style="color:#00e676">+¥380万/年</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span>关账缩短至4天</span><span style="color:#00e676">效率+20%</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span>AI审核降低差错率</span><span style="color:#00e676">节约¥180万/年</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-weight:600">合计提升空间</span><span style="color:#00e676;font-weight:600">≈ ¥1,080万/年</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 4: 报表中心 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab4">
+    <div class="grid-4" style="margin-bottom:12px">
+      <div class="kpi-card"><div class="value blue" id="rptDate">2026年4月</div><div class="label">报表期间</div></div>
+      <div class="kpi-card"><div class="value green" id="rptCloseDays">M+5</div><div class="label">关账天数</div><div class="delta up">▲ 标准M+7，提前2天</div></div>
+      <div class="kpi-card"><div class="value green">15/15</div><div class="label">已关账公司</div><div class="delta up">✅ 全部完成</div></div>
+      <div class="kpi-card"><div class="value blue" id="rptProgress">100%</div><div class="label">合并报表完成度</div><div class="delta up">已完成出具</div></div>
+    </div>
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p4a">📋 合并报表</button>
+      <button class="sub-tab" data-panel="p4b">📊 财务分析</button>
+      <button class="sub-tab" data-panel="p4c">📅 关账日历</button>
+    </div>
+
+    <div class="sub-panel active" id="p4a">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📋 华兴集团合并利润表 (2026年4月)</div>
+          <div style="font-size:12px">
+            <table class="data-table">
+              <thead><tr><th>项目</th><th>本月(万元)</th><th>本年累计(万元)</th><th>同比</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">营业收入</td><td>156,800</td><td>612,500</td><td style="color:#00e676">+12.3%</td></tr>
+                <tr><td>营业成本</td><td>94,080</td><td>367,500</td><td style="color:#ff5252">+10.8%</td></tr>
+                <tr><td>毛利润</td><td>62,720</td><td>245,000</td><td style="color:#00e676">+15.1%</td></tr>
+                <tr><td>销售费用</td><td>14,112</td><td>55,125</td><td style="color:#ff5252">+8.2%</td></tr>
+                <tr><td>管理费用</td><td>9,408</td><td>36,750</td><td style="color:#00e676">-2.5%</td></tr>
+                <tr><td>研发费用</td><td>7,840</td><td>30,625</td><td style="color:#ff5252">+18.6%</td></tr>
+                <tr><td>财务费用</td><td>2,352</td><td>9,188</td><td style="color:#00e676">-8.3%</td></tr>
+                <tr><td>营业利润</td><td>29,008</td><td>113,313</td><td style="color:#00e676">+28.4%</td></tr>
+                <tr><td style="font-weight:600">净利润</td><td style="font-weight:600;color:#00c8ff">21,756</td><td style="font-weight:600;color:#00c8ff">84,984</td><td style="color:#00e676">+26.7%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 华兴集团合并资产负债表 (2026.4.30)</div>
+          <div style="font-size:12px">
+            <table class="data-table">
+              <thead><tr><th>项目</th><th>期末(万元)</th><th>期初(万元)</th><th>变动</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">流动资产合计</td><td>458,000</td><td>426,000</td><td style="color:#00e676">+7.5%</td></tr>
+                <tr><td>其中：货币资金</td><td>86,000</td><td>92,000</td><td style="color:#ff5252">-6.5%</td></tr>
+                <tr><td>应收账款</td><td>128,000</td><td>112,000</td><td style="color:#ff5252">+14.3%</td></tr>
+                <tr><td>存货</td><td>156,000</td><td>148,000</td><td style="color:#ff5252">+5.4%</td></tr>
+                <tr><td class="highlight">非流动资产合计</td><td>792,000</td><td>774,000</td><td style="color:#00e676">+2.3%</td></tr>
+                <tr><td style="font-weight:600;color:#00c8ff">资产总计</td><td style="font-weight:600;color:#00c8ff">1,250,000</td><td>1,200,000</td><td style="color:#00e676">+4.2%</td></tr>
+                <tr><td class="highlight">负债合计</td><td>685,000</td><td>668,000</td><td style="color:#ff5252">+2.5%</td></tr>
+                <tr><td class="highlight">股东权益合计</td><td>565,000</td><td>532,000</td><td style="color:#00e676">+6.2%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p4b">
+      <div class="grid-2">
+        <div class="card"><div class="card-title">📊 各板块营收构成</div><canvas id="ch4b_income" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+        <div class="card"><div class="card-title">📈 关键财务指标趋势</div><canvas id="ch4b_kpi" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
+        <div class="kpi-card"><div class="value blue">51.33%</div><div class="label">综合毛利率</div><div class="delta up">YoY +1.2pp</div></div>
+        <div class="kpi-card"><div class="value green">13.87%</div><div class="label">净利率</div><div class="delta up">YoY +1.6pp</div></div>
+        <div class="kpi-card"><div class="value yellow">45.2%</div><div class="label">资产负债率</div><div class="delta down">期初44.7%</div></div>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p4c">
+      <div class="card"><div class="card-title">📅 月度关账日历 (M+5日完成)</div><canvas id="ch4c_cal" class="chart-canvas" height="280" width="200" style="width: 200px; height: 280px;"></canvas></div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card">
+          <div class="card-title">📋 各公司关账状态</div>
+          <table class="data-table">
+            <thead><tr><th>公司名称</th><th>板块</th><th>关账状态</th><th>完成时间</th><th>关账天数</th></tr></thead>
+            <tbody>
+              <tr><td>华兴精密制造</td><td>制造</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴智能装备</td><td>制造</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴新材料</td><td>制造</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+5</td><td>5天</td></tr>
+              <tr><td>华兴置业</td><td>地产</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴物业管理</td><td>地产</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+4</td><td>4天</td></tr>
+              <tr><td>华兴国际贸易</td><td>贸易</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+3</td><td>3天</td></tr>
+              <tr><td>华兴科技</td><td>科技</td><td><span class="badge-sla excellent">✅ 已关账</span></td><td>M+5</td><td>5天</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card"><div class="card-title">📊 合并抵消与调整</div><canvas id="ch4c_consol" class="chart-canvas" height="200" width="200" style="width: 200px; height: 200px;"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 5: 团队业绩 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab5">
+    <div class="grid-4" style="margin-bottom:12px">
+      <div class="kpi-card"><div class="value blue">519</div><div class="label">人均月处理单量</div><div class="delta up">▲ 行业平均450</div></div>
+      <div class="kpi-card"><div class="value green">96.8</div><div class="label">综合质量评分(100分)</div><div class="delta up">▲ 目标96分</div></div>
+      <div class="kpi-card"><div class="value yellow">92%</div><div class="label">员工综合满意度</div><div class="delta up">▲ +5pp YoY</div></div>
+      <div class="kpi-card"><div class="value blue">42</div><div class="label">本季度培训学时/人</div><div class="delta up">▲ 目标40h</div></div>
+    </div>
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-panel="p5a">🏆 各组排名</button>
+      <button class="sub-tab" data-panel="p5b">👥 个人绩效</button>
+      <button class="sub-tab" data-panel="p5c">📊 质量分析</button>
+    </div>
+
+    <div class="sub-panel active" id="p5a">
+      <div class="grid-2">
+        <div class="card"><div class="card-title">🏆 各组综合绩效评分</div><canvas id="ch5a_score" class="chart-canvas" height="240" width="200" style="width: 200px; height: 240px;"></canvas></div>
+        <div class="card"><div class="card-title">📊 各组处理量对比</div><canvas id="ch5a_vol" class="chart-canvas" height="240" width="200" style="width: 200px; height: 240px;"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 各组月度绩效考核表</div>
+        <table class="data-table">
+          <thead><tr><th>团队</th><th>处理量</th><th>平均天数</th><th>差错率</th><th>质量分</th><th>SLA达标</th><th>综合评分</th><th>排名</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">💰 费用报销组</td><td>7,200</td><td>2.8天</td><td>0.38%</td><td>98.2</td><td>99.5%</td><td><span style="color:#00e676;font-weight:600">96.5</span></td><td>🥇</td></tr>
+            <tr><td class="highlight">📋 应付结算组</td><td>5,600</td><td>4.1天</td><td>0.32%</td><td>97.8</td><td>98.8%</td><td><span style="color:#00e676;font-weight:600">95.2</span></td><td>🥈</td></tr>
+            <tr><td class="highlight">🏦 资金结算组</td><td>8,500</td><td>0.5天</td><td>0.08%</td><td>99.5</td><td>99.9%</td><td><span style="color:#00e676;font-weight:600">94.8</span></td><td>🥉</td></tr>
+            <tr><td>💳 应收结算组</td><td>4,200</td><td>1.8天</td><td>0.45%</td><td>96.5</td><td>99.6%</td><td>93.6</td><td>4</td></tr>
+            <tr><td>📊 总账报表组</td><td>3,800</td><td>1.2天</td><td>0.52%</td><td>95.8</td><td>99.8%</td><td>92.4</td><td>5</td></tr>
+            <tr><td>🖼️ 影像管理组</td><td>6,400</td><td>0.3天</td><td>0.62%</td><td>94.2</td><td>99.6%</td><td>91.8</td><td>6</td></tr>
+            <tr><td>🗂️ 档案管理组</td><td>2,200</td><td>0.2天</td><td>0.15%</td><td>98.8</td><td>100%</td><td>90.5</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-panel" id="p5b">
+      <div class="card">
+        <div class="card-title">👑 本月之星</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          <div style="background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,180,0,.05));border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px">
+            <div style="font-size:32px">🥇</div>
+            <div style="font-size:15px;font-weight:600;color:#ffd740;margin:4px 0">张明华</div>
+            <div style="font-size:11px;color:#8896b0">费用报销组 · 组长</div>
+            <div style="font-size:11px;color:#00e676;margin-top:4px">处理量: 486单 · 差错: 0 · 质量: 99.5</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(192,192,192,.08),rgba(160,160,160,.04));border:1px solid rgba(192,192,192,.25);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px">
+            <div style="font-size:32px">🥈</div>
+            <div style="font-size:15px;font-weight:600;color:#c0d0f0;margin:4px 0">李雪梅</div>
+            <div style="font-size:11px;color:#8896b0">应付结算组 · 高级专员</div>
+            <div style="font-size:11px;color:#00e676;margin-top:4px">处理量: 412单 · 差错: 1 · 质量: 98.8</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(205,127,50,.08),rgba(180,100,30,.04));border:1px solid rgba(205,127,50,.25);border-radius:12px;padding:16px 24px;text-align:center;min-width:160px">
+            <div style="font-size:32px">🥉</div>
+            <div style="font-size:15px;font-weight:600;color:#cd7f32;margin:4px 0">王建国</div>
+            <div style="font-size:11px;color:#8896b0">资金结算组 · 高级专员</div>
+            <div style="font-size:11px;color:#00e676;margin-top:4px">处理量: 568笔 · 差错: 0 · 质量: 100</div>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-title">👥 团队人员分布</div><canvas id="ch5b_staff" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+    </div>
+
+    <div class="sub-panel" id="p5c">
+      <div class="grid-2">
+        <div class="card"><div class="card-title">📊 各组质量评分趋势 (近6月)</div><canvas id="ch5c_quality" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+        <div class="card"><div class="card-title">🔍 差错类型分析</div><canvas id="ch5c_errtype" class="chart-canvas" height="220" width="200" style="width: 200px; height: 220px;"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 月度质量稽查结果</div>
+        <table class="data-table">
+          <thead><tr><th>稽查项目</th><th>样本量</th><th>合格数</th><th>合格率</th><th>趋势</th></tr></thead>
+          <tbody>
+            <tr><td>凭证附件完整性</td><td>1,200</td><td>1,186</td><td class="highlight">98.83%</td><td><span class="badge-sla excellent">↑ 持续改善</span></td></tr>
+            <tr><td>会计分录准确性</td><td>800</td><td>794</td><td class="highlight">99.25%</td><td><span class="badge-sla excellent">↑ 稳定</span></td></tr>
+            <tr><td>审批流程合规性</td><td>600</td><td>593</td><td class="highlight">98.83%</td><td><span class="badge-sla good">→ 维持</span></td></tr>
+            <tr><td>发票验证准确性</td><td>900</td><td>887</td><td class="highlight">98.56%</td><td><span class="badge-sla good">→ 维持</span></td></tr>
+            <tr><td>归档及时性</td><td>500</td><td>496</td><td class="highlight">99.20%</td><td><span class="badge-sla excellent">↑ 改善中</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 6: 业务流程 · 供产销+费控 (SVG动画) -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="tab6">
+    <div class="section-title">🔄 核心业务流程 · 全链条流转动图</div>
+    <div class="section-subtitle">各业务流程节点自动流转，实时展示单据在各环节的处理动态</div>
+
+    <div class="grid-flow">
+      <!-- 费用报销流程 -->
+      <div class="flow-box">
+        <div class="flow-box-title">💰 费用报销流程 · Expense Reimbursement</div>
+        <svg class="flow-svg" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arG" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0L6,2.5L0,5Z" fill="#00e676"></path></marker><marker id="arC" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0L6,2.5L0,5Z" fill="#00c8ff"></path></marker></defs>
+          <!-- Step 1 -->
+          <rect x="8" y="70" width="62" height="36" rx="8" class="flow-node"></rect>
+          <text x="39" y="82" text-anchor="middle" class="flow-node-icon">📄</text>
+          <text x="39" y="98" text-anchor="middle" class="flow-node-text">提交报销单</text>
+          <!-- Arrow 1 -->
+          <line x1="70" y1="88" x2="90" y2="88" stroke="#00e676" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arG)"></line>
+          <!-- Step 2 -->
+          <rect x="90" y="66" width="64" height="40" rx="8" class="flow-node"></rect>
+          <circle cx="150" cy="72" r="5" fill="#00c8ff" class="flow-dot"></circle>
+          <text x="122" y="78" text-anchor="middle" class="flow-node-icon">🖼️</text>
+          <text x="122" y="96" text-anchor="middle" class="flow-node-text">影像扫描+OCR</text>
+          <!-- Arrow 2 -->
+          <line x1="154" y1="86" x2="174" y2="86" stroke="#00e676" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arG)"></line>
+          <!-- Step 3 -->
+          <rect x="174" y="62" width="68" height="44" rx="10" class="flow-node" style="fill:rgba(0,200,255,.1);stroke:#00c8ff"></rect>
+          <text x="208" y="76" text-anchor="middle" class="flow-node-icon">🤖</text>
+          <text x="208" y="94" text-anchor="middle" class="flow-node-text" fill="#00c8ff">自动预审</text>
+          <text x="208" y="104" text-anchor="middle" style="fill:#8896b0;font-size:7px">预算校验+标准</text>
+          <!-- Arrow 3a (pass) -->
+          <line x1="242" y1="70" x2="262" y2="70" stroke="#00e676" stroke-width="2" class="flow-arrow-green" marker-end="url(#arG)"></line>
+          <!-- Arrow 3b (reject) -->
+          <line x1="208" y1="106" x2="208" y2="140" stroke="#ff5252" stroke-width="1.5" stroke-dasharray="4 3" class="flow-arrow-red"></line>
+          <text x="218" y="138" fill="#ff5252" font-size="8">退回</text>
+          <!-- Step 4 -->
+          <rect x="262" y="52" width="60" height="40" rx="8" class="flow-node-process"></rect>
+          <text x="292" y="65" text-anchor="middle" class="flow-node-icon">📋</text>
+          <text x="292" y="82" text-anchor="middle" class="flow-node-text">审批流</text>
+          <text x="292" y="93" text-anchor="middle" style="fill:#8896b0;font-size:7px">部门经理→财务</text>
+          <!-- Arrow 4 -->
+          <line x1="322" y1="72" x2="342" y2="72" stroke="#00e676" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arG)"></line>
+          <!-- Step 5 -->
+          <rect x="342" y="52" width="60" height="40" rx="8" class="flow-node-process"></rect>
+          <circle cx="380" cy="58" r="5" fill="#00e676" class="flow-dot-green"></circle>
+          <text x="372" y="68" text-anchor="middle" class="flow-node-icon">💰</text>
+          <text x="372" y="86" text-anchor="middle" class="flow-node-text">费用组审核</text>
+          <!-- Arrow 5 -->
+          <line x1="402" y1="72" x2="422" y2="72" stroke="#00e676" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arG)"></line>
+          <!-- Step 6 -->
+          <rect x="422" y="52" width="62" height="40" rx="8" class="flow-node-end"></rect>
+          <text x="453" y="68" text-anchor="middle" class="flow-node-icon">🏦</text>
+          <text x="453" y="84" text-anchor="middle" class="flow-node-text">银企支付</text>
+          <text x="453" y="95" text-anchor="middle" style="fill:#8896b0;font-size:7px">T+0到账</text>
+          <!-- Reject path -->
+          <rect x="160" y="138" width="60" height="28" rx="6" fill="rgba(255,82,82,.08)" stroke="#ff5252" stroke-width="1"></rect>
+          <text x="190" y="156" text-anchor="middle" fill="#ff5252" font-size="9">❌ 退回修改</text>
+          <line x1="170" y1="140" x2="160" y2="108" stroke="#ff5252" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arC)"></line>
+          <!-- Title bar -->
+          <rect x="160" y="10" width="100" height="24" rx="12" fill="rgba(0,230,118,.1)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="210" y="26" text-anchor="middle" fill="#00e676" font-size="10">⏱ 平均 2.8 天</text>
+          <!-- Queue count -->
+          <rect x="8" y="10" width="80" height="24" rx="12" fill="rgba(0,200,255,.1)" stroke="#00c8ff" stroke-width="1"></rect>
+          <text x="48" y="26" text-anchor="middle" fill="#00c8ff" font-size="10">📊 待处理 182 单</text>
+        </svg>
+        <div class="flow-legend">
+          <span class="flow-legend-item"><span class="status-dot green"></span>自动流转</span>
+          <span class="flow-legend-item"><span class="status-dot blue"></span>系统处理</span>
+          <span class="flow-legend-item"><span class="status-dot red"></span>退回路径</span>
+          <span class="flow-legend-item">已处理 7,200 单/月</span>
+        </div>
+      </div>
+
+      <!-- 应付账款流程 -->
+      <div class="flow-box">
+        <div class="flow-box-title">📋 应付账款流程 · AP Processing</div>
+        <svg class="flow-svg" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arYG" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0L6,2.5L0,5Z" fill="#ffd740"></path></marker></defs>
+          <!-- Step 1 -->
+          <rect x="6" y="70" width="62" height="36" rx="8" class="flow-node"></rect>
+          <text x="37" y="82" text-anchor="middle" class="flow-node-icon">📄</text>
+          <text x="37" y="98" text-anchor="middle" class="flow-node-text">供应商发票</text>
+          <line x1="68" y1="88" x2="88" y2="88" stroke="#ffd740" stroke-width="2" class="flow-arrow-gold" marker-end="url(#arYG)"></line>
+          <!-- Step 2 -->
+          <rect x="88" y="66" width="64" height="40" rx="8" class="flow-node"></rect>
+          <circle cx="148" cy="72" r="5" fill="#ffd740" class="flow-dot-gold"></circle>
+          <text x="120" y="78" text-anchor="middle" class="flow-node-icon">🖼️</text>
+          <text x="120" y="96" text-anchor="middle" class="flow-node-text">OCR验真</text>
+          <line x1="152" y1="86" x2="172" y2="86" stroke="#ffd740" stroke-width="2" class="flow-arrow-gold" marker-end="url(#arYG)"></line>
+          <!-- Step 3 -->
+          <rect x="172" y="62" width="72" height="44" rx="10" class="flow-node" style="fill:rgba(255,215,64,.1);stroke:#ffd740"></rect>
+          <circle cx="248" cy="62" r="5" fill="#00c8ff" class="flow-dot"></circle>
+          <text x="208" y="76" text-anchor="middle" class="flow-node-icon">🤖</text>
+          <text x="208" y="94" text-anchor="middle" class="flow-node-text" fill="#ffd740">三单匹配</text>
+          <text x="208" y="106" text-anchor="middle" style="fill:#8896b0;font-size:7px">PO+收货+发票</text>
+          <!-- Match 99.1% -->
+          <rect x="172" y="5" width="72" height="22" rx="6" fill="rgba(0,230,118,.08)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="208" y="19" text-anchor="middle" fill="#00e676" font-size="9">✅ 匹配率 99.1%</text>
+          <!-- Arrow 3 -->
+          <line x1="244" y1="84" x2="264" y2="84" stroke="#ffd740" stroke-width="2" class="flow-arrow-gold" marker-end="url(#arYG)"></line>
+          <!-- Step 4 -->
+          <rect x="264" y="52" width="58" height="40" rx="8" class="flow-node-process"></rect>
+          <text x="293" y="65" text-anchor="middle" class="flow-node-icon">📋</text>
+          <text x="293" y="84" text-anchor="middle" class="flow-node-text">应付组审核</text>
+          <!-- Arrow 4 -->
+          <line x1="322" y1="72" x2="342" y2="72" stroke="#ffd740" stroke-width="2" class="flow-arrow-gold" marker-end="url(#arYG)"></line>
+          <!-- Step 5 -->
+          <rect x="342" y="48" width="60" height="44" rx="8" class="flow-node-process"></rect>
+          <text x="372" y="64" text-anchor="middle" class="flow-node-icon">📅</text>
+          <text x="372" y="82" text-anchor="middle" class="flow-node-text">付款排程</text>
+          <text x="372" y="94" text-anchor="middle" style="fill:#8896b0;font-size:7px">到期日排序</text>
+          <!-- Arrow 5 -->
+          <line x1="402" y1="70" x2="422" y2="70" stroke="#ffd740" stroke-width="2" class="flow-arrow-gold" marker-end="url(#arYG)"></line>
+          <!-- Step 6 -->
+          <rect x="422" y="52" width="62" height="40" rx="8" class="flow-node-end"></rect>
+          <text x="453" y="68" text-anchor="middle" class="flow-node-icon">🏦</text>
+          <text x="453" y="86" text-anchor="middle" class="flow-node-text">付款执行</text>
+          <!-- Mismatch path -->
+          <rect x="180" y="130" width="96" height="28" rx="8" fill="rgba(255,215,64,.08)" stroke="#ffd740" stroke-width="1"></rect>
+          <text x="228" y="148" text-anchor="middle" fill="#ffd740" font-size="9">⚠️ 差异处理 (人工介入)</text>
+          <line x1="196" y1="130" x2="208" y2="108" stroke="#ffd740" stroke-width="1" stroke-dasharray="3 3"></line>
+          <!-- Queue -->
+          <rect x="6" y="10" width="80" height="24" rx="12" fill="rgba(255,215,64,.1)" stroke="#ffd740" stroke-width="1"></rect>
+          <text x="46" y="26" text-anchor="middle" fill="#ffd740" font-size="10">📊 待处理 168 单</text>
+          <rect x="360" y="10" width="80" height="24" rx="12" fill="rgba(0,230,118,.1)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="400" y="26" text-anchor="middle" fill="#00e676" font-size="10">⏱ 平均 4.1 天</text>
+        </svg>
+        <div class="flow-legend">
+          <span class="flow-legend-item"><span class="status-dot yellow"></span>应付流程</span>
+          <span class="flow-legend-item"><span class="status-dot green"></span>99.1%自动匹配</span>
+          <span class="flow-legend-item"><span class="status-dot red"></span>0.9%人工差异</span>
+        </div>
+      </div>
+
+      <!-- 应收账款流程 -->
+      <div class="flow-box">
+        <div class="flow-box-title">💳 应收账款流程 · AR Collection</div>
+        <svg class="flow-svg" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arBL" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0L6,2.5L0,5Z" fill="#00c8ff"></path></marker></defs>
+          <rect x="6" y="70" width="60" height="36" rx="8" class="flow-node"></rect>
+          <text x="36" y="82" text-anchor="middle" class="flow-node-icon">📄</text>
+          <text x="36" y="98" text-anchor="middle" class="flow-node-text">销售订单</text>
+          <line x1="66" y1="88" x2="82" y2="88" stroke="#00c8ff" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arBL)"></line>
+          <rect x="82" y="66" width="58" height="40" rx="8" class="flow-node"></rect>
+          <text x="111" y="78" text-anchor="middle" class="flow-node-icon">🧾</text>
+          <text x="111" y="96" text-anchor="middle" class="flow-node-text">自动开票</text>
+          <circle cx="113" cy="72" r="5" fill="#00c8ff" class="flow-dot"></circle>
+          <line x1="140" y1="86" x2="156" y2="86" stroke="#00c8ff" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arBL)"></line>
+          <rect x="156" y="62" width="58" height="44" rx="10" class="flow-node" style="fill:rgba(0,200,255,.1);stroke:#00c8ff"></rect>
+          <text x="185" y="76" text-anchor="middle" class="flow-node-icon">💳</text>
+          <text x="185" y="94" text-anchor="middle" class="flow-node-text" fill="#00c8ff">应收组核销</text>
+          <text x="185" y="106" text-anchor="middle" style="fill:#8896b0;font-size:7px">匹配银行回单</text>
+          <line x1="214" y1="84" x2="230" y2="84" stroke="#00c8ff" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arBL)"></line>
+          <rect x="230" y="48" width="58" height="44" rx="8" class="flow-node-process"></rect>
+          <text x="259" y="62" text-anchor="middle" class="flow-node-icon">📊</text>
+          <text x="259" y="80" text-anchor="middle" class="flow-node-text">账龄分析</text>
+          <text x="259" y="94" text-anchor="middle" style="fill:#8896b0;font-size:7px">超期预警</text>
+          <line x1="288" y1="70" x2="304" y2="70" stroke="#00c8ff" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arBL)"></line>
+          <rect x="304" y="48" width="58" height="44" rx="8" class="flow-node-process"></rect>
+          <text x="333" y="64" text-anchor="middle" class="flow-node-icon">📞</text>
+          <text x="333" y="82" text-anchor="middle" class="flow-node-text">催收管理</text>
+          <text x="333" y="94" text-anchor="middle" style="fill:#8896b0;font-size:7px">分级催收</text>
+          <line x1="362" y1="70" x2="378" y2="70" stroke="#00c8ff" stroke-width="2" class="flow-arrow-anim" marker-end="url(#arBL)"></line>
+          <rect x="378" y="52" width="62" height="40" rx="8" class="flow-node-end"></rect>
+          <text x="409" y="68" text-anchor="middle" class="flow-node-icon">💰</text>
+          <text x="409" y="86" text-anchor="middle" class="flow-node-text">资金回笼</text>
+          <!-- Age alert -->
+          <rect x="222" y="130" width="100" height="28" rx="8" fill="rgba(255,82,82,.08)" stroke="#ff5252" stroke-width="1"></rect>
+          <text x="272" y="148" text-anchor="middle" fill="#ff5252" font-size="9">⚠️ 超90天 ¥12,800万</text>
+          <line x1="259" y1="130" x2="259" y2="94" stroke="#ff5252" stroke-width="1" stroke-dasharray="3 3"></line>
+          <rect x="6" y="10" width="80" height="24" rx="12" fill="rgba(0,200,255,.1)" stroke="#00c8ff" stroke-width="1"></rect>
+          <text x="46" y="26" text-anchor="middle" fill="#00c8ff" font-size="10">📊 月均 4,200 单</text>
+          <rect x="380" y="10" width="80" height="24" rx="12" fill="rgba(0,230,118,.1)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="420" y="26" text-anchor="middle" fill="#00e676" font-size="10">回款率 96.3%</text>
+        </svg>
+        <div class="flow-legend">
+          <span class="flow-legend-item"><span class="status-dot blue"></span>自动开票</span>
+          <span class="flow-legend-item"><span class="status-dot green"></span>核销闭环</span>
+          <span class="flow-legend-item"><span style="color:#ff5252">●</span>超期预警</span>
+        </div>
+      </div>
+
+      <!-- 资金结算流程 -->
+      <div class="flow-box">
+        <div class="flow-box-title">🏦 资金结算流程 · Cash Management</div>
+        <svg class="flow-svg" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arPP" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0L6,2.5L0,5Z" fill="#7b61ff"></path></marker></defs>
+          <rect x="6" y="70" width="60" height="36" rx="8" class="flow-node"></rect>
+          <text x="36" y="82" text-anchor="middle" class="flow-node-icon">📄</text>
+          <text x="36" y="98" text-anchor="middle" class="flow-node-text">支付指令</text>
+          <line x1="66" y1="88" x2="82" y2="88" stroke="#7b61ff" stroke-width="2" class="flow-arrow-accent" marker-end="url(#arPP)"></line>
+          <rect x="82" y="66" width="60" height="40" rx="8" class="flow-node"></rect>
+          <circle cx="140" cy="72" r="5" fill="#7b61ff" class="flow-dot-slow"></circle>
+          <text x="112" y="78" text-anchor="middle" class="flow-node-icon">🔐</text>
+          <text x="112" y="96" text-anchor="middle" class="flow-node-text">风控校验</text>
+          <line x1="142" y1="86" x2="158" y2="86" stroke="#7b61ff" stroke-width="2" class="flow-arrow-accent" marker-end="url(#arPP)"></line>
+          <rect x="158" y="62" width="64" height="44" rx="10" class="flow-node" style="fill:rgba(123,97,255,.1);stroke:#7b61ff"></rect>
+          <circle cx="226" cy="62" r="5" fill="#00c8ff" class="flow-dot"></circle>
+          <text x="190" y="76" text-anchor="middle" class="flow-node-icon">🤖</text>
+          <text x="190" y="94" text-anchor="middle" class="flow-node-text" fill="#b388ff">银企直连</text>
+          <text x="190" y="106" text-anchor="middle" style="fill:#8896b0;font-size:7px">自动发送指令</text>
+          <line x1="222" y1="84" x2="238" y2="84" stroke="#7b61ff" stroke-width="2" class="flow-arrow-accent" marker-end="url(#arPP)"></line>
+          <rect x="238" y="48" width="60" height="44" rx="8" class="flow-node-process"></rect>
+          <text x="268" y="62" text-anchor="middle" class="flow-node-icon">💳</text>
+          <text x="268" y="80" text-anchor="middle" class="flow-node-text">大额复核</text>
+          <text x="268" y="94" text-anchor="middle" style="fill:#8896b0;font-size:7px">&gt;¥50万双签</text>
+          <line x1="298" y1="70" x2="314" y2="70" stroke="#7b61ff" stroke-width="2" class="flow-arrow-accent" marker-end="url(#arPP)"></line>
+          <rect x="314" y="48" width="60" height="44" rx="8" class="flow-node-process"></rect>
+          <text x="344" y="64" text-anchor="middle" class="flow-node-icon">🏦</text>
+          <text x="344" y="82" text-anchor="middle" class="flow-node-text">银行执行</text>
+          <text x="344" y="94" text-anchor="middle" style="fill:#8896b0;font-size:7px">T+0到账</text>
+          <line x1="374" y1="70" x2="390" y2="70" stroke="#7b61ff" stroke-width="2" class="flow-arrow-accent" marker-end="url(#arPP)"></line>
+          <rect x="390" y="52" width="60" height="40" rx="8" class="flow-node-end"></rect>
+          <text x="420" y="68" text-anchor="middle" class="flow-node-icon">📊</text>
+          <text x="420" y="86" text-anchor="middle" class="flow-node-text">自动对账</text>
+          <!-- Large amount alert -->
+          <rect x="230" y="130" width="100" height="28" rx="8" fill="rgba(255,215,64,.08)" stroke="#ffd740" stroke-width="1"></rect>
+          <text x="280" y="148" text-anchor="middle" fill="#ffd740" font-size="9">💰 今日支付 ¥2,860万</text>
+          <rect x="6" y="10" width="80" height="24" rx="12" fill="rgba(123,97,255,.1)" stroke="#7b61ff" stroke-width="1"></rect>
+          <text x="46" y="26" text-anchor="middle" fill="#b388ff" font-size="10">📊 月均 8,500 笔</text>
+          <rect x="380" y="10" width="80" height="24" rx="12" fill="rgba(0,230,118,.1)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="420" y="26" text-anchor="middle" fill="#00e676" font-size="10">自动化率 91%</text>
+        </svg>
+        <div class="flow-legend">
+          <span class="flow-legend-item"><span class="status-dot purple"></span>资金流程</span>
+          <span class="flow-legend-item"><span style="color:#00c8ff">●</span>银企直连</span>
+          <span class="flow-legend-item"><span style="color:#ffd740">●</span>大额风控</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 7: 单据流转 (实时动效) -->
+  <!-- ============================================================ -->
+  <div class="tab-content active" id="tab7">
+    <div class="section-title">📋 单据流转动图 · 实时追踪</div>
+    <div class="section-subtitle">各类单据在FSSC各业务组间的自动分流、处理、流转全链路实况</div>
+
+    <!-- 主流程图 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🔄</span> 全链路单据流 · 单据类型: 费用报销单 / 供应商发票 / 客户开票 / 资金支付</div>
+      <svg width="100%" height="360" viewBox="0 0 980 360" style="display:block;margin:8px 0">
+        <defs>
+          <marker id="arMain" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0L8,3L0,6Z" fill="#8896b0"></path></marker>
+          <marker id="ar1m" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0L8,3L0,6Z" fill="#00c8ff"></path></marker>
+          <marker id="ar2m" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0L8,3L0,6Z" fill="#00e676"></path></marker>
+          <filter id="glow"><fegaussianblur stdDeviation="3" result="blur"></fegaussianblur><femerge><femergenode in="blur"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+        </defs>
+
+        <!-- 背景 - 各组 -->
+        <!-- 影像组 -->
+        <rect x="10" y="10" width="140" height="320" rx="10" fill="rgba(0,200,255,.03)" stroke="rgba(0,200,255,.08)" stroke-width="1"></rect>
+        <text x="80" y="30" text-anchor="middle" fill="#00c8ff" font-size="11" font-weight="600">🖼️ 影像管理组</text>
+        <!-- 费用组 -->
+        <rect x="180" y="10" width="140" height="320" rx="10" fill="rgba(0,230,118,.03)" stroke="rgba(0,230,118,.08)" stroke-width="1"></rect>
+        <text x="250" y="30" text-anchor="middle" fill="#00e676" font-size="11" font-weight="600">💰 费用报销组</text>
+        <!-- 应付组 -->
+        <rect x="350" y="10" width="140" height="320" rx="10" fill="rgba(255,215,64,.03)" stroke="rgba(255,215,64,.08)" stroke-width="1"></rect>
+        <text x="420" y="30" text-anchor="middle" fill="#ffd740" font-size="11" font-weight="600">📋 应付结算组</text>
+        <!-- 应收组 -->
+        <rect x="520" y="10" width="140" height="320" rx="10" fill="rgba(0,200,255,.03)" stroke="rgba(0,200,255,.08)" stroke-width="1"></rect>
+        <text x="590" y="30" text-anchor="middle" fill="#00c8ff" font-size="11" font-weight="600">💳 应收结算组</text>
+        <!-- 资金组 -->
+        <rect x="690" y="10" width="140" height="320" rx="10" fill="rgba(123,97,255,.03)" stroke="rgba(123,97,255,.08)" stroke-width="1"></rect>
+        <text x="760" y="30" text-anchor="middle" fill="#b388ff" font-size="11" font-weight="600">🏦 资金结算组</text>
+        <!-- 总账组 -->
+        <rect x="860" y="10" width="110" height="320" rx="10" fill="rgba(255,82,82,.03)" stroke="rgba(255,82,82,.08)" stroke-width="1"></rect>
+        <text x="915" y="30" text-anchor="middle" fill="#ff5252" font-size="11" font-weight="600">📊 总账组</text>
+
+        <!-- 流向箭头 -->
+        <!-- 影像→分流 -->
+        <polyline points="150,60 170,60 170,55 155,55" fill="none" stroke="#00c8ff" stroke-width="2" class="flow-arrow-anim"></polyline>
+        <text x="165" y="70" text-anchor="middle" fill="#8896b0" font-size="8">分流</text>
+
+        <!-- 影像→费用 -->
+        <line x1="150" y1="100" x2="180" y2="100" stroke="#00e676" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-green"></line>
+        <!-- 影像→应付 -->
+        <line x1="150" y1="140" x2="350" y2="140" stroke="#ffd740" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-gold"></line>
+        <!-- 影像→应收 -->
+        <line x1="150" y1="180" x2="520" y2="180" stroke="#00c8ff" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-anim"></line>
+        <!-- 费用→资金 -->
+        <line x1="320" y1="110" x2="690" y2="110" stroke="#7b61ff" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-accent"></line>
+        <!-- 应付→资金 -->
+        <line x1="490" y1="140" x2="690" y2="140" stroke="#7b61ff" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-accent"></line>
+        <!-- 应收→资金 -->
+        <line x1="660" y1="180" x2="690" y2="180" stroke="#7b61ff" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-accent"></line>
+        <!-- 资金→总账 -->
+        <line x1="830" y1="140" x2="860" y2="140" stroke="#ff5252" stroke-width="2" stroke-dasharray="5 4" class="flow-arrow-red"></line>
+
+        <!-- ====== 单据卡片 (带动画) ====== -->
+        <!-- 费用报销单 - 在影像组扫描中 -->
+        <g>
+          <animatetransform attributeName="transform" type="translate" values="0,0; 3,-2; -2,3; 0,0" dur="4s" repeatCount="indefinite"></animatetransform>
+          <rect x="30" y="50" width="100" height="34" rx="6" fill="rgba(0,200,255,.12)" stroke="#00c8ff" stroke-width="1.2"></rect>
+          <text x="80" y="62" text-anchor="middle" fill="#00c8ff" font-size="9" font-weight="600">📄 影像扫描中</text>
+          <text x="80" y="76" text-anchor="middle" fill="#8896b0" font-size="8">3,200份/日</text>
+          <circle cx="40" cy="60" r="3" fill="#00c8ff" class="flow-dot"></circle>
+        </g>
+
+        <!-- OCR识别中 -->
+        <g>
+          <animatetransform attributeName="transform" type="translate" values="0,0; -3,2; 2,-3; 0,0" dur="3.5s" repeatCount="indefinite"></animatetransform>
+          <rect x="30" y="105" width="100" height="34" rx="6" fill="rgba(123,97,255,.12)" stroke="#7b61ff" stroke-width="1.2"></rect>
+          <text x="80" y="117" text-anchor="middle" fill="#b388ff" font-size="9" font-weight="600">🔍 OCR识别中</text>
+          <text x="80" y="131" text-anchor="middle" fill="#8896b0" font-size="8">正确率97.2%</text>
+        </g>
+
+        <!-- 费用组 - 审核中 -->
+        <g>
+          <animatetransform attributeName="transform" type="translate" values="0,0; 4,-2; -3,1; 0,0" dur="3s" repeatCount="indefinite"></animatetransform>
+          <rect x="195" y="55" width="110" height="38" rx="6" fill="rgba(0,230,118,.12)" stroke="#00e676" stroke-width="1.2"></rect>
+          <text x="250" y="68" text-anchor="middle" fill="#00e676" font-size="9" font-weight="600">✅ 费用审核中</text>
+          <text x="250" y="84" text-anchor="middle" fill="#8896b0" font-size="8">7,200单/月</text>
+          <circle cx="215" cy="62" r="4" fill="#00e676" class="flow-dot-green"></circle>
+          <!-- 进度条 -->
+          <rect x="200" y="92" width="100" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+          <rect x="200" y="92" width="68" height="4" rx="2" fill="#00e676"><animate attributeName="width" values="0;68;0" dur="8s" repeatCount="indefinite"></animate></rect>
+        </g>
+
+        <!-- 应付组 - 三单匹配中 -->
+        <g>
+          <animatetransform attributeName="transform" type="translate" values="0,0; -3,3; 4,-2; 0,0" dur="4.5s" repeatCount="indefinite"></animatetransform>
+          <rect x="365" y="55" width="110" height="38" rx="6" fill="rgba(255,215,64,.12)" stroke="#ffd740" stroke-width="1.2"></rect>
+          <text x="420" y="68" text-anchor="middle" fill="#ffd740" font-size="9" font-weight="600">🔄 三单匹配中</text>
+          <text x="420" y="84" text-anchor="middle" fill="#8896b0" font-size="8">PO+收+发票</text>
+          <circle cx="385" cy="62" r="4" fill="#ffd740" class="flow-dot-gold"></circle>
+          <rect x="370" y="92" width="100" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+          <rect x="370" y="92" width="82" height="4" rx="2" fill="#ffd740"><animate attributeName="width" values="0;82;0" dur="7s" repeatCount="indefinite"></animate></rect>
+        </g>
+
+        <!-- 应收组 - 核销中 -->
+        <g>
+          <animatetransform attributeName="transform" type="translate" values="0,0; 2,-3; -4,2; 0,0" dur="3.8s" repeatCount="indefinite"></animatetransform>
+          <rect x="535" y="55" width="110" height="38" rx="6" fill="rgba(0,200,255,.12)" stroke="#00c8ff" stroke-width="1.2"></rect>
+          <text x="590" y="68" text-anchor="middle" fill="#00c8ff" font-size="9" font-weight="600">💳 收款核销中</text>
+          <text x="590" y="84" text-anchor="middle" fill="#8896b0" font-size="8">4,200单/月</text>
+          <circle cx="555" cy="62" r="4" fill="#00c8ff" class="flow-dot"></circle>
+        </g>
+
+        <!-- 资金组 - 支付执行 -->
+        <g>
+          <animatetransform attributeName="transform" type="translate" values="0,0; -2,4; 3,-3; 0,0" dur="3.3s" repeatCount="indefinite"></animatetransform>
+          <rect x="705" y="55" width="110" height="38" rx="6" fill="rgba(123,97,255,.12)" stroke="#7b61ff" stroke-width="1.2"></rect>
+          <text x="760" y="68" text-anchor="middle" fill="#b388ff" font-size="9" font-weight="600">🏦 支付执行中</text>
+          <text x="760" y="84" text-anchor="middle" fill="#8896b0" font-size="8">今日支付¥2,860万</text>
+          <circle cx="725" cy="62" r="4" fill="#7b61ff" class="flow-dot-slow"></circle>
+          <rect x="710" y="92" width="100" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+          <rect x="710" y="92" width="55" height="4" rx="2" fill="#7b61ff"><animate attributeName="width" values="0;55;0" dur="6s" repeatCount="indefinite"></animate></rect>
+        </g>
+
+        <!-- 总账组 - 凭证处理 -->
+        <g>
+          <rect x="870" y="55" width="98" height="38" rx="6" fill="rgba(255,82,82,.12)" stroke="#ff5252" stroke-width="1.2"></rect>
+          <text x="919" y="68" text-anchor="middle" fill="#ff5252" font-size="9" font-weight="600">📊 凭证处理</text>
+          <text x="919" y="84" text-anchor="middle" fill="#8896b0" font-size="8">3,800单/月</text>
+          <circle cx="888" cy="62" r="4" fill="#ff5252" class="flow-dot-slow"></circle>
+        </g>
+
+        <!-- ====== 运动中单据 ====== -->
+        <!-- 单据沿箭头运动: 影像→费用 -->
+        <g>
+          <animatemotion dur="6s" repeatCount="indefinite" path="M170,100 L180,100" rotate="auto"></animatemotion>
+          <rect x="-18" y="-10" width="36" height="20" rx="4" fill="rgba(0,230,118,.15)" stroke="#00e676" stroke-width="1"></rect>
+          <text x="0" y="3" text-anchor="middle" fill="#00e676" font-size="7">📄 费用单</text>
+        </g>
+        <!-- 单据沿箭头运动: 影像→应付 -->
+        <g>
+          <animatemotion dur="7s" repeatCount="indefinite" path="M170,140 L350,140" rotate="auto"></animatemotion>
+          <rect x="-18" y="-10" width="36" height="20" rx="4" fill="rgba(255,215,64,.15)" stroke="#ffd740" stroke-width="1"></rect>
+          <text x="0" y="3" text-anchor="middle" fill="#ffd740" font-size="7">📄 发票</text>
+        </g>
+        <!-- 单据沿箭头运动: 费用→资金 -->
+        <g>
+          <animatemotion dur="8s" repeatCount="indefinite" path="M320,110 L690,110" rotate="auto"></animatemotion>
+          <rect x="-18" y="-10" width="36" height="20" rx="4" fill="rgba(123,97,255,.15)" stroke="#7b61ff" stroke-width="1"></rect>
+          <text x="0" y="3" text-anchor="middle" fill="#b388ff" font-size="7">💰 支付</text>
+        </g>
+        <!-- 单据沿箭头运动: 应收→资金 -->
+        <g>
+          <animatemotion dur="8s" repeatCount="indefinite" path="M660,180 L690,180" rotate="auto"></animatemotion>
+          <rect x="-18" y="-10" width="36" height="20" rx="4" fill="rgba(0,200,255,.15)" stroke="#00c8ff" stroke-width="1"></rect>
+          <text x="0" y="3" text-anchor="middle" fill="#00c8ff" font-size="7">💳 回款</text>
+        </g>
+
+        <!-- ====== 各组统计信息 ====== -->
+        <!-- 影像组统计 -->
+        <text x="80" y="170" text-anchor="middle" fill="#8896b0" font-size="9">┄┄┄┄┄┄┄┄┄┄</text>
+        <text x="80" y="190" text-anchor="middle" fill="#00c8ff" font-size="10">日均3,200份</text>
+        <text x="80" y="208" text-anchor="middle" fill="#8896b0" font-size="9">OCR 97.2%</text>
+        <text x="80" y="226" text-anchor="middle" fill="#8896b0" font-size="9">自动化率55%</text>
+        <rect x="30" y="240" width="100" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+        <rect x="30" y="240" width="55" height="4" rx="2" fill="#00c8ff"><animate attributeName="width" values="55;60;55" dur="3s" repeatCount="indefinite"></animate></rect>
+        <text x="80" y="260" text-anchor="middle" fill="#8896b0" font-size="9">待处理 126份</text>
+
+        <!-- 费用组统计 -->
+        <text x="250" y="170" text-anchor="middle" fill="#8896b0" font-size="9">┄┄┄┄┄┄┄┄┄┄</text>
+        <text x="250" y="190" text-anchor="middle" fill="#00e676" font-size="10">月均7,200单</text>
+        <text x="250" y="208" text-anchor="middle" fill="#8896b0" font-size="9">平均2.8天</text>
+        <text x="250" y="226" text-anchor="middle" fill="#8896b0" font-size="9">一次性通过99.5%</text>
+        <rect x="195" y="240" width="110" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+        <rect x="195" y="240" width="95" height="4" rx="2" fill="#00e676"><animate attributeName="width" values="95;98;95" dur="3s" repeatCount="indefinite"></animate></rect>
+        <text x="250" y="260" text-anchor="middle" fill="#8896b0" font-size="9">待处理 182单</text>
+
+        <!-- 应付组统计 -->
+        <text x="420" y="170" text-anchor="middle" fill="#8896b0" font-size="9">┄┄┄┄┄┄┄┄┄┄</text>
+        <text x="420" y="190" text-anchor="middle" fill="#ffd740" font-size="10">月均5,600单</text>
+        <text x="420" y="208" text-anchor="middle" fill="#8896b0" font-size="9">三单匹配99.1%</text>
+        <text x="420" y="226" text-anchor="middle" fill="#8896b0" font-size="9">平均4.1天</text>
+        <rect x="365" y="240" width="110" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+        <rect x="365" y="240" width="85" height="4" rx="2" fill="#ffd740"><animate attributeName="width" values="85;88;85" dur="3s" repeatCount="indefinite"></animate></rect>
+        <text x="420" y="260" text-anchor="middle" fill="#8896b0" font-size="9">待处理 168单</text>
+
+        <!-- 应收组统计 -->
+        <text x="590" y="170" text-anchor="middle" fill="#8896b0" font-size="9">┄┄┄┄┄┄┄┄┄┄</text>
+        <text x="590" y="190" text-anchor="middle" fill="#00c8ff" font-size="10">月均4,200单</text>
+        <text x="590" y="208" text-anchor="middle" fill="#8896b0" font-size="9">回款及时率96.3%</text>
+        <text x="590" y="226" text-anchor="middle" fill="#8896b0" font-size="9">平均1.8天</text>
+        <rect x="535" y="240" width="110" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+        <rect x="535" y="240" width="78" height="4" rx="2" fill="#00c8ff"><animate attributeName="width" values="78;82;78" dur="3s" repeatCount="indefinite"></animate></rect>
+        <text x="590" y="260" text-anchor="middle" fill="#8896b0" font-size="9">待处理 95单</text>
+
+        <!-- 资金组统计 -->
+        <text x="760" y="170" text-anchor="middle" fill="#8896b0" font-size="9">┄┄┄┄┄┄┄┄┄┄</text>
+        <text x="760" y="190" text-anchor="middle" fill="#b388ff" font-size="10">月均8,500笔</text>
+        <text x="760" y="208" text-anchor="middle" fill="#8896b0" font-size="9">支付自动化91%</text>
+        <text x="760" y="226" text-anchor="middle" fill="#8896b0" font-size="9">平均0.5天</text>
+        <rect x="705" y="240" width="110" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+        <rect x="705" y="240" width="82" height="4" rx="2" fill="#7b61ff"><animate attributeName="width" values="82;85;82" dur="3s" repeatCount="indefinite"></animate></rect>
+        <text x="760" y="260" text-anchor="middle" fill="#8896b0" font-size="9">今日处理 386笔</text>
+
+        <!-- 总账组统计 -->
+        <text x="915" y="170" text-anchor="middle" fill="#8896b0" font-size="9">┄┄┄┄┄┄┄┄┄</text>
+        <text x="915" y="190" text-anchor="middle" fill="#ff5252" font-size="10">月均3,800单</text>
+        <text x="915" y="208" text-anchor="middle" fill="#8896b0" font-size="9">关账M+5</text>
+        <text x="915" y="226" text-anchor="middle" fill="#8896b0" font-size="9">自动化率82%</text>
+        <rect x="870" y="240" width="98" height="4" rx="2" fill="rgba(255,255,255,.05)"></rect>
+        <rect x="870" y="240" width="72" height="4" rx="2" fill="#ff5252"><animate attributeName="width" values="72;75;72" dur="3s" repeatCount="indefinite"></animate></rect>
+        <text x="915" y="260" text-anchor="middle" fill="#8896b0" font-size="9">待处理 42单</text>
+      </svg>
+    </div>
+
+    <!-- 实时单据队列 -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> 今日单据处理实况</div>
+        <div class="mini-kanban">
+          <div class="kanban-col">
+            <div class="kanban-col-title" style="background:rgba(0,200,255,.1)">🖼️ 待扫描</div>
+            <div class="kanban-card-mini" style="border-left-color:#00c8ff">📄 发票 #HX2456</div>
+            <div class="kanban-card-mini" style="border-left-color:#00c8ff">📄 发票 #HX2457</div>
+            <div class="kanban-card-mini" style="border-left-color:#00c8ff">📄 报销单 #EXP-892</div>
+            <div class="kanban-card-mini" style="border-left-color:#00c8ff">📄 报销单 #EXP-893</div>
+            <div style="text-align:center;font-size:10px;color:#8896b0;margin-top:4px">+122份待处理</div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title" style="background:rgba(0,230,118,.1)">💰 费用审核中</div>
+            <div class="kanban-card-mini" style="border-left-color:#00e676">📄 差旅 #EXP-886</div>
+            <div class="kanban-card-mini" style="border-left-color:#00e676">📄 办公 #EXP-887</div>
+            <div class="kanban-card-mini" style="border-left-color:#ffd740">⏳ 差旅 #EXP-888</div>
+            <div class="kanban-card-mini" style="border-left-color:#00e676">📄 招待 #EXP-889</div>
+            <div style="text-align:center;font-size:10px;color:#8896b0;margin-top:4px">+182单待处理</div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title" style="background:rgba(255,215,64,.1)">📋 应付处理中</div>
+            <div class="kanban-card-mini" style="border-left-color:#ffd740">📄 发票 #PO-5632</div>
+            <div class="kanban-card-mini" style="border-left-color:#ffd740">📄 发票 #PO-5633</div>
+            <div class="kanban-card-mini" style="border-left-color:#ff5252">⚠️ 差异 #PO-5630</div>
+            <div style="text-align:center;font-size:10px;color:#8896b0;margin-top:4px">+168单待处理</div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title" style="background:rgba(123,97,255,.1)">🏦 资金支付中</div>
+            <div class="kanban-card-mini" style="border-left-color:#7b61ff">💰 付款 #PAY-451</div>
+            <div class="kanban-card-mini" style="border-left-color:#7b61ff">💰 付款 #PAY-452</div>
+            <div class="kanban-card-mini" style="border-left-color:#7b61ff">💰 付款 #PAY-453</div>
+            <div style="text-align:center;font-size:10px;color:#8896b0;margin-top:4px">今日支付¥2,860万</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⏱️</span> 实时处理时间线</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot green"></div>
+            <div class="timeline-content">
+              <div class="time">14:32:18 · 费用报销组</div>
+              <div class="label">📄 张明华 完成差旅报销 #EXP-892 审核<span style="color:#00e676"> (0.8h)</span></div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot blue"></div>
+            <div class="timeline-content">
+              <div class="time">14:28:05 · 影像管理组</div>
+              <div class="label">📄 OCR自动识别 供应商发票 #INV-7826 <span style="color:#00c8ff">(正确率98.2%)</span></div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot gold"></div>
+            <div class="timeline-content">
+              <div class="time">14:22:41 · 应付结算组</div>
+              <div class="label">🔄 三单匹配完成 #PO-5631 <span style="color:#ffd740">(自动匹配成功)</span></div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot green"></div>
+            <div class="timeline-content">
+              <div class="time">14:15:30 · 资金结算组</div>
+              <div class="label">🏦 银企直连支付完成 #PAY-450 <span style="color:#00e676">(¥86万)</span></div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot blue"></div>
+            <div class="timeline-content">
+              <div class="time">14:08:12 · 应收结算组</div>
+              <div class="label">💳 收款核销 #AR-563 <span style="color:#00c8ff">(¥35万·客户华兴置业)</span></div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot gold"></div>
+            <div class="timeline-content">
+              <div class="time">13:52:00 · 总账报表组</div>
+              <div class="label">📊 自动生成凭证 #GL-421 <span style="color:#ffd740">(折旧分摊)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 单据类型分布 -->
+    <div class="grid-2" style="margin-top:8px">
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> 今日单据类型占比</div>
+        <canvas id="ch7_type" class="chart-canvas" height="200" width="634" style="width: 634px; height: 200px;"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">⏳</span> 各环节实时排队与处理效率</div>
+        <table class="data-table">
+          <thead><tr><th>处理环节</th><th>排队中</th><th>今日完成</th><th>平均耗时</th><th>SLA达标</th><th>处理能力</th></tr></thead>
+          <tbody>
+            <tr><td>🖼️ 影像扫描</td><td>122份</td><td>1,860份</td><td class="highlight">0.3h</td><td><span class="badge-sla excellent">99.8%</span></td><td>3,200份/日</td></tr>
+            <tr><td>💰 费用审核</td><td>182单</td><td>486单</td><td class="highlight">2.8天</td><td><span class="badge-sla excellent">99.2%</span></td><td>7,200单/月</td></tr>
+            <tr><td>📋 三单匹配</td><td>168单</td><td>412单</td><td class="highlight">4.1天</td><td><span class="badge-sla excellent">98.8%</span></td><td>5,600单/月</td></tr>
+            <tr><td>💳 收款核销</td><td>95单</td><td>328单</td><td class="highlight">1.8天</td><td><span class="badge-sla excellent">99.6%</span></td><td>4,200单/月</td></tr>
+            <tr><td>🏦 资金支付</td><td>42单</td><td>386笔</td><td class="highlight">0.5天</td><td><span class="badge-sla excellent">99.9%</span></td><td>8,500笔/月</td></tr>
+            <tr><td>📊 总账凭证</td><td>36单</td><td>185笔</td><td class="highlight">1.2天</td><td><span class="badge-sla excellent">99.8%</span></td><td>3,800单/月</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== 初始化时间 ======
+function updateTime(){const n=new Date;document.getElementById('headerTime').innerHTML='📅 '+n.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'})+' '+n.toLocaleTimeString('zh-CN')}updateTime();setInterval(updateTime,60e3);
+
+// ====== 页签切换 ======
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active');
+  setTimeout(renderAll,50);
+})});
+
+// ====== 子页签切换 ======
+document.querySelectorAll('.sub-tabs').forEach(parent=>{
+  parent.querySelectorAll('.sub-tab').forEach(b=>{b.addEventListener('click',()=>{
+    parent.querySelectorAll('.sub-tab').forEach(x=>x.classList.remove('active'));
+    parent.closest('.tab-content').querySelectorAll('.sub-panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');document.getElementById(b.dataset.panel).classList.add('active');
+    setTimeout(renderAll,50);
+  })})
+});
+
+// ====== Canvas 渲染工具箱 ======
+function resizeCanvas(c){const p=c.parentElement;const w=Math.max(p.clientWidth-4,200);const h=parseInt(c.getAttribute('height'))||220;const dpr=window.devicePixelRatio||1;c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);c.style.width=w+'px';c.style.height=h+'px';c.getContext('2d').setTransform(dpr,0,0,dpr,0,0)}
+
+const C={
+  blue:['#00c8ff','#2979ff','#448aff','#0d47a1'],
+  green:['#00e676','#00c853','#69f0ae','#1b5e20'],
+  yellow:['#ffd740','#ffab00','#ffe57f','#f57f17'],
+  purple:['#7b61ff','#b388ff','#536dfe','#311b92'],
+  orange:['#ff9100','#ff6d00','#ffab40','#e65100'],
+  red:['#ff5252','#d50000','#ff8a80','#b71c1c'],
+  teal:['#1de9b6','#00bfa5','#64ffda','#004d40'],
+  pink:['#ff4081','#f50057','#ff80ab','#c51162'],
+};
+const allColors=[C.blue[0],C.green[0],C.yellow[0],C.purple[0],C.orange[0],C.red[0],C.teal[0],C.pink[0]];
+
+function renderAll(){
+  document.querySelectorAll('canvas.chart-canvas').forEach(c=>{
+    const id=c.id;if(typeof window['draw_'+id]==='function'){window['draw_'+id](c)}else{console.log('No drawer for',id)}
+  });
+}
+
+function drawBar(c,labels,datasets,opts={}){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  const pad={t:30,b:40,l:50,r:20};if(opts.hideX)pad.b=20;if(opts.hideY)pad.l=30;
+  const cw=Math.max(pw-pad.l-pad.r,10),ch=Math.max(ph-pad.t-pad.b,10);
+  const n=labels.length;const ds=datasets.length;
+  if(ds===0||n===0){ctx.clearRect(0,0,pw,ph);ctx.fillStyle='#8896b0';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('无数据',pw/2,ph/2);return;}
+  const maxV=Math.max(...datasets.flatMap(d=>d.data),0.001)*1.2;
+  const zero=pad.t+ch;function y(v){return pad.t+ch-(v/maxV*ch)}
+  ctx.clearRect(0,0,pw,ph);
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pw-pad.r,yy);ctx.stroke()}
+  ctx.fillStyle='#8896b0';ctx.font='11px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.fillText(Math.round(maxV*(1-i/4)),pad.l-6,yy+4)}
+  const bw=cw/n/ds*0.7;const gap=cw/n*0.15;
+  datasets.forEach((d,di)=>{ctx.fillStyle=d.color||allColors[di];d.data.forEach((v,i)=>{const bx=pad.l+i*cw/n+gap+di*bw;const bh=y(0)-y(v);ctx.fillRect(bx,y(v),bw,bh)})});
+  if(!opts.hideX){ctx.fillStyle='#8896b0';ctx.font='10px sans-serif';ctx.textAlign='center';labels.forEach((l,i)=>{ctx.fillText(l,pad.l+i*cw/n+cw/n/2,H-10)})}
+  if(ds>1){const lx=pad.l,ly=10;let lx2=lx;ctx.font='10px sans-serif';datasets.forEach((d,i)=>{ctx.fillStyle=d.color||allColors[i];ctx.fillRect(lx2,ly,10,10);ctx.fillStyle='#8896b0';ctx.textAlign='left';ctx.fillText(d.label||'S'+(i+1),lx2+14,ly+9);lx2+=ctx.measureText(d.label||' ').width+34})}
+}
+
+function drawPie(c,labels,data,colors){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  ctx.clearRect(0,0,pw,ph);const cx=pw/2-60,cy=ph/2,r=Math.min(cx-20,cy-20,100);
+  const total=data.reduce((a,b)=>a+b,0);let start=-Math.PI/2;
+  const pieColors=colors||allColors;
+  data.forEach((v,i)=>{const angle=v/total*2*Math.PI;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,start+angle);ctx.closePath();ctx.fillStyle=pieColors[i%pieColors.length];ctx.fill();ctx.strokeStyle='#0a0e1a';ctx.lineWidth=2;ctx.stroke();start+=angle});
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('总计',cx,cy-4);
+  ctx.fillStyle='#fff';ctx.font='16px sans-serif';ctx.fillText(total.toLocaleString(),cx,cy+14);
+  let ly=ph/2-labels.length*14;ctx.font='11px sans-serif';
+  labels.forEach((l,i)=>{ctx.fillStyle=pieColors[i%pieColors.length];ctx.fillRect(pw-120,ly,10,10);ctx.fillStyle='#c0d0f0';ctx.textAlign='left';ctx.fillText(l,pw-106,ly+9);ctx.fillStyle='#8896b0';ctx.textAlign='right';ctx.fillText(Math.round(data[i]/total*100)+'%',pw-16,ly+9);ly+=20});
+}
+
+function drawLine(c,labels,datasets,opts={}){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  const pad={t:30,b:40,l:50,r:20};const cw=Math.max(pw-pad.l-pad.r,10),ch=Math.max(ph-pad.t-pad.b,10);
+  const allV=datasets.flatMap(d=>d.data);const maxV=Math.max(...allV,0.001)*1.15,minV=Math.min(...allV,0)*0.85;
+  const range=maxV-minV||1;function y(v){return pad.t+ch-(v-minV)/range*ch}
+  ctx.clearRect(0,0,pw,ph);
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pw-pad.r,yy);ctx.stroke()}
+  ctx.fillStyle='#8896b0';ctx.font='10px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.fillText(Math.round((maxV-(maxV-minV)*i/4)*10)/10,pad.l-4,yy+3)}
+  datasets.forEach((d,di)=>{const color=d.color||allColors[di];ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();d.data.forEach((v,i)=>{const x=pad.l+i*cw/(labels.length-1||1);i===0?ctx.moveTo(x,y(v)):ctx.lineTo(x,y(v))});ctx.stroke();d.data.forEach((v,i)=>{const x=pad.l+i*cw/(labels.length-1||1);ctx.beginPath();ctx.arc(x,y(v),3,0,2*Math.PI);ctx.fillStyle=color;ctx.fill()});if(!opts.hideLabel){const lx=pad.l+(labels.length-1)*cw/(labels.length-1||1);ctx.fillStyle=color;ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText(' '+d.label,lx+4,y(d.data[d.data.length-1]))}});
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='center';labels.forEach((l,i)=>{const x=pad.l+i*cw/(labels.length-1||1);ctx.fillText(l,x,ph-12)});
+  if(opts.target){ctx.strokeStyle='rgba(255,82,82,.5)';ctx.setLineDash([4,4]);ctx.lineWidth=1;const ty=y(opts.target);ctx.beginPath();ctx.moveTo(pad.l,ty);ctx.lineTo(pw-pad.r,ty);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,82,82,.6)';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText('目标',pw-pad.r-24,ty-2)}
+}
+
+// ====== 具体绘图实现 ======
+window.draw_ch2a_volume=function(c){drawBar(c,['影像组','费用组','应付组','应收组','总账组','资金组','档案组'],[{label:'处理量',data:[6400,7200,5600,4200,3800,8500,2200],color:'#00c8ff'}])};
+window.draw_ch2a_days=function(c){drawBar(c,['影像','费用','应付','应收','总账','资金','档案'],[{label:'天数',data:[0.3,2.8,4.1,1.8,1.2,0.5,0.2],color:'#00e676'}])};
+window.draw_ch2b_trend=function(c){drawLine(c,['6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月'],[{label:'总处理量(万)',data:[6.2,6.5,6.8,7.0,7.2,7.5,7.8,7.6,7.0,7.8,8.0,8.2],color:'#00c8ff'}])};
+window.draw_ch2b_sla=function(c){drawLine(c,['6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月','5月'],[{label:'达标率',data:[96.2,96.5,96.8,97.2,97.5,97.8,98.0,97.6,97.2,98.2,98.4,98.6],color:'#00e676'}],{target:97})};
+window.draw_ch2b_sector=function(c){drawBar(c,['制造','地产','贸易','科技'],[{label:'单据量(千)',data:[38,22,15,7],color:'#7b61ff'}])};
+window.draw_ch2c_period=function(c){drawBar(c,['差旅报销','非差旅','供应商','客户开票','付款执行','总账凭证','银行对账'],[{label:'SLA(天)',data:[5,5,7,3,1,2,1],color:'#ff5252'},{label:'实际(天)',data:[3.2,2.8,4.1,1.8,0.5,1.2,0.3],color:'#00e676'}])};
+window.draw_ch2c_overtime=function(c){drawPie(c,['费用报销','供应商发票','总账凭证','客户开票','其他'],[42,67,12,18,15],[C.orange[0],C.red[0],C.blue[0],C.green[0],C.purple[0]])};
+window.draw_ch3a_cost=function(c){drawBar(c,['费用报销','应付结算','应收结算','总账核算','资金结算','平均'],[{label:'FSSC前(¥)',data:[380,420,350,280,250,328],color:'#ff5252'},{label:'FSSC后(¥)',data:[180,200,160,140,110,157],color:'#00e676'}])};
+window.draw_ch3a_save=function(c){drawPie(c,['人力成本','流程效率','资金收益','差错减少','其他'],[1280,860,520,380,240],[C.blue[0],C.green[0],C.yellow[0],C.purple[0],C.orange[0]])};
+window.draw_ch3b_auto=function(c){drawBar(c,['影像','费用','应付','应收','总账','资金','档案'],[{label:'自动化率%',data:[55,38,52,45,42,65,35],color:'#7b61ff'}])};
+window.draw_ch3b_road=function(c){drawLine(c,['2023Q1','2023Q3','2024Q1','2024Q3','2025Q1','2025Q3','2026Q1'],[{label:'自动化率%',data:[18,24,30,36,38,40,42],color:'#ffd740'}])};
+window.draw_ch3c_bench=function(c){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  const pad={t:30,b:50,l:60,r:30};const cw=Math.max(pw-pad.l-pad.r,10),ch=Math.max(ph-pad.t-pad.b,10);
+  ctx.clearRect(0,0,pw,ph);
+  const metrics=['自动化率','人均月处理','单笔成本','SLA达标率','报表自动化'];
+  const hua=[60,650,120,99.2,90];const zte=[55,580,135,99.0,88];const huaxing=[42,519,157,98.6,82];
+  const maxV=120;function y(v){return pad.t+ch-(v/maxV*ch)}
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const yy=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pw-pad.r,yy);ctx.stroke()}
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){ctx.fillText(Math.round(maxV*(1-i/4)),pad.l-4,pad.t+ch*i/4+3)}
+  const bw=cw/metrics.length/3*0.6;const names=[{d:hua,c:'#ff9100',l:'华为'},{d:zte,c:'#ffd740',l:'中兴'},{d:huaxing,c:'#00c8ff',l:'华兴'}];
+  names.forEach((g,gi)=>{g.d.forEach((v,i)=>{const bx=pad.l+i*cw/metrics.length+bw*gi+4;ctx.fillStyle=g.c;ctx.fillRect(bx,y(v),bw,y(0)-y(v))})});
+  ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='center';metrics.forEach((m,i)=>{ctx.fillText(m,pad.l+i*cw/metrics.length+cw/metrics.length/2,ph-10)});
+  let lx=pad.l;names.forEach((g,i)=>{ctx.fillStyle=g.c;ctx.fillRect(lx,8,10,10);ctx.fillStyle='#8896b0';ctx.textAlign='left';ctx.font='10px sans-serif';ctx.fillText(g.l,lx+14,17);lx+=ctx.measureText(g.l).width+30});
+};
+window.draw_ch4b_income=function(c){drawPie(c,['制造板块','地产板块','贸易板块','科技板块'],[80000,45000,35000,20000],[C.blue[0],C.green[0],C.yellow[0],C.purple[0]])};
+window.draw_ch4b_kpi=function(c){drawLine(c,['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],[{label:'营收(亿)',data:[14.2,13.8,15.6,15.7,16.2,16.8,15.4,16.6,17.2,16.8,17.5,18.0],color:'#00c8ff'},{label:'毛利率%',data:[50.2,50.5,50.8,51.3,51.0,51.5,51.2,51.8,52.0,51.6,52.2,52.5],color:'#00e676'}])};
+window.draw_ch4c_cal=function(c){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const W=c.width;const H=c.height;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pw=W/dpr,ph=H/dpr;
+  ctx.clearRect(0,0,pw,ph);const pad={t:20,b:5,l:120,r:20};
+  const cw=Math.max(pw-pad.l-pad.r,10);const companies=['制造-精密','制造-智能','制造-新材料','地产-置业','地产-物业','贸易-国际','科技'];
+  const starts=[1,1,2,1,1,0,2];const days=[3,3,3,3,3,3,3];const colors=[C.blue[0],C.blue[0],C.blue[1],C.green[0],C.green[0],C.yellow[0],C.purple[0]];
+  const barH=24,gap=8;const totalH=companies.length*(barH+gap);
+  const dayW=cw/8;
+  ctx.fillStyle='#8896b0';ctx.font='10px sans-serif';ctx.textAlign='center';['M','M+1','M+2','M+3','M+4','M+5','M+6','M+7'].forEach((d,i)=>{ctx.fillText(d,pad.l+i*dayW+dayW/2,18)});
+  companies.forEach((name,i)=>{const y=pad.t+30+i*(barH+gap);ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(pad.l,y,cw,barH);const sx=pad.l+starts[i]*dayW,sw=days[i]*dayW;ctx.fillStyle=colors[i];ctx.globalAlpha=.8;ctx.beginPath();ctx.roundRect(sx,y,sw,barH,4);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle='#fff';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText(name,8,y+barH/2+4);ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='10px sans-serif';ctx.textAlign='center';const endDay=starts[i]+days[i];ctx.fillText('M+'+endDay,sx+sw/2,y+barH/2+4)});
+  ctx.strokeStyle='rgba(0,230,118,.5)';ctx.setLineDash([4,3]);ctx.lineWidth=1.5;const mx=pad.l+5*dayW;ctx.beginPath();ctx.moveTo(mx,pad.t+20);ctx.lineTo(mx,pad.t+30+companies.length*(barH+gap));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#00e676';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('🎯 M+5关账',mx,pad.t+12);
+};
+window.draw_ch4c_consol=function(c){
+  resizeCanvas(c);const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;const W=c.width;const H=c.height;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W/dpr,H/dpr);const labels=['内部收入','内部采购','资金往来','股利','投资'];const pos=[12.5,8.2,15.6,3.8,5.2];const neg=[12.5,8.2,15.6,3.8,5.2];const pad={t:20,b:30,l:40,r:10};const cw2=W/dpr-pad.l-pad.r,ch2=H/dpr-pad.t-pad.b;const n=labels.length;const bw=cw2/n*0.7;const maxV=Math.max(...pos)*1.3;function y(v){return pad.t+ch2/2-(v/maxV*ch2/2)}ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,pad.t+ch2/2);ctx.lineTo(W/dpr-pad.r,pad.t+ch2/2);ctx.stroke();pos.forEach((v,i)=>{const bx=pad.l+i*cw2/n+cw2/n/2-bw/2;const bh=v/maxV*ch2/2;ctx.fillStyle='rgba(0,200,255,.75)';ctx.fillRect(bx,pad.t+ch2/2-bh,bw,bh)});neg.forEach((v,i)=>{const bx=pad.l+i*cw2/n+cw2/n/2-bw/2;const bh=v/maxV*ch2/2;ctx.fillStyle='rgba(255,82,82,.5)';ctx.fillRect(bx,pad.t+ch2/2,bw,bh)});ctx.fillStyle='#8896b0';ctx.font='9px sans-serif';ctx.textAlign='center';labels.forEach((l,i)=>{ctx.fillText(l,pad.l+i*cw2/n+cw2/n/2,pad.t+ch2+12)});ctx.fillStyle='rgba(0,200,255,.7)';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText('▲ 集团内(亿)',pad.l,pad.t+10);ctx.fillStyle='rgba(255,82,82,.7)';ctx.fillText('▼ 抵消(亿)',pad.l+70,pad.t+10);
+};
+window.draw_ch5a_score=function(c){drawBar(c,['费用组','应付组','资金组','应收组','总账组','影像组','档案组'],[{label:'综合评分',data:[96.5,95.2,94.8,93.6,92.4,91.8,90.5],color:'#7b61ff'}])};
+window.draw_ch5a_vol=function(c){drawBar(c,['费用组','应付组','资金组','影像组','应收组','总账组','档案组'],[{label:'处理量',data:[7200,5600,8500,6400,4200,3800,2200],color:'#00c8ff'}])};
+window.draw_ch5b_staff=function(c){drawPie(c,['费用组','应付组','总账组','运营组','资金组','应收组','影像组','档案组'],[28,24,22,28,16,18,12,10],[C.blue[0],C.green[0],C.orange[0],C.purple[0],C.teal[0],C.yellow[0],C.pink[0],C.red[0]])};
+window.draw_ch5c_quality=function(c){drawLine(c,['12月','1月','2月','3月','4月','5月'],[{label:'费用组',data:[96,96.2,96.5,97,97.8,98.2],color:'#00c8ff'},{label:'应付组',data:[95.5,95.8,96,96.5,97,97.8],color:'#00e676'},{label:'资金组',data:[98,98.2,98.5,98.8,99.2,99.5],color:'#ffd740'},{label:'应收组',data:[94,94.5,95,95.5,96,96.5],color:'#7b61ff'},{label:'总账组',data:[93,93.5,94,94.5,95.2,95.8],color:'#ff9100'}])};
+window.draw_ch5c_errtype=function(c){drawPie(c,['附件缺失','科目错误','金额不符','审批缺失','其他'],[38,22,28,15,12],[C.red[0],C.orange[0],C.yellow[0],C.blue[0],C.purple[0]])};
+
+// T7: 单据类型分布
+window.draw_ch7_type=function(c){
+  drawPie(c,['费用报销','供应商发票','资金支付','收款核销','总账凭证','其他'],[28,22,18,16,10,6],[C.green[0],C.yellow[0],C.purple[0],C.blue[0],C.red[0],C.orange[0]]);
+};
+
+// ====== 交互式业务流程·节点详情数据 ======
+const flowNodeData = {
+  // ===== 供产销 Supply Chain =====
+  'sc1': { icon:'📋', name:'采购申请', desc:'各部门按月提交采购需求计划，经部门经理审批后流转至采购部', volume:'3,800单/月', time:'0.5天', auto:'85%', sla:'99.2%', team:'各业务部门 → 采购部', type:'🏭 供产销' },
+  'sc2': { icon:'📄', name:'采购订单', desc:'采购部根据审批通过的采购申请生成标准采购订单，通过EDi发送供应商', volume:'3,200单/月', time:'1.0天', auto:'92%', sla:'98.8%', team:'采购部', type:'🏭 供产销' },
+  'sc3': { icon:'📦', name:'收货入库', desc:'供应商发货到货后，仓管扫码验收，系统自动匹配PO生成入库单', volume:'2,800单/月', time:'0.8天', auto:'95%', sla:'99.5%', team:'仓储管理部 · WMS系统', type:'🏭 供产销' },
+  'sc4': { icon:'⚙️', name:'生产领料', desc:'生产车间按生产工单领料，ERP自动扣减库存并生成领料凭证', volume:'4,200批/月', time:'0.3天', auto:'88%', sla:'99.6%', team:'生产制造部 · MES系统', type:'🏭 供产销' },
+  'sc5': { icon:'🏭', name:'完工入库', desc:'产成品完工后扫码入库，质检合格后ERP自动更新产成品库存', volume:'3,600批/月', time:'0.5天', auto:'90%', sla:'99.3%', team:'生产制造部 · 质检部', type:'🏭 供产销' },
+  'sc6': { icon:'🚚', name:'销售出库', desc:'销售订单审核后触发WMS出库指令，自动匹配物流公司发货出库', volume:'3,200单/月', time:'0.6天', auto:'85%', sla:'99.1%', team:'销售部 · 仓储物流部', type:'🏭 供产销' },
+  'sc7': { icon:'🧾', name:'开票结算', desc:'销售出库确认后，系统自动生成销售发票并推送给客户', volume:'2,800张/月', time:'1.2天', auto:'78%', sla:'98.6%', team:'应收结算组 · 销售部', type:'🏭 供产销' },
+  'sc8': { icon:'💰', name:'回款核销', desc:'客户付款到账后系统自动匹配应收单据进行核销，超期自动催收预警', volume:'¥8.6亿/月', time:'1.5天', auto:'82%', sla:'96.3%', team:'应收结算组 · 资金结算组', type:'🏭 供产销' },
+  // ===== 费控 Expense Control =====
+  'fc1': { icon:'📊', name:'预算编制', desc:'年度/月度预算编制与审批，按部门、科目、项目三维度预算控制', volume:'120份/年', time:'15天', auto:'60%', sla:'95%', team:'运营管理组 · 各业务部门', type:'📋 费控' },
+  'fc2': { icon:'✍️', name:'费用申请', desc:'员工提交费用申请单，部门经理在线审批，差旅/办公/招待等分类管理', volume:'3,600单/月', time:'0.8天', auto:'75%', sla:'99.5%', team:'费用报销组 · 各部门', type:'📋 费控' },
+  'fc3': { icon:'🧾', name:'发票提交', desc:'员工通过移动端拍照提交发票，OCR自动识别并验真，同步到费用系统', volume:'7,200份/月', time:'0.2天', auto:'97%', sla:'99.8%', team:'影像管理组 · AI-OCR', type:'📋 费控' },
+  'fc4': { icon:'🤖', name:'智能审核', desc:'AI规则引擎自动校验发票真实性、预算余量、标准合规性，异常单转入工', volume:'5,800单/月', time:'0.1天', auto:'82%', sla:'99.2%', team:'费用报销组 · AI引擎', type:'📋 费控' },
+  'fc5': { icon:'📉', name:'预算扣减', desc:'审核通过后系统实时扣减对应预算额度，自动更新预算执行报表', volume:'自动执行', time:'实时', auto:'100%', sla:'100%', team:'预算管理系统', type:'📋 费控' },
+  'fc6': { icon:'📝', name:'凭证生成', desc:'RPA机器人根据审核通过的报销单自动生成会计凭证，推送至总账系统', volume:'3,600笔/月', time:'0.2天', auto:'95%', sla:'99.8%', team:'总账报表组 · RPA', type:'📋 费控' },
+  'fc7': { icon:'🏦', name:'付款结算', desc:'银企直连系统执行批量支付指令，大额支付双签复核，T+0到账', volume:'8,500笔/月', time:'0.5天', auto:'91%', sla:'99.9%', team:'资金结算组 · 银企直连', type:'📋 费控' },
+  'fc8': { icon:'🗂️', name:'账务归档', desc:'已完成单据自动归入电子档案库，支持审计调阅、销毁管理、数字化检索', volume:'42万卷', time:'--', auto:'96%', sla:'99.2%', team:'档案管理组 · 电子档案系统', type:'📋 费控' },
+};
+
+function showFlowModal(id){
+  const d=flowNodeData[id]; if(!d)return;
+  document.getElementById('fmIcon').textContent=d.icon;
+  document.getElementById('fmName').textContent=d.name;
+  document.getElementById('fmDesc').textContent=d.desc;
+  document.getElementById('fmVol').textContent=d.volume;
+  document.getElementById('fmTime').textContent=d.time;
+  document.getElementById('fmAuto').textContent=d.auto;
+  document.getElementById('fmSla').textContent=d.sla;
+  document.getElementById('fmTeam').textContent=d.team;
+  document.getElementById('fmFlowType').textContent=d.type;
+  document.getElementById('flowModal').classList.add('show');
+}
+function closeFlowModal(){document.getElementById('flowModal').classList.remove('show')}
+// Close modal on overlay click
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('flowModal').addEventListener('click',function(e){
+    if(e.target===this)closeFlowModal();
+  });
+});
+
+// ====== roundRect polyfill ======
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){if(w<2*r)r=w/2;if(h<2*r)r=h/2;this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);return this}}
+
+// ====== 初始渲染 ======
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(renderAll,100)});
+window.addEventListener('resize',()=>{setTimeout(renderAll,200)});
+</script>
+
+
+</body></html>

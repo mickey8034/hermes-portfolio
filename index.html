@@ -649,6 +649,15 @@ const projects = [
     filesList: [
       {name:'张总_心理学分析报告.html',desc:'心理学分析报告 · 5个Tab全量输出',uploaded:true}
     ]
+  },
+  {
+    id: '财务共享中心_FSSC', name: '财务共享中心 FSSC 智慧大屏', icon: '🏢', filter: 'dashboard',
+    desc: '华兴集团财务共享中心运营管理大屏 — 7大模块架构、SVG过程流转动图、单据流转实时可视化。',
+    files: 2, status: 'ready', versions: 1,
+    filesList: [
+      {name:'华兴集团 · 财务共享中心智慧大屏 v3.0.html',desc:'FSSC智慧大屏 · 完整运营看板',uploaded:true},
+      {name:'fssc_dashboard.html',desc:'FSSC Dashboard · 简洁版',uploaded:true}
+    ]
   }
 ];
 
@@ -746,9 +755,12 @@ setInterval(updateClock,1000);
 updateClock();
 
 // ===== RIPPLE EFFECT =====
+// Use capture phase so ripple appears before inline onclick opens dialog
 document.addEventListener('click', function(e){
   const card = e.target.closest('.card');
   if(!card) return;
+  // Remove old ripples
+  card.querySelectorAll('.ripple').forEach(r => r.remove());
   const ripple = document.createElement('span');
   ripple.className = 'ripple';
   const rect = card.getBoundingClientRect();
@@ -760,7 +772,7 @@ document.addEventListener('click', function(e){
   card.style.overflow = 'hidden';
   card.appendChild(ripple);
   setTimeout(() => ripple.remove(), 600);
-});
+}, {capture: true});
 
 // ===== THEME =====
 function toggleTheme(){
