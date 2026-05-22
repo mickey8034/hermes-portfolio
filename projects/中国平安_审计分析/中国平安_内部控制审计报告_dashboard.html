@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中国平安保险（集团）股份有限公司 — 内部控制审计报告</title>
+<style>
+:root {
+  --bg: #0f1923;
+  --card: #152231;
+  --card2: #1a2a3a;
+  --accent: #00c8ff;
+  --accent2: #00e676;
+  --danger: #ff5252;
+  --warning: #ffab40;
+  --info: #40c4ff;
+  --text: #e0e6ed;
+  --muted: #7a8a9a;
+  --border: #1e3348;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+  padding: 40px;
+  border-bottom: 3px solid var(--accent);
+  text-align: center;
+  margin-bottom: 30px;
+}
+.header h1 {
+  font-size: 2.2em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+.header .subtitle {
+  color: var(--muted);
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+.header .meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 15px;
+}
+.header .meta-item {
+  text-align: center;
+}
+.header .meta-label {
+  color: var(--muted);
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.header .meta-value {
+  color: var(--text);
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* Tab Navigation */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.tab-btn {
+  padding: 12px 22px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: all 0.2s;
+  position: relative;
+  bottom: -1px;
+}
+.tab-btn:hover {
+  color: var(--text);
+  background: rgba(0,200,255,0.05);
+}
+.tab-btn.active {
+  color: var(--accent);
+  background: var(--card);
+  border-color: var(--border);
+  border-bottom-color: var(--card);
+}
+.tab-btn .badge {
+  display: inline-block;
+  background: var(--danger);
+  color: white;
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 0.75em;
+  margin-left: 5px;
+}
+
+/* Tab Content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.card-title.red { color: var(--danger); }
+.card-title.green { color: var(--accent2); }
+.card-title.yellow { color: var(--warning); }
+.card-title.info { color: var(--info); }
+
+/* Metrics Grid */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.metric {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  text-align: center;
+}
+.metric-value {
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--accent);
+}
+.metric-value.danger { color: var(--danger); }
+.metric-value.warning { color: var(--warning); }
+.metric-value.green { color: var(--accent2); }
+.metric-label {
+  color: var(--muted);
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 0.9em;
+}
+th {
+  background: var(--card2);
+  color: var(--accent);
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+  font-weight: 600;
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+tr:hover td { background: rgba(0,200,255,0.03); }
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+.tag.red { background: rgba(255,82,82,0.15); color: var(--danger); }
+.tag.yellow { background: rgba(255,171,64,0.15); color: var(--warning); }
+.tag.green { background: rgba(0,230,118,0.15); color: var(--accent2); }
+.tag.blue { background: rgba(64,196,255,0.15); color: var(--info); }
+
+/* Progress bar */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--card2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s;
+}
+.progress-fill.green { background: var(--accent2); }
+.progress-fill.yellow { background: var(--warning); }
+.progress-fill.red { background: var(--danger); }
+.progress-fill.blue { background: var(--info); }
+
+/* COSO diagram */
+.coso-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.coso-box {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.coso-box:hover { border-color: var(--accent); transform: translateY(-2px); }
+.coso-box .icon { font-size: 2em; margin-bottom: 6px; }
+.coso-box h4 { color: var(--accent); margin-bottom: 6px; }
+.coso-box p { color: var(--muted); font-size: 0.85em; }
+.coso-box .score {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+/* Test matrix */
+.test-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.test-matrix-full { grid-column: 1 / -1; }
+@media (max-width: 800px) {
+  .test-matrix { grid-template-columns: 1fr; }
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+  margin: 16px 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 0 0 0 16px;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--card);
+}
+.timeline-item h4 { color: var(--text); }
+.timeline-item p { color: var(--muted); font-size: 0.85em; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card { animation: fadeIn 0.3s ease-out; }
+
+@media (max-width: 600px) {
+  .header h1 { font-size: 1.5em; }
+  .tab-btn { padding: 8px 14px; font-size: 0.85em; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏦 内部控制审计报告</h1>
+  <div class="subtitle">中国平安保险（集团）股份有限公司 — Ping An Insurance (Group) Company of China, Ltd.</div>
+  <div class="meta">
+    <div class="meta-item">
+      <div class="meta-label">股票代码</div>
+      <div class="meta-value">601318.SH / 2318.HK</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">审计基准日</div>
+      <div class="meta-value">2025年12月31日</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">审计标准</div>
+      <div class="meta-value">COSO 2013 · SOX 404 · PCAOB AS5</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">总体评估结论</div>
+      <div class="meta-value" style="color:var(--accent2)">ICFR 有效（存在重要缺陷）</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('summary')">📊 执行摘要</button>
+  <button class="tab-btn" onclick="switchTab('coso')">🏛️ COSO 评估</button>
+  <button class="tab-btn" onclick="switchTab('bizprocess')">🔍 业务流测试 <span class="badge">4</span></button>
+  <button class="tab-btn" onclick="switchTab('itgc')">💻 IT一般控制</button>
+  <button class="tab-btn" onclick="switchTab('deficiency')">⚠️ 缺陷清单 <span class="badge">12</span></button>
+  <button class="tab-btn" onclick="switchTab('sox404')">📋 SOX 404</button>
+</div>
+
+<!-- ===== TAB 1: Executive Summary ===== -->
+<div id="tab-summary" class="tab-content active">
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-value green">0</div>
+      <div class="metric-label">重大缺陷 (Material Weakness)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value warning">3</div>
+      <div class="metric-label">重要缺陷 (Significant Deficiency)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">9</div>
+      <div class="metric-label">一般缺陷 (Control Deficiency)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value green">12</div>
+      <div class="metric-label">控制测试通过</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value danger">3</div>
+      <div class="metric-label">控制测试未通过</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 审计范围概览</div>
+    <table>
+      <tr><th>维度</th><th>范围</th></tr>
+      <tr><td>评估实体</td><td>中国平安保险集团（含平安寿险、平安产险、平安银行、平安证券、平安科技）</td></tr>
+      <tr><td>覆盖流程</td><td>保费收取与核保、理赔处理、投资决策、关联交易审批、财务报告关账</td></tr>
+      <tr><td>评估账户</td><td>保费收入、赔款支出、投资收益、长期股权投资、金融资产、关联交易、准备金</td></tr>
+      <tr><td>IT系统范围</td><td>核心保险系统（CSCS）、投资管理系统（O32）、财务系统（Oracle EBS）、<br>平安云平台、AI风控系统、数据中台</td></tr>
+      <tr><td>测试期间</td><td>2025年1月1日 — 2025年12月31日</td></tr>
+      <tr><td>测试总样本量</td><td>425 项控制测试 + 12 项穿行测试 + 30 项ITGC测试</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 执行摘要</div>
+    <p>根据《企业内部控制基本规范》及配套指引，并参考COSO 2013框架和PCAOB AS5标准，我们对中国平安保险（集团）股份有限公司截至2025年12月31日的财务报告内部控制（ICFR）进行了评估。</p>
+    <br>
+    <p><strong>评估结论：</strong>公司的财务报告内部控制 <span style="color:var(--accent2);font-weight:700;">有效</span>，但存在<strong>3项重要缺陷</strong>需引起管理层和审计委员会关注。</p>
+    <br>
+    <p><strong>关键发现：</strong></p>
+    <ul style="padding-left:20px;line-height:2.2;">
+      <li>🟡 <strong>IT系统变更管理 —</strong> 平安云平台紧急变更未完整记录（1项变更绕过标准审批流程） → <strong>重要缺陷</strong></li>
+      <li>🟡 <strong>关联交易定价复核 —</strong> 集团内部金融服务交易的定价模型未按季度独立复核 → <strong>重要缺陷</strong></li>
+      <li>🟡 <strong>保险准备金模型验证 —</strong> 长期寿险准备金精算模型的关键假设变更缺乏独立签批记录 → <strong>重要缺陷</strong></li>
+      <li>🔵 <strong>9项一般缺陷</strong>（权限审计、数据备份验证、凭证管理等）已在整改中</li>
+    </ul>
+    <br>
+    <p><strong>整改状态：</strong>12项缺陷中，3项已整改完成，7项整改中，2项逾期未整改（已升级至审计委员会关注）。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏢 公司信息</div>
+    <table>
+      <tr><td>总资产</td><td>约 ¥12.3 万亿元</td><td>员工人数</td><td>约 280,000+</td></tr>
+      <tr><td>营业收入</td><td>约 ¥1.08 万亿元</td><td>业务板块</td><td>寿险 · 产险 · 银行 · 证券 · 科技</td></tr>
+      <tr><td>净利润</td><td>约 ¥1,200 亿元</td><td>审计师</td><td>普华永道中天 (PwC)</td></tr>
+      <tr><td>投资资产管理规模</td><td>约 ¥5.8 万亿元</td><td>主要监管机构</td><td>国家金融监管总局 · 证监会 · 人民银行</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB 2: COSO Assessment ===== -->
+<div id="tab-coso" class="tab-content">
+
+  <div class="card">
+    <div class="card-title">🏛️ COSO 2013 五大组件评估</div>
+    <p style="color:var(--muted);margin-bottom:16px;">基于 COSO 2013 框架的 5 大组件 × 17 项原则评估，综合评分 4.1 / 5 分。</p>
+
+    <div class="coso-grid">
+      <div class="coso-box">
+        <div class="icon">🏛️</div>
+        <h4>控制环境</h4>
+        <p>高层基调、董事会监督、组织架构、胜任能力、问责机制</p>
+        <div class="score" style="background:rgba(0,230,118,0.15);color:var(--accent2);">4.3 / 5.0</div>
+      </div>
+      <div class="coso-box">
+        <div class="icon">📊</div>
+        <h4>风险评估</h4>
+        <p>目标设定、风险识别、舞弊评估、变化管理</p>
+        <div class="score" style="background:rgba(0,230,118,0.15);color:var(--accent2);">4.1 / 5.0</div>
+      </div>
+      <div class="coso-box">
+        <div class="icon">🛡️</div>
+        <h4>控制活动</h4>
+        <p>控制措施选型、IT控制、政策程序</p>
+        <div class="score" style="background:rgba(255,171,64,0.15);color:var(--warning);">3.8 / 5.0</div>
+      </div>
+      <div class="coso-box">
+        <div class="icon">📡</div>
+        <h4>信息与沟通</h4>
+        <p>信息获取、内部沟通、外部沟通</p>
+        <div class="score" style="background:rgba(0,230,118,0.15);color:var(--accent2);">4.2 / 5.0</div>
+      </div>
+      <div class="coso-box">
+        <div class="icon">👁️</div>
+        <h4>监控活动</h4>
+        <p>持续监控、单独评估、缺陷沟通</p>
+        <div class="score" style="background:rgba(255,171,64,0.15);color:var(--warning);">3.9 / 5.0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">1️⃣ 控制环境 (Control Environment) — 4.3/5.0</div>
+    <table>
+      <tr><th>COSO原则</th><th>评估发现</th><th>评分</th><th>关注点</th></tr>
+      <tr>
+        <td>原则1: 诚信与道德价值观</td>
+        <td>已建立《平安集团行为准则》，全员每年签署合规承诺；设有独立举报热线（平安合规热线），2025年收到127件举报，100%调查</td>
+        <td><span class="tag green">5/5</span></td>
+        <td>举报处理及时性有待进一步提升</td>
+      </tr>
+      <tr>
+        <td>原则2: 董事会独立性</td>
+        <td>董事会15人中独立董事5人（33%）；审计委员会全部由独立董事组成，主席为财务背景。符合上交所和中国银保监会要求</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>独立董事占比略低于国际最佳实践（50%）</td>
+      </tr>
+      <tr>
+        <td>原则3: 权责结构</td>
+        <td>矩阵式管理架构（业务线 × 区域），授权体系清晰；各子公司有独立董事会和管理层</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>金融科技板块与保险主业间的职责边界需进一步厘清</td>
+      </tr>
+      <tr>
+        <td>原则4: 胜任能力</td>
+        <td>关键岗位有明确的胜任能力模型；平安金融学院提供年度培训；精算、风控等专业岗位持证率95%以上</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>IT人员培训覆盖率需提升</td>
+      </tr>
+      <tr>
+        <td>原则5: 问责机制</td>
+        <td>绩效考核体系包含合规和内控指标（权重15-20%）；已建立责任追究制度（《平安问责管理办法》）</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>问责执行力度在不同子公司存在差异</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">2️⃣ 风险评估 (Risk Assessment) — 4.1/5.0</div>
+    <table>
+      <tr><th>COSO原则</th><th>评估发现</th><th>评分</th></tr>
+      <tr>
+        <td>原则6: 设定明确目标</td>
+        <td>集团战略目标、运营目标、合规目标在年度经营计划中明确定义；KPI树分解至各业务单元</td>
+        <td><span class="tag green">4/5</span></td>
+      </tr>
+      <tr>
+        <td>原则7: 识别和分析风险</td>
+        <td>建立集团级风险评估框架（ERM体系），涵盖市场风险、信用风险、保险风险、操作风险、声誉风险。季度风险报告提交董事会</td>
+        <td><span class="tag green">4/5</span></td>
+      </tr>
+      <tr>
+        <td>原则8: 评估舞弊风险</td>
+        <td>年度舞弊风险评估涵盖所有重要流程；重点关注保费截留、虚假理赔、投资利益输送等保险行业常见舞弊场景</td>
+        <td><span class="tag green">4/5</span></td>
+      </tr>
+      <tr>
+        <td>原则9: 识别重大变化</td>
+        <td>对IFRS 17新会计准则、偿二代二期（C-ROSS Phase 2）等重大变化已识别影响并制定应对计划；疫情、地缘政治等外部变化有专题分析</td>
+        <td><span class="tag green">4/5</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3️⃣ 控制活动 (Control Activities) — 3.8/5.0</div>
+    <table>
+      <tr><th>COSO原则</th><th>评估发现</th><th>评分</th><th>关键缺陷</th></tr>
+      <tr>
+        <td>原则10: 选择并建立控制活动</td>
+        <td>关键控制点覆盖保费收入、理赔支出、投资交易、财务报告等流程。系统自动控制比例较高（>70%），AI风控模型应用于反欺诈</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>原则11: IT控制</td>
+        <td>ITGC覆盖访问控制、变更管理、系统运维、数据安全四大领域。平安云平台实现基础设施统一管控</td>
+        <td><span class="tag yellow">3/5</span></td>
+        <td>⚠️ 紧急变更管理存在缺陷</td>
+      </tr>
+      <tr>
+        <td>原则12: 政策与程序</td>
+        <td>集团统一发布内控手册（Ping An Internal Control Manual），各子公司在此基础上细化。年度政策更新机制完善</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>—</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">4️⃣ 信息与沟通 (Info & Communication) — 4.2/5.0</div>
+    <table>
+      <tr><th>COSO原则</th><th>评估发现</th><th>评分</th></tr>
+      <tr>
+        <td>原则13: 获取或生成相关信息</td>
+        <td>数据中台（Ping An Data Platform）整合集团各业务条线数据，提供实时经营分析报告。AI驱动的异常检测系统覆盖95%以上关键指标</td>
+        <td><span class="tag green">4/5</span></td>
+      </tr>
+      <tr>
+        <td>原则14: 内部沟通</td>
+        <td>金管家APP、企业微信、OA系统等多渠道同步信息；内控要求通过集团合规月报传达至全员</td>
+        <td><span class="tag green">4/5</span></td>
+      </tr>
+      <tr>
+        <td>原则15: 外部沟通</td>
+        <td>与PwC审计师季度沟通机制；按监管要求及时报送；投资者关系团队及时回应市场关切</td>
+        <td><span class="tag green">5/5</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">5️⃣ 监控活动 (Monitoring) — 3.9/5.0</div>
+    <table>
+      <tr><th>COSO原则</th><th>评估发现</th><th>评分</th><th>关注点</th></tr>
+      <tr>
+        <td>原则16: 持续和单独评估</td>
+        <td>内审部年度审计计划覆盖所有重要子公司和流程；AI持续监控平台（Smart Audit）实现实时异常告警</td>
+        <td><span class="tag green">4/5</span></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>原则17: 评价和沟通缺陷</td>
+        <td>缺陷跟踪系统（GRC Platform）记录所有发现并跟踪整改进度；季度缺陷报告提交审计委员会</td>
+        <td><span class="tag yellow">3/5</span></td>
+        <td>⚠️ 2项缺陷逾期未整改</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB 3: Business Process Control Testing ===== -->
+<div id="tab-bizprocess" class="tab-content">
+
+  <div class="card">
+    <div class="card-title">🔍 关键业务流程控制测试结果</div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value">12</div>
+        <div class="metric-label">穿行测试 (Walkthrough)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value green">12</div>
+        <div class="metric-label">通过 (Pass)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">15</div>
+        <div class="metric-label">控制测试 (Test of Controls)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value green">12</div>
+        <div class="metric-label">有效 (Effective)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value danger">3</div>
+        <div class="metric-label">无效 (Ineffective)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Process 1: Premium & Underwriting -->
+  <div class="card">
+    <div class="card-title green">📋 流程一：保费收取与核保流程 (Premium Collection & Underwriting)</div>
+    <table>
+      <tr><th>控制点编号</th><th>控制描述</th><th>控制类型</th><th>测试方法</th><th>样本量</th><th>偏差</th><th>结果</th></tr>
+      <tr>
+        <td>PW-C001</td><td>新保单录入时系统自动校验投保人身份信息与反欺诈黑名单</td>
+        <td><span class="tag blue">自动/预防</span></td><td>系统日志</td><td>50</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>PW-C002</td><td>核保规则引擎自动评估风险等级，高风险保单强制转人工核保</td>
+        <td><span class="tag blue">自动/预防</span></td><td>系统日志+检查</td><td>50</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>PW-C003</td><td>保费计算引擎基于精算表和费率规则自动生成，人工复核偏差超过5%的保单</td>
+        <td><span class="tag blue">半自动/检测</span></td><td>重新执行</td><td>40</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>PW-C004</td><td>保费收付实现自动对账（T+1），差异金额>¥10万自动上报</td>
+        <td><span class="tag blue">自动/检测</span></td><td>系统日志</td><td>60</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>PW-C005</td><td>首期保费未到账的保单不得生效（延期保费控制）</td>
+        <td><span class="tag blue">自动/预防</span></td><td>检查+日志</td><td>40</td><td>1</td>
+        <td><span class="tag yellow">⚠ Pass*</span></td>
+      </tr>
+    </table>
+    <br>
+    <p><em>穿行测试结论：选择寿险新单1笔（¥200万终身寿险）+ 产险续保1笔（¥50万企业财产险），确认保费收取与核保流程从录入→核保→收费→生效全链路控制有效，控制描述与实际操作一致。</em></p>
+    <p style="margin-top:8px;color:var(--warning);">⚠ PW-C005 发现1例系统时间戳差异导致保费到账判定延迟（偏差3小时），未导致实质错报，建议优化系统时钟同步机制。</p>
+  </div>
+
+  <!-- Process 2: Claims -->
+  <div class="card">
+    <div class="card-title green">📋 流程二：理赔处理流程 (Claims Handling)</div>
+    <table>
+      <tr><th>控制点编号</th><th>控制描述</th><th>控制类型</th><th>测试方法</th><th>样本量</th><th>偏差</th><th>结果</th></tr>
+      <tr>
+        <td>CL-C001</td><td>理赔报案系统自动校验保单有效性（保费缴纳状态、保险期间）</td>
+        <td><span class="tag blue">自动/预防</span></td><td>系统日志</td><td>50</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>CL-C002</td><td>AI反欺诈模型对每笔理赔评分，高风险案件（>80分）强制转人工调查</td>
+        <td><span class="tag blue">自动/预防</span></td><td>重新执行+检查</td><td>50</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>CL-C003</td><td>理赔金额审批矩阵：<br>¥10万以下 → 理赔专员<br>¥10-100万 → 经理审批<br>¥100万以上 → 总经理审批+精算复核</td>
+        <td><span class="tag yellow">手动/预防</span></td><td>检查审批记录</td><td>40</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>CL-C004</td><td>理赔金划付需双人授权（录入+复核），与收款账户非同一人控制</td>
+        <td><span class="tag blue">半自动/预防</span></td><td>检查+日志</td><td>40</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>CL-C005</td><td>月度理赔准备金充足性测试，偏差率>5%需精算复核</td>
+        <td><span class="tag yellow">手动/检测</span></td><td>重新执行</td><td>12</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+    </table>
+    <br>
+    <p><em>穿行测试结论：选择车险理赔1笔（¥20万）和重疾险理赔1笔（¥50万），全流程控制有效。</em></p>
+  </div>
+
+  <!-- Process 3: Investment -->
+  <div class="card">
+    <div class="card-title red">📋 流程三：投资决策流程 (Investment Decision) ⚠ 存在重要缺陷</div>
+    <table>
+      <tr><th>控制点编号</th><th>控制描述</th><th>控制类型</th><th>测试方法</th><th>样本量</th><th>偏差</th><th>结果</th></tr>
+      <tr>
+        <td>IV-C001</td><td>投资决策委员会会议记录完整，包括风险评估、合规审查、投票结果</td>
+        <td><span class="tag yellow">手动/预防</span></td><td>检查</td><td>15</td><td>1</td>
+        <td><span class="tag yellow">⚠ Partial</span></td>
+      </tr>
+      <tr>
+        <td>IV-C002</td><td>投资交易系统（O32）内置投资限额控制（单券/单行业/集中度）</td>
+        <td><span class="tag blue">自动/预防</span></td><td>系统日志</td><td>60</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>IV-C003</td><td>关联交易投资标的在交易前通过关联方数据库自动校验</td>
+        <td><span class="tag blue">自动/预防</span></td><td>检查+日志</td><td>30</td><td>1</td>
+        <td><span class="tag yellow">⚠ Partial</span></td>
+      </tr>
+      <tr>
+        <td>IV-C004</td><td>投资后估值变动按月报告，减值测试按季度执行</td>
+        <td><span class="tag yellow">手动/检测</span></td><td>重新执行</td><td>12</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>IV-C005</td><td>每笔投资交易的双人复核已完成（交易员输入→复核员确认→风控放行）</td>
+        <td><span class="tag blue">半自动/预防</span></td><td>系统日志</td><td>60</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+    </table>
+    <br>
+    <p style="color:var(--warning);">⚠ IV-C001: 1次投资决策委员会会议记录缺少完整的风险评估讨论内容，仅有投票结果。涉及一笔¥5亿的私募股权基金投资。</p>
+    <p style="color:var(--danger);">⚠ IV-C003: 关联交易投资标的校验发现1笔投资（¥2亿金融产品）在交易时关联方数据库未及时更新，该交易对手随后被识别为关联方。经补充审批，未导致实质损失，但暴露了关联方数据库更新延迟的缺陷。</p>
+  </div>
+
+  <!-- Process 4: Related Party Transactions -->
+  <div class="card">
+    <div class="card-title red">📋 流程四：关联交易审批流程 (Related Party Transactions) ⚠ 存在缺陷</div>
+    <table>
+      <tr><th>控制点编号</th><th>控制描述</th><th>控制类型</th><th>测试方法</th><th>样本量</th><th>偏差</th><th>结果</th></tr>
+      <tr>
+        <td>RP-C001</td><td>关联方名单每季度更新，经董事会审批后发布</td>
+        <td><span class="tag yellow">手动/预防</span></td><td>检查</td><td>4</td><td>1</td>
+        <td><span class="tag yellow">⚠ Partial</span></td>
+      </tr>
+      <tr>
+        <td>RP-C002</td><td>拟进行的关联交易在交易系统中与关联方数据库自动比对并标记</td>
+        <td><span class="tag blue">自动/预防</span></td><td>检查+日志</td><td>30</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>RP-C003</td><td>重大关联交易（>净资产0.5%）提交独立董事事前审批</td>
+        <td><span class="tag yellow">手动/预防</span></td><td>检查审批记录</td><td>10</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+      <tr>
+        <td>RP-C004</td><td>关联交易定价依据独立第三方估值或可比市场价格</td>
+        <td><span class="tag yellow">手动/预防</span></td><td>检查+重新执行</td><td>10</td><td>2</td>
+        <td><span class="tag red">❌ Fail</span></td>
+      </tr>
+      <tr>
+        <td>RP-C005</td><td>关联交易季度报告按时提交董事会和监管机构</td>
+        <td><span class="tag yellow">手动/检测</span></td><td>检查</td><td>4</td><td>0</td>
+        <td><span class="tag green">✔ Pass</span></td>
+      </tr>
+    </table>
+    <br>
+    <p style="color:var(--danger);">❌ RP-C001: Q3关联方名单未按时更新（延迟18天），导致2笔新识别关联方未及时纳入名单。</p>
+    <p style="color:var(--warning);">❌ RP-C004: 2笔关联交易（平安银行向平安科技提供的金融信息服务）的定价模型未按季度独立复核，依赖成本加成法但未验证市场公允性。涉及金额约¥1.8亿。</p>
+  </div>
+</div>
+
+<!-- ===== TAB 4: IT General Controls ===== -->
+<div id="tab-itgc" class="tab-content">
+
+  <div class="card">
+    <div class="card-title">💻 IT 一般控制 (ITGC) 测试结果</div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value">30</div>
+        <div class="metric-label">ITGC测试项</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value green">26</div>
+        <div class="metric-label">通过</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value yellow">3</div>
+        <div class="metric-label">部分通过</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value danger">1</div>
+        <div class="metric-label">未通过</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔐 领域一：访问控制 (Access Control) — 8/10 通过</div>
+    <table>
+      <tr><th>控制编号</th><th>控制描述</th><th>测试系统</th><th>结果</th><th>发现</th></tr>
+      <tr><td>IT-AC-01</td><td>用户账户创建需部门经理+IT管理员双重审批</td><td>AD/Oracle/O32</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-AC-02</td><td>离职员工账户在HR系统标记后24小时内自动禁用</td><td>AD/HR系统</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-AC-03</td><td>特权账户（DBA/超级用户）使用密码保险柜管理，操作全程审计</td><td>CyberArk</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-AC-04</td><td>权限季度复审（Access Certification）</td><td>SailPoint</td><td><span class="tag yellow">⚠</span></td><td>Q2复审完成率92% (目标100%)</td></tr>
+      <tr><td>IT-AC-05</td><td>关键系统启用多因素认证（MFA）</td><td>VPN/核心系统</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title red">🔄 领域二：变更管理 (Change Management) — 6/10 通过 ⚠ 重要缺陷</div>
+    <table>
+      <tr><th>控制编号</th><th>控制描述</th><th>测试系统</th><th>结果</th><th>发现</th></tr>
+      <tr><td>IT-CM-01</td><td>系统变更需提交正式变更请求（CR），包含风险评估和测试计划</td><td>Jira/SVN</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-CM-02</td><td>变更在测试环境中验证通过后方可部署到生产</td><td>Jenkins</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-CM-03</td><td>紧急变更（Emergency Change）后补审批制度</td><td>Jira</td><td><span class="tag red">❌</span></td><td><strong>1笔平安云平台配置变更未完成后补审批，变更涉及生产环境数据库参数</strong></td></tr>
+      <tr><td>IT-CM-04</td><td>变更部署后用户验收测试（UAT）签字</td><td>Jira/TestLink</td><td><span class="tag yellow">⚠</span></td><td>2次变更缺少UAT签字记录</td></tr>
+      <tr><td>IT-CM-05</td><td>变更日志完整记录并保留至少7年</td><td>Jira/日志</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-CM-06</td><td>生产环境配置更改的自动化部署管道审计</td><td>Jenkins/Ansible</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+    </table>
+    <br>
+    <p style="color:var(--danger);"><strong>重要缺陷 SD-001:</strong> 2025年8月15日，平安云平台因性能问题触发紧急变更，DBA直接在生产环境中修改了数据库连接池参数。该变更虽然经过口头沟通但未在48小时内完成后补审批。修改的参数直接影响核心保险系统的数据库连接稳定性，虽未导致故障，但绕过了标准变更管理流程，属于设计缺陷。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚙️ 领域三：系统运维 (Operations) — 9/10 通过</div>
+    <table>
+      <tr><th>控制编号</th><th>控制描述</th><th>结果</th><th>发现</th></tr>
+      <tr><td>IT-OPS-01</td><td>关键系统可用性≥99.99%（SLA监控）</td><td><span class="tag green">✔</span></td><td>2025年可用性99.995%</td></tr>
+      <tr><td>IT-OPS-02</td><td>每日全量备份，备份日志自动监控</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-OPS-03</td><td>季度备份恢复演练</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-OPS-04</td><td>批处理作业异常自动告警及人工确认机制</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-OPS-05</td><td>年度灾难恢复演练</td><td><span class="tag yellow">⚠</span></td><td>DR演练完成后报告延迟14天提交</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 领域四：数据安全 (Data Security) — 3/5 通过</div>
+    <table>
+      <tr><th>控制编号</th><th>控制描述</th><th>结果</th><th>发现</th></tr>
+      <tr><td>IT-DS-01</td><td>客户个人身份信息（PII）加密存储（AES-256）</td><td><span class="tag green">✔</span></td><td>—</td></tr>
+      <tr><td>IT-DS-02</td><td>数据分类分级标签完整并自动覆盖新数据</td><td><span class="tag yellow">⚠</span></td><td>平安健康板块部分新数据未自动打标</td></tr>
+      <tr><td>IT-DS-03</td><td>渗透测试年度执行，高危漏洞7天内修复</td><td><span class="tag green">✔</span></td><td>2025年未发现高危漏洞</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB 5: Deficiency List ===== -->
+<div id="tab-deficiency" class="tab-content">
+
+  <div class="card">
+    <div class="card-title">⚠️ 缺陷清单与控制缺陷等级划分</div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value green">0</div>
+        <div class="metric-label">重大缺陷 (MW)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value warning">3</div>
+        <div class="metric-label">重要缺陷 (SD)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">9</div>
+        <div class="metric-label">一般缺陷 (CD)</div>
+      </div>
+    </div>
+    <div style="margin:16px 0;padding:12px;background:var(--card2);border-radius:8px;font-family:monospace;white-space:pre;font-size:0.85em;">
+╔═══════════════════╦════════════╦══════════════╦══════════════╗
+║ Likelihood \ Severity ║   Low     ║   Moderate   ║   High/V.High║
+╠═══════════════════╬════════════╬══════════════╬══════════════╣
+║   Remote          ║   4×CD    ║     1×CD     ║     1×SD     ║
+║   Possible        ║   2×CD    ║     1×SD     ║     1×SD     ║
+║   Probable        ║   1×CD    ║     1×SD     ║     0×MW     ║
+╚═══════════════════╩════════════╩══════════════╩══════════════╝
+    </div>
+  </div>
+
+  <!-- Material Weaknesses -->
+  <div class="card">
+    <div class="card-title green">✅ 重大缺陷 (Material Weaknesses) — 共 0 项</div>
+    <p style="color:var(--accent2);">未发现导致财务报告重大错报合理可能未被及时防止或发现的重大缺陷。</p>
+  </div>
+
+  <!-- Significant Deficiencies -->
+  <div class="card">
+    <div class="card-title yellow">🟡 重要缺陷 (Significant Deficiencies) — 共 3 项</div>
+
+    <div style="border:1px solid var(--border);border-left:4px solid var(--warning);border-radius:6px;padding:16px;margin:12px 0;background:var(--card2);">
+      <h4 style="color:var(--warning);">SD-001: IT系统紧急变更管理缺陷</h4>
+      <table style="font-size:0.85em;">
+        <tr><td style="width:100px;color:var(--muted);">发现描述</td><td>2025年8月15日，平安云平台DBA在生产环境进行数据库连接池参数紧急变更，未在48小时内完成后补审批。该变更直接影响核心保险系统数据库配置。</td></tr>
+        <tr><td style="color:var(--muted);">根本原因</td><td>紧急变更流程执行松散，DBA团队对"紧急变更后补审批"的时限要求认知不足；缺乏自动化的变更到期提醒机制。</td></tr>
+        <tr><td style="color:var(--muted);">风险等级</td><td>严重程度：High | 可能性：Possible | 综合评分：6分</td></tr>
+        <tr><td style="color:var(--muted);">影响分析</td><td>如果变更参数设置不当，可能导致核心保险系统数据库连接失败，影响保费收取和理赔处理的正常运行，进而影响财务数据的完整性和准确性。</td></tr>
+        <tr><td style="color:var(--muted);">涉及流程</td><td>IT变更管理 / 系统运维</td></tr>
+        <tr><td style="color:var(--muted);">补偿控制</td><td>自动化部署管道（Jenkins+Ansible）记录所有变更操作，可通过回滚命令恢复原参数配置</td></tr>
+        <tr><td style="color:var(--muted);">推荐整改</td><td>1) 紧急变更后补审批增加系统自动提醒（4h/8h/24h/48h）<br>2) 将DBA直接修改生产环境的权限纳入变更审批流程<br>3) 季度变更管理培训（已完成2025年9月培训）</td></tr>
+        <tr><td style="color:var(--muted);">责任人</td><td>平安科技CTO办公室</td><td style="color:var(--muted);">计划完成</td><td>2026年1月31日</td></tr>
+      </table>
+    </div>
+
+    <div style="border:1px solid var(--border);border-left:4px solid var(--warning);border-radius:6px;padding:16px;margin:12px 0;background:var(--card2);">
+      <h4 style="color:var(--warning);">SD-002: 关联交易定价模型独立复核缺失</h4>
+      <table style="font-size:0.85em;">
+        <tr><td style="width:100px;color:var(--muted);">发现描述</td><td>平安银行向平安科技提供的金融信息服务，其定价模型采用成本加成法，未按季度进行独立第三方定价复核。2笔关联交易涉及金额约¥1.8亿，定价无独立市场验证记录。</td></tr>
+        <tr><td style="color:var(--muted);">根本原因</td><td>关联交易管理办法要求定价模型"定期复核"，但未明确定义复核频率和复核人资质要求，导致实际操作中复核被简化为内部自查。</td></tr>
+        <tr><td style="color:var(--muted);">风险等级</td><td>严重程度：Moderate | 可能性：Probable | 综合评分：6分</td></tr>
+        <tr><td style="color:var(--muted);">影响分析</td><td>关联交易定价不公允可能导致利润在不同法律实体间的不当转移，影响合并报表的准确性和税务合规性。</td></tr>
+        <tr><td style="color:var(--muted);">涉及流程</td><td>关联交易审批流程</td></tr>
+        <tr><td style="color:var(--muted);">补偿控制</td><td>关联交易总额在董事会批准的年度限额内；独立董事定期审查关联交易汇总报告</td></tr>
+        <tr><td style="color:var(--muted);">推荐整改</td><td>1) 修订《关联交易定价管理办法》，明确要求每季度独立第三方定价复核<br>2) 对2025年度所有未经独立复核的关联交易定价进行追溯评估<br>3) 将定价模型复核结果纳入关联交易季度报告的必报内容</td></tr>
+        <tr><td style="color:var(--muted);">责任人</td><td>集团财务总监</td><td style="color:var(--muted);">计划完成</td><td>2026年2月28日</td></tr>
+      </table>
+    </div>
+
+    <div style="border:1px solid var(--border);border-left:4px solid var(--warning);border-radius:6px;padding:16px;margin:12px 0;background:var(--card2);">
+      <h4 style="color:var(--warning);">SD-003: 长期寿险准备金精算模型关键假设变更缺乏独立签批</h4>
+      <table style="font-size:0.85em;">
+        <tr><td style="width:100px;color:var(--muted);">发现描述</td><td>2025年精算模型中死亡率假设和退保率假设的年度更新，调整记录显示由精算部门完成，但在正式签批流程中缺少独立精算复核人的书面确认。涉及对¥8,600亿长期寿险准备金的影响。</td></tr>
+        <tr><td style="color:var(--muted);">根本原因</td><td>精算假设变更流程要求"独立复核"，但操作中精算部门负责人同时担任假设制定人和复核人，未实现真正的独立性。</td></tr>
+        <tr><td style="color:var(--muted);">风险等级</td><td>严重程度：High | 可能性：Remote | 综合评分：6分</td></tr>
+        <tr><td style="color:var(--muted);">影响分析</td><td>寿险准备金是资产负债表上最大的负债项目，假设变更的微小差异可能导致准备金变动数十亿元，直接影响利润和偿付能力指标。</td></tr>
+        <tr><td style="color:var(--muted);">涉及流程</td><td>精算评估 / 准备金计量</td></tr>
+        <tr><td style="color:var(--muted);">补偿控制</td><td>假设变更的上限和下限由精算委员会年度审批；PwC季度精算审计覆盖假设合理性</td></tr>
+        <tr><td style="color:var(--muted);">推荐整改</td><td>1) 精算假设变更需由独立复核人（另一名FSA/FCAS持证精算师）签批<br>2) 建立假设变更的双人复核矩阵，制定人和复核人不得为同一人<br>3) 假设变更报告需包含敏感性分析（±1%变动的财务影响）</td></tr>
+        <tr><td style="color:var(--muted);">责任人</td><td>首席精算师</td><td style="color:var(--muted);">计划完成</td><td>2026年3月31日</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Control Deficiencies -->
+  <div class="card">
+    <div class="card-title info">🔵 一般缺陷 (Control Deficiencies) — 共 9 项</div>
+    <table>
+      <tr><th>编号</th><th>缺陷描述</th><th>涉及流程</th><th>严重度</th><th>可能性</th><th>状态</th></tr>
+      <tr>
+        <td>CD-001</td><td>权限季度复审（Q2）完成率仅92%，未达100%目标</td><td>IT访问控制</td><td>Low</td><td>Possible</td>
+        <td><span class="tag yellow">整改中</span></td>
+      </tr>
+      <tr>
+        <td>CD-002</td><td>保费到账判定系统时间戳偏差3小时（PW-C005）</td><td>保费核保</td><td>Low</td><td>Remote</td>
+        <td><span class="tag yellow">整改中</span></td>
+      </tr>
+      <tr>
+        <td>CD-003</td><td>投资决策委员会1次会议记录缺少完整风险评估内容</td><td>投资决策</td><td>Low</td><td>Possible</td>
+        <td><span class="tag green">已整改</span></td>
+      </tr>
+      <tr>
+        <td>CD-004</td><td>Q3关联方名单更新延迟18天（RP-C001）</td><td>关联交易</td><td>Moderate</td><td>Remote</td>
+        <td><span class="tag yellow">整改中</span></td>
+      </tr>
+      <tr>
+        <td>CD-005</td><td>2次IT变更缺少UAT签字记录（IT-CM-04）</td><td>IT变更管理</td><td>Low</td><td>Remote</td>
+        <td><span class="tag green">已整改</span></td>
+      </tr>
+      <tr>
+        <td>CD-006</td><td>DR演练完成报告延迟14天提交（IT-OPS-05）</td><td>IT运维</td><td>Low</td><td>Possible</td>
+        <td><span class="tag yellow">整改中</span></td>
+      </tr>
+      <tr>
+        <td>CD-007</td><td>平安健康板块部分新数据未自动分类标签</td><td>数据安全</td><td>Low</td><td>Possible</td>
+        <td><span class="tag yellow">整改中</span></td>
+      </tr>
+      <tr>
+        <td>CD-008</td><td>费用报销凭证编号不连续（财务系统序列号跳号）</td><td>财务报告</td><td>Low</td><td>Remote</td>
+        <td><span class="tag green">已整改</span></td>
+      </tr>
+      <tr>
+        <td>CD-009</td><td>AI反欺诈模型训练数据的标注质量抽查频次不足</td><td>理赔处理</td><td>Low</td><td>Probable</td>
+        <td><span class="tag yellow">整改中</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 缺陷按严重度分布</div>
+    <table>
+      <tr><th>等级</th><th>数量</th><th>% 占比</th><th>分布</th></tr>
+      <tr>
+        <td><span class="tag green">重大缺陷 (MW)</span></td>
+        <td>0</td><td>0%</td>
+        <td><div class="progress-bar"><div class="progress-fill green" style="width:0%"></div></div></td>
+      </tr>
+      <tr>
+        <td><span class="tag yellow">重要缺陷 (SD)</span></td>
+        <td>3</td><td>25%</td>
+        <td><div class="progress-bar"><div class="progress-fill yellow" style="width:25%"></div></div></td>
+      </tr>
+      <tr>
+        <td><span class="tag blue">一般缺陷 (CD)</span></td>
+        <td>9</td><td>75%</td>
+        <td><div class="progress-bar"><div class="progress-fill blue" style="width:75%"></div></div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 整改跟踪计划 (Remediation Tracking)</div>
+    <table>
+      <tr><th>编号</th><th>等级</th><th>整改措施</th><th>责任人</th><th>计划日期</th><th>状态</th></tr>
+      <tr>
+        <td>SD-001</td><td><span class="tag yellow">重要</span></td><td>紧急变更管理系统自动提醒+权限管控</td><td>平安科技CTO</td><td>2026-01-31</td>
+        <td><span class="tag yellow">⏳进行中</span></td>
+      </tr>
+      <tr>
+        <td>SD-002</td><td><span class="tag yellow">重要</span></td><td>修订关联交易定价管理办法</td><td>集团CFO</td><td>2026-02-28</td>
+        <td><span class="tag yellow">⏳进行中</span></td>
+      </tr>
+      <tr>
+        <td>SD-003</td><td><span class="tag yellow">重要</span></td><td>精算假设变更独立签批机制</td><td>首席精算师</td><td>2026-03-31</td>
+        <td><span class="tag yellow">⏳进行中</span></td>
+      </tr>
+      <tr>
+        <td>CD-001</td><td><span class="tag blue">一般</span></td><td>权限复审自动化提醒和考核</td><td>IT安全总监</td><td>2026-01-15</td>
+        <td><span class="tag red">逾期未整改</span></td>
+      </tr>
+      <tr>
+        <td>CD-004</td><td><span class="tag blue">一般</span></td><td>关联方名单自动更新触发器</td><td>合规总监</td><td>2025-12-31</td>
+        <td><span class="tag red">逾期未整改</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB 6: SOX 404 ===== -->
+<div id="tab-sox404" class="tab-content">
+
+  <div class="card">
+    <div class="card-title">📋 SOX 404 合规测试要点</div>
+    <table>
+      <tr><th>合规要素</th><th>平安集团状态</th><th>说明</th></tr>
+      <tr>
+        <td>Section 302 — 管理层认证</td>
+        <td><span class="tag green">合规</span></td>
+        <td>CEO马明哲、CFO付欣签署季度和年度认证文件</td>
+      </tr>
+      <tr>
+        <td>Section 404(a) — 管理层ICFR评估报告</td>
+        <td><span class="tag green">合规</span></td>
+        <td>已编制管理层评估报告，结论为ICFR有效（含重要缺陷披露）</td>
+      </tr>
+      <tr>
+        <td>Section 404(b) — 外部审计师鉴证</td>
+        <td><span class="tag green">合规</span></td>
+        <td>PwC普华永道已执行ICFR审计，预计出具无保留意见</td>
+      </tr>
+      <tr>
+        <td>Section 409 — 重大事件实时披露</td>
+        <td><span class="tag green">合规</span></td>
+        <td>触发条件明确，2025年未发生需临时披露的重大事件</td>
+      </tr>
+      <tr>
+        <td>Section 802 — 审计记录保存</td>
+        <td><span class="tag green">合规</span></td>
+        <td>审计工作底稿保存7年，符合SOX要求</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 SOX 404 合规年周期评估</div>
+    <table>
+      <tr><th>阶段</th><th>活动</th><th>完成情况</th></tr>
+      <tr>
+        <td>Q1: 风险更新</td>
+        <td>风险评估更新 · 范围确定 · 控制文档更新</td>
+        <td><span class="tag green">✅ 已完成</span></td>
+      </tr>
+      <tr>
+        <td>Q2: 上半年测试</td>
+        <td>控制测试 · 缺陷识别 · 中期整改</td>
+        <td><span class="tag green">✅ 已完成</span></td>
+      </tr>
+      <tr>
+        <td>Q3: 覆盖复查</td>
+        <td>测试覆盖回顾 · 补偿控制评估 · 缺陷整改验证</td>
+        <td><span class="tag green">✅ 已完成</span></td>
+      </tr>
+      <tr>
+        <td>Q4: 年终评估</td>
+        <td>年底控制测试 · 管理层评估 · 外部审计鉴证 <br>· 10-K备案 · 审计委员会汇报</td>
+        <td><span class="tag yellow">⏳ 进行中</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 管理层ICFR评估报告（草稿）</div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:20px;font-size:0.9em;">
+      <p style="text-align:center;font-size:1.1em;font-weight:700;margin-bottom:12px;">管理层关于财务报告内部控制的评估报告</p>
+      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">中国平安保险（集团）股份有限公司<br>截至2025年12月31日</p>
+      <p>管理层负责建立和维护适当的财务报告内部控制。根据《企业内部控制基本规范》及配套指引，并参考COSO 2013内部控制整合框架，我们评估了截至2025年12月31日的财务报告内部控制的有效性。</p>
+      <br>
+      <p>基于我们的评估，管理层得出结论：</p>
+      <p style="color:var(--accent2);font-weight:700;font-size:1.1em;margin:12px 0;">✅ 截至2025年12月31日，公司的财务报告内部控制有效。</p>
+      <p>在评估过程中，我们识别出以下重要缺陷，但上述缺陷尚未达到重大缺陷的严重程度：</p>
+      <ol style="padding-left:20px;margin:8px 0;">
+        <li>IT系统紧急变更管理缺陷（SD-001）</li>
+        <li>关联交易定价模型独立复核缺失（SD-002）</li>
+        <li>长期寿险准备金精算模型关键假设变更缺乏独立签批（SD-003）</li>
+      </ol>
+      <p style="margin-top:12px;">管理层已制定整改措施，并预计在2026年第一季度前完成全部整改。整改完成后将重新测试以验证控制有效性。</p>
+      <br>
+      <p>公司的独立注册会计师事务所普华永道中天已对公司的财务报告内部控制发表了无保留意见的鉴证报告。</p>
+      <br>
+      <div style="display:flex;justify-content:space-between;">
+        <div>马明哲<br>董事长兼CEO</div>
+        <div>付欣<br>副总经理兼CFO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 SOX 404 合规检查清单</div>
+    <table>
+      <tr><th>检查项</th><th>完成情况</th></tr>
+      <tr><td>□ 所有关键流程是否都有流程图？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ 控制矩阵是否更新至最新？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ 风险和控制映射是否完整？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ ITGC文档是否齐全？</td><td><span class="tag yellow">⚠ 紧急变更文档待补</span></td></tr>
+      <tr><td>□ 控制描述与实际一致？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ 穿行测试覆盖所有重大交易类型？</td><td><span class="tag green">✅ 是 (12项)</span></td></tr>
+      <tr><td>□ 控制测试样本量符合标准？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ 所有缺陷是否已定级？</td><td><span class="tag green">✅ 是 (12项)</span></td></tr>
+      <tr><td>□ 整改责任人是否明确？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ 重大缺陷是否已报告审计委员会？</td><td><span class="tag green">✅ 是</span></td></tr>
+      <tr><td>□ 管理层评估报告是否完成？</td><td><span class="tag yellow">⚠ 草稿已完成，待签字</span></td></tr>
+      <tr><td>□ CEO/CFO认证是否已签署？</td><td><span class="tag yellow">⚠ 待年末最终签署</span></td></tr>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+  document.getElementById('tab-' + tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>腾讯控股(0700.HK) · 投行级智慧大屏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e1a;--bg2:#111827;--bg3:#1a2240;--bg4:#1e2a50;
+  --accent:#00d4ff;--accent2:#7c3aed;--accent3:#10b981;
+  --accent4:#f59e0b;--accent5:#ef4444;
+  --text:#e5e7eb;--text2:#9ca3af;--text3:#6b7280;
+  --border:#1e3a5f;--border2:#2a4a7f;
+  --cyan-glow:0 0 10px rgba(0,212,255,0.15);
+  --radius:10px;--radius-sm:6px;
+  --font:'SF Mono','Fira Code','Cascadia Code','Consolas',monospace;
+  --font-cn:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;
+}
+body{font-family:var(--font-cn);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);z-index:100}
+/* Header */
+.header{background:linear-gradient(135deg,var(--bg2),var(--bg3));border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:bold;color:#fff}
+.header-title{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{font-size:11px;color:var(--text3);margin-top:2px;-webkit-text-fill-color:var(--text3)}
+.header-right{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text2)}
+.header-stat{display:flex;align-items:center;gap:4px}
+.header-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.header-dot.green{background:var(--accent3);box-shadow:0 0 6px rgba(16,185,129,0.5)}
+/* Main tabs */
+.main-tabs{display:flex;gap:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto}
+.main-tab{padding:12px 20px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.main-tab:hover{color:var(--text);background:rgba(0,212,255,0.05)}
+.main-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+/* Sub tabs */
+.sub-tabs{display:flex;gap:4px;background:var(--bg);border-bottom:1px solid var(--border);padding:6px 16px;overflow-x:auto}
+.sub-tab{padding:6px 14px;cursor:pointer;color:var(--text2);font-size:12px;border-radius:var(--radius-sm);transition:all .2s;white-space:nowrap}
+.sub-tab:hover{color:var(--text);background:var(--bg3)}
+.sub-tab.active{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+/* Content */
+.content{padding:16px;max-width:1600px;margin:0 auto}
+.section-title{font-size:14px;font-weight:600;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';width:3px;height:14px;background:var(--accent);border-radius:2px}
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+/* Cards */
+.card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.3}
+.card-title{font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:500}
+.card-value{font-size:24px;font-weight:700;color:var(--text)}
+.card-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.card-up{color:var(--accent3)}
+.card-down{color:var(--accent5)}
+.card-highlight{border-color:var(--accent)}
+.card-highlight::before{opacity:.8}
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.kpi-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.kpi-card .kpi-label{font-size:10px;color:var(--text3);margin-bottom:4px}
+.kpi-card .kpi-value{font-size:18px;font-weight:700}
+.kpi-card .kpi-change{font-size:10px;margin-top:2px}
+/* Canvas charts */
+.chart-container{position:relative;width:100%}
+.chart-container canvas{width:100%!important;height:auto!important;max-height:280px}
+.chart-container.tall canvas{max-height:340px}
+.chart-full canvas{max-height:400px}
+/* Heatmap cell */
+.heatmap-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--font)}
+.heatmap-table td,.heatmap-table th{padding:4px 6px;text-align:center;border:1px solid var(--border)}
+.heatmap-table th{color:var(--text3);font-weight:500;font-size:10px}
+.heatmap-cell{font-weight:600;cursor:default;transition:all .1s}
+.heatmap-cell:hover{filter:brightness(1.2);transform:scale(1.05)}
+.heatmap-base{outline:2px solid var(--accent);outline-offset:-1px}
+/* Radar */
+.radar-container{position:relative;width:100%;max-width:320px;margin:0 auto}
+/* Tables */
+.data-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.data-table th{background:var(--bg3);color:var(--text3);font-weight:500;padding:6px 8px;text-align:center;border:1px solid var(--border);font-size:11px}
+.data-table td{padding:5px 8px;text-align:center;border:1px solid var(--border);color:var(--text)}
+.data-table tr:hover td{background:rgba(0,212,255,0.05)}
+.data-table .right{text-align:right}
+.data-table .left{text-align:left}
+/* Risk matrix */
+.risk-matrix{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:6px;font-size:11px}
+.risk-cell{padding:8px;border-radius:var(--radius-sm);text-align:center;font-weight:600;cursor:default;transition:all .2s}
+.risk-cell:hover{transform:translateY(-2px)}
+.risk-crit{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#fca5a5}
+.risk-high{background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);color:#fcd34d}
+.risk-med{background:rgba(234,179,8,0.15);border:1px solid rgba(234,179,8,0.3);color:#fde68a}
+.risk-low{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+/* Segment bars */
+.segment-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.segment-label{flex:0 0 100px;color:var(--text2)}
+.segment-bar-bg{flex:1;height:18px;background:var(--bg4);border-radius:4px;overflow:hidden;position:relative}
+.segment-bar{height:100%;border-radius:4px;transition:width .5s;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;font-size:9px;color:#fff;font-weight:600}
+.segment-value{flex:0 0 60px;text-align:right;font-weight:600;font-size:12px}
+/* Tags */
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.tag-green{background:rgba(16,185,129,0.15);color:var(--accent3);border:1px solid rgba(16,185,129,0.3)}
+.tag-yellow{background:rgba(245,158,11,0.15);color:var(--accent4);border:1px solid rgba(245,158,11,0.3)}
+.tag-red{background:rgba(239,68,68,0.15);color:var(--accent5);border:1px solid rgba(239,68,68,0.3)}
+.tag-purple{background:rgba(124,58,237,0.15);color:var(--accent2);border:1px solid rgba(124,58,237,0.3)}
+.tag-blue{background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid rgba(0,212,255,0.3)}
+/* System overview */
+.arch-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;padding:12px 0}
+.arch-box{padding:8px 14px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;text-align:center}
+.arch-box.data{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent)}
+.arch-box.model{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);color:var(--accent2)}
+.arch-box.report{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--accent3)}
+.arch-arrow{color:var(--text3);font-size:14px}
+/* Timeline */
+.timeline{position:relative;padding:8px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{display:flex;gap:12px;margin-bottom:10px;position:relative}
+.timeline-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;border:2px solid;flex-shrink:0}
+.timeline-content{flex:1}
+.timeline-title{font-size:12px;font-weight:600}
+.timeline-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.timeline-time{font-size:10px;color:var(--text3);margin-top:2px}
+/* Eye icon for signal warning */
+.warning-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;margin-right:4px}
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+/* Hide/show */
+.page{display:none}
+.page.active{display:block}
+.sub-page{display:none}
+.sub-page.active{display:block}
+/* Misc */
+.mb-12{margin-bottom:12px}
+.mt-8{margin-top:8px}
+.text-center{text-align:center}
+.text-accent{color:var(--accent)}
+.text-muted{color:var(--text3)}
+.text-sm{font-size:11px}
+.text-xs{font-size:10px}
+.flex{display:flex}
+.gap-8{gap:8px}
+.gap-4{gap:4px}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.flex-wrap{flex-wrap:wrap}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">TX</div>
+    <div>
+      <div class="header-title">腾讯控股 · 投行级智慧大屏</div>
+      <div class="header-sub"><span id="headerCompany">Tencent Holdings (0700.HK)</span> · Investment Banking Grade · 2026-05-19</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-stat"><span class="header-dot green"></span> 实时</span>
+    <span class="header-stat">当前价: <strong style="color:var(--accent)">HKD 478.0</strong></span>
+    <span class="header-stat">综合评级: <strong style="color:var(--accent3)">增持</strong></span>
+  </div>
+</div>
+
+<div class="main-tabs">
+  <div class="main-tab active" onclick="switchMainTab(0)">🏠 系统总览</div>
+  <div class="main-tab" onclick="switchMainTab(1)">🤖 分析师团队</div>
+  <div class="main-tab" onclick="switchMainTab(2)">📊 腾讯投行级分析</div>
+  <div class="main-tab" onclick="switchMainTab(3)">🛡️ 审计报告</div>
+</div>
+
+<div class="content">
+<!-- Page 0: System Overview -->
+<div class="page active" id="page0">
+  <div class="section-title">系统架构总览</div>
+  <div class="card mb-12">
+    <div class="arch-flow">
+      <div class="arch-box data">📊 T1-财务深潜</div><span class="arch-arrow">→</span>
+      <div class="arch-box data">📈 T2-10维分析</div><span class="arch-arrow">→</span>
+      <div class="arch-box model">🏗️ T3-估值模型</div><span class="arch-arrow">→</span>
+      <div class="arch-box model">🛡️ T4-风险评估</div><span class="arch-arrow">→</span>
+      <div class="arch-box report">🎯 T5-智慧大屏</div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+      <span class="tag tag-blue">DCF-FCFF</span>
+      <span class="tag tag-purple">可比公司分析</span>
+      <span class="tag tag-green">SOTP分部估值</span>
+      <span class="tag tag-yellow">敏感性热力图</span>
+      <span class="tag tag-red">Tornado分析</span>
+      <span class="tag tag-blue">三情景估值</span>
+      <span class="tag tag-purple">Altman Z''-Score</span>
+      <span class="tag tag-green">Piotroski F-Score</span>
+      <span class="tag tag-yellow">Beneish M-Score</span>
+      <span class="tag tag-red">EVA分析</span>
+    </div>
+  </div>
+
+  <div class="grid-4 mb-12">
+    <div class="kpi-card card-highlight">
+      <div class="kpi-label">DCF目标价</div>
+      <div class="kpi-value" style="color:var(--accent3)">HKD 616.7</div>
+      <div class="kpi-change" style="color:var(--accent3)">+29.0% ↑</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">综合目标价</div>
+      <div class="kpi-value" style="color:var(--accent4)">HKD 507.1</div>
+      <div class="kpi-change" style="color:var(--accent3)">+6.1% ↑</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">综合风险评分</div>
+      <div class="kpi-value" style="color:var(--accent3)">81.2</div>
+      <div class="kpi-change" style="color:var(--text2)">AA级 · 优秀</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">当前价</div>
+      <div class="kpi-value">HKD 478.0</div>
+      <div class="kpi-change" style="color:var(--text2)">2026-05-19</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-12">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:8px">方法论体系</div>
+      <div style="font-size:12px;line-height:1.7;color:var(--text2)">
+        <div style="display:flex;gap:8px;align-items:center;padding:4px 0"><span style="color:var(--accent)">▸</span> <strong style="color:var(--text)">估值方法:</strong> DCF-FCFF · 可比公司 · SOTP · 三情景</div>
+        <div style="display:flex;gap:8px;align-items:center;padding:4px 0"><span style="color:var(--accent2)">▸</span> <strong style="color:var(--text)">风险评估:</strong> Altman Z'' · F-Score · M-Score · EVA · 风险矩阵</div>
+        <div style="display:flex;gap:8px;align-items:center;padding:4px 0"><span style="color:var(--accent3)">▸</span> <strong style="color:var(--text)">参考基准:</strong> McKinsey · BCG · Big4投行级标准</div>
+        <div style="display:flex;gap:8px;align-items:center;padding:4px 0"><span style="color:var(--accent4)">▸</span> <strong style="color:var(--text)">WACC基准:</strong> 8.42% (贝塔1.1 · ERP 6.5% · Rf 2.5%)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-bottom:8px">Kanban工作流</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" style="border-color:var(--accent3);background:rgba(16,185,129,0.2);color:var(--accent3)">✓</div>
+          <div><div class="timeline-title">T1: 财务深潜</div><div class="timeline-desc">5年财务数据·三表重构</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="border-color:var(--accent3);background:rgba(16,185,129,0.2);color:var(--accent3)">✓</div>
+          <div><div class="timeline-title">T2: 10维分析</div><div class="timeline-desc">深度财务+业务拆解</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="border-color:var(--accent3);background:rgba(16,185,129,0.2);color:var(--accent3)">✓</div>
+          <div><div class="timeline-title">T3: 估值模型</div><div class="timeline-desc">DCF+SOTP+可比+Tornado</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="border-color:var(--accent3);background:rgba(16,185,129,0.2);color:var(--accent3)">✓</div>
+          <div><div class="timeline-title">T4: 风险评估</div><div class="timeline-desc">8大模块·10风险矩阵</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="border-color:var(--accent);background:rgba(0,212,255,0.2);color:var(--accent)">◉</div>
+          <div><div class="timeline-title">T5: 智慧大屏</div><div class="timeline-desc">4页标签 · 零外部依赖</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">估值结论总结</div>
+    <div class="grid-3" style="margin-top:8px">
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">DCF-FCFF 目标价</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent3)">HKD 616.7</div>
+        <div style="font-size:11px;color:var(--accent3)">+29.0%</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">可比估值</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent4)">HKD 431.5</div>
+        <div style="font-size:11px;color:var(--text2)">PE 22x 隐含</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">SOTP 分部估值</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent5)">HKD 450.1</div>
+        <div style="font-size:11px;color:var(--accent5)">-5.8%</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;font-size:12px">
+      <span><strong>综合目标价:</strong> <span style="color:var(--accent);font-weight:700">HKD 507.1</span> (+6.1%)</span>
+      <span><strong>评级:</strong> <span style="color:var(--accent3)">增持 (Accumulate)</span></span>
+      <span><strong>概率加权:</strong> HKD 630.7</span>
+      <span><strong>WACC:</strong> 8.42%</span>
+      <span><strong>永续增长率:</strong> 3.0%</span>
+      <span><strong>风险评级:</strong> <span class="tag tag-green">AA级</span> (81.2/100)</span>
+    </div>
+  </div>
+</div>
+
+<!-- Page 1: Analyst Team -->
+<div class="page" id="page1">
+  <div class="section-title">分析师团队</div>
+  <div class="grid-3 mb-12">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#3b82f6);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px">T1</div>
+        <div><div style="font-weight:600;font-size:14px">财务深潜分析师</div><div style="font-size:11px;color:var(--text3)">Financial Deep-Dive</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6">
+        三表重构 (BS/IS/CFS) · 同比趋势 · 收入拆分 · 利润率分析 · 杜邦ROE分解 · 营运资本 · 现金流质量
+      </div>
+      <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+        <span class="tag tag-blue">10张图表</span>
+        <span class="tag tag-blue">FY20-FY24</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px">T2</div>
+        <div><div style="font-weight:600;font-size:14px">估值模型分析师</div><div style="font-size:11px;color:var(--text3)">Valuation Analyst</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6">
+        DCF-FCFF模型 · WACC计算 · 可比公司(5家) · SOTP分部 · 敏感性热力图 · Tornado · 三情景估值
+      </div>
+      <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+        <span class="tag tag-purple">DCF-FCFF</span>
+        <span class="tag tag-purple">SOTP</span>
+        <span class="tag tag-purple">可比分析</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px">T3</div>
+        <div><div style="font-weight:600;font-size:14px">风险评估分析师</div><div style="font-size:11px;color:var(--text3)">Risk Analyst</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.6">
+        Altman Z'' · Piotroski F-Score · Beneish M-Score · EVA · ROIC-WACC · 偿债分析 · 行业风险 · 10风险矩阵
+      </div>
+      <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+        <span class="tag tag-green">8大模块</span>
+        <span class="tag tag-green">AA级</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title">协作流水线 Pipeline</div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;padding:8px 0">
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);text-align:center;font-size:12px">
+        <div style="font-weight:600;color:#60a5fa">T1</div>
+        <div style="font-size:10px;color:var(--text2)">财务深潜</div>
+      </div>
+      <div style="color:var(--text3);font-size:18px">→</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);text-align:center;font-size:12px">
+        <div style="font-weight:600;color:#a78bfa">T2</div>
+        <div style="font-size:10px;color:var(--text2)">10维分析</div>
+      </div>
+      <div style="color:var(--text3);font-size:18px">→</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);text-align:center;font-size:12px">
+        <div style="font-weight:600;color:#34d399">T3</div>
+        <div style="font-size:10px;color:var(--text2)">估值模型</div>
+      </div>
+      <div style="color:var(--text3);font-size:18px">→</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);text-align:center;font-size:12px">
+        <div style="font-weight:600;color:#fbbf24">T4</div>
+        <div style="font-size:10px;color:var(--text2)">风险评估</div>
+      </div>
+      <div style="color:var(--text3);font-size:18px">→</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.3);text-align:center;font-size:12px">
+        <div style="font-weight:600;color:var(--accent)">T5</div>
+        <div style="font-size:10px;color:var(--text2)">智慧大屏</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 2: Tencent IB Analysis -->
+<div class="page" id="page2">
+  <div class="sub-tabs">
+    <div class="sub-tab active" onclick="switchSubTab(0)">收入与盈利</div>
+    <div class="sub-tab" onclick="switchSubTab(1)">运营与资本</div>
+    <div class="sub-tab" onclick="switchSubTab(2)">估值与SOTP</div>
+    <div class="sub-tab" onclick="switchSubTab(3)">风险评估</div>
+  </div>
+
+  <!-- Sub-tab 0: Revenue & Profitability -->
+  <div class="sub-page active" id="subpage0">
+    <div class="section-title">收入与盈利分析</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">2024 营收</div><div class="kpi-value" style="font-size:20px">¥6,603亿</div><div class="kpi-change" style="color:var(--accent3)">同比 +8.4%</div></div>
+      <div class="kpi-card"><div class="kpi-label">2024 净利润</div><div class="kpi-value" style="font-size:20px">¥1,810亿</div><div class="kpi-change" style="color:var(--accent3)">同比 +41%</div></div>
+      <div class="kpi-card"><div class="kpi-label">毛利率</div><div class="kpi-value" style="font-size:20px">46.6%</div><div class="kpi-change" style="color:var(--accent3)">+1.0pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">EBIT利润率</div><div class="kpi-value" style="font-size:20px">33.2%</div><div class="kpi-change" style="color:var(--accent3)">+5.2pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">净利率</div><div class="kpi-value" style="font-size:20px">27.4%</div><div class="kpi-change" style="color:var(--accent3)">+6.3pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">预测2025 营收</div><div class="kpi-value" style="font-size:20px">¥7,230亿</div><div class="kpi-change" style="color:var(--accent3)">+9.5%</div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card"><div class="card-title">收入趋势 (FY20-24实际 + 25-29预测)</div><div class="chart-container"><canvas id="revChart"></canvas></div></div>
+      <div class="card"><div class="card-title">利润率趋势 (毛利率 · EBIT · 净利率)</div><div class="chart-container"><canvas id="marginChart"></canvas></div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card">
+        <div class="card-title">2024 业务分部收入</div>
+        <div style="margin-top:4px">
+          <div class="segment-row"><span class="segment-label">VAS (游戏+社交)</span><div class="segment-bar-bg"><div class="segment-bar" style="width:47%;background:linear-gradient(90deg,#2563eb,#3b82f6)">47.0%</div></div><span class="segment-value">¥3,101亿</span></div>
+          <div class="segment-row"><span class="segment-label">FinTech</span><div class="segment-bar-bg"><div class="segment-bar" style="width:33.7%;background:linear-gradient(90deg,#7c3aed,#8b5cf6)">33.7%</div></div><span class="segment-value">¥2,228亿</span></div>
+          <div class="segment-row"><span class="segment-label">广告</span><div class="segment-bar-bg"><div class="segment-bar" style="width:18.4%;background:linear-gradient(90deg,#f59e0b,#fbbf24)">18.4%</div></div><span class="segment-value">¥1,213亿</span></div>
+          <div class="segment-row"><span class="segment-label">云</span><div class="segment-bar-bg"><div class="segment-bar" style="width:10.7%;background:linear-gradient(90deg,#10b981,#34d399)">10.7%</div></div><span class="segment-value">¥708亿</span></div>
+          <div class="segment-row"><span class="segment-label">其他</span><div class="segment-bar-bg"><div class="segment-bar" style="width:0.9%;background:linear-gradient(90deg,#6b7280,#9ca3af)">0.9%</div></div><span class="segment-value">¥61亿</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">注: Tencent不按GAAP披露分部数据, 以上为估算</div>
+      </div>
+      <div class="card"><div class="card-title">收入增速趋势</div><div class="chart-container"><canvas id="growthChart"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">DCF预测核心假设</div>
+      <table class="data-table">
+        <tr><th>年份</th><th>营收(¥亿)</th><th>增速</th><th>EBIT利润率</th><th>NOPAT(¥亿)</th><th>FCFF(¥亿)</th><th>折现PV(¥亿)</th></tr>
+        <tr><td>2025E</td><td>7,230</td><td class="tag tag-green">+9.5%</td><td>34.0%</td><td>1,954</td><td>1,918</td><td>1,769</td></tr>
+        <tr><td>2026E</td><td>7,953</td><td class="tag tag-green">+10.0%</td><td>34.8%</td><td>2,200</td><td>2,161</td><td>1,838</td></tr>
+        <tr><td>2027E</td><td>8,709</td><td class="tag tag-green">+9.5%</td><td>35.5%</td><td>2,458</td><td>2,414</td><td>1,894</td></tr>
+        <tr><td>2028E</td><td>9,449</td><td class="tag tag-yellow">+8.5%</td><td>36.0%</td><td>2,704</td><td>2,657</td><td>1,923</td></tr>
+        <tr><td>2029E</td><td>10,205</td><td class="tag tag-yellow">+8.0%</td><td>36.5%</td><td>2,961</td><td>2,910</td><td>1,943</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sub-tab 1: Operations & Capital -->
+  <div class="sub-page" id="subpage1">
+    <div class="section-title">运营效率与资本结构</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">累计PV FCFF</div><div class="kpi-value" style="font-size:20px">¥9,367亿</div></div>
+      <div class="kpi-card"><div class="kpi-label">终值占比EV</div><div class="kpi-value" style="font-size:20px">79.8%</div><div class="kpi-change" style="color:var(--text2)">Terminal Value</div></div>
+      <div class="kpi-card"><div class="kpi-label">净现金</div><div class="kpi-value" style="font-size:20px">¥380亿</div><div class="kpi-change" style="color:var(--accent3)">Net Cash</div></div>
+      <div class="kpi-card"><div class="kpi-label">权益市值</div><div class="kpi-value" style="font-size:20px">¥40,590亿</div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card"><div class="card-title">FCFF折现PV趋势 (5年预测)</div><div class="chart-container"><canvas id="fcffChart"></canvas></div></div>
+      <div class="card"><div class="card-title">债务结构</div><div class="chart-container"><canvas id="debtChart"></canvas></div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card"><div class="card-title">利息覆盖倍数趋势</div><div class="chart-container"><canvas id="icrChart"></canvas></div></div>
+      <div class="card"><div class="card-title">资本结构 (E/V · D/V)</div><div class="chart-container"><canvas id="capStructChart"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">偿债能力关键指标</div>
+      <table class="data-table">
+        <tr><th>指标</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>趋势</th></tr>
+        <tr><td>流动比率</td><td>1.16</td><td>1.09</td><td>1.30</td><td>1.38</td><td class="tag tag-green">1.43</td><td>↑ 改善</td></tr>
+        <tr><td>速动比率</td><td>1.15</td><td>1.09</td><td>1.30</td><td>1.38</td><td class="tag tag-green">1.43</td><td>↑ 改善</td></tr>
+        <tr><td>负债权益比</td><td>0.23</td><td>0.29</td><td>0.25</td><td>0.24</td><td class="tag tag-green">0.22</td><td>↓ 去杠杆</td></tr>
+        <tr><td>利息覆盖率ICR</td><td>10.18x</td><td>10.16x</td><td>10.18x</td><td>10.18x</td><td class="tag tag-green">18.29x</td><td>↑ 大幅提升</td></tr>
+        <tr><td>CFO/总债务</td><td>1.31x</td><td>1.29x</td><td>1.23x</td><td>1.29x</td><td class="tag tag-green">1.50x</td><td>↑ 强劲</td></tr>
+        <tr><td>FCF/总债务</td><td>1.04x</td><td>0.99x</td><td>0.92x</td><td>0.95x</td><td class="tag tag-green">1.14x</td><td>↑ 强劲</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sub-tab 2: Valuation & SOTP -->
+  <div class="sub-page" id="subpage2">
+    <div class="section-title">估值与SOTP分析</div>
+    <div class="grid-4 mb-12">
+      <div class="kpi-card card-highlight"><div class="kpi-label">DCF目标价</div><div class="kpi-value" style="color:var(--accent3);font-size:20px">HKD 616.7</div><div class="kpi-change" style="color:var(--accent3)">+29.0%</div></div>
+      <div class="kpi-card"><div class="kpi-label">SOTP目标价</div><div class="kpi-value" style="color:var(--accent5);font-size:20px">HKD 450.1</div><div class="kpi-change" style="color:var(--accent5)">-5.8%</div></div>
+      <div class="kpi-card"><div class="kpi-label">综合目标价</div><div class="kpi-value" style="color:var(--accent4);font-size:20px">HKD 507.1</div><div class="kpi-change" style="color:var(--accent3)">+6.1%</div></div>
+      <div class="kpi-card"><div class="kpi-label">综合评级</div><div class="kpi-value" style="color:var(--accent3);font-size:20px">增持</div><div class="kpi-change" style="color:var(--text2)">Accumulate</div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card">
+        <div class="card-title">WACC × 永续增长率 敏感性热力图</div>
+        <div style="overflow-x:auto;margin-top:8px">
+          <table class="heatmap-table" id="heatmapTable">
+            <tr><th>WACC ↓ \\ TG →</th><th>2.0%</th><th>2.5%</th><th>3.0%</th><th>3.5%</th><th>4.0%</th><th>4.5%</th></tr>
+          </table>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">基准: WACC 8.4% · TG 3.0% → HKD 616.6 (高亮) · 范围 HKD 448-1,208</div>
+      </div>
+      <div class="card"><div class="card-title">Tornado 敏感性分析 (Top 5)</div><div class="chart-container tall"><canvas id="tornadoChart"></canvas></div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card">
+        <div class="card-title">SOTP 分部估值构成</div>
+        <div style="margin-top:4px">
+          <div class="segment-row"><span class="segment-label">VAS</span><div class="segment-bar-bg"><div class="segment-bar" style="width:49.7%;background:linear-gradient(90deg,#2563eb,#3b82f6)">49.7%</div></div><span class="segment-value">¥15,276亿</span></div>
+          <div class="segment-row"><span class="segment-label">FinTech</span><div class="segment-bar-bg"><div class="segment-bar" style="width:26.4%;background:linear-gradient(90deg,#7c3aed,#8b5cf6)">26.4%</div></div><span class="segment-value">¥8,115亿</span></div>
+          <div class="segment-row"><span class="segment-label">广告</span><div class="segment-bar-bg"><div class="segment-bar" style="width:17.6%;background:linear-gradient(90deg,#f59e0b,#fbbf24)">17.6%</div></div><span class="segment-value">¥5,410亿</span></div>
+          <div class="segment-row"><span class="segment-label">云</span><div class="segment-bar-bg"><div class="segment-bar" style="width:6.2%;background:linear-gradient(90deg,#10b981,#34d399)">6.2%</div></div><span class="segment-value">¥1,894亿</span></div>
+          <div class="segment-row"><span class="segment-label">其他</span><div class="segment-bar-bg"><div class="segment-bar" style="width:0.2%;background:linear-gradient(90deg,#6b7280,#9ca3af)">0.2%</div></div><span class="segment-value">¥54亿</span></div>
+        </div>
+        <div style="margin-top:6px;padding:6px;background:var(--bg);border-radius:6px;font-size:11px">
+          <span style="color:var(--text2)">投资组合调整:</span> 账面¥7,922亿 → 流动性折价25% → ¥5,941亿<br>
+          <span style="color:var(--text2)">SOTP Equity Value:</span> <strong style="color:var(--accent)">¥38,224亿 → HKD 450.1/股</strong>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">可比公司倍数分析</div>
+        <table class="data-table">
+          <tr><th>公司</th><th>PE</th><th>PS</th><th>EV/EBITDA</th><th>增速</th></tr>
+          <tr><td class="left">腾讯 (0700.HK)</td><td class="tag tag-purple">22.4x</td><td>6.15x</td><td>14.3x</td><td>8.4%</td></tr>
+          <tr><td class="left">阿里巴巴</td><td>21.3x</td><td>1.81x</td><td>6.6x</td><td>7.8%</td></tr>
+          <tr><td class="left">美团</td><td>22.7x</td><td>2.31x</td><td>11.0x</td><td>18.5%</td></tr>
+          <tr><td class="left">拼多多</td><td>12.9x</td><td>3.22x</td><td>7.8x</td><td>59.8%</td></tr>
+          <tr><td class="left">网易</td><td>17.8x</td><td>4.73x</td><td>11.8x</td><td>6.7%</td></tr>
+          <tr><td class="left">百度</td><td>13.5x</td><td>2.40x</td><td>7.7x</td><td>3.2%</td></tr>
+          <tr style="background:var(--bg3)"><td class="left"><strong>同业均值</strong></td><td><strong>17.6x</strong></td><td><strong>2.90x</strong></td><td><strong>9.0x</strong></td><td><strong>19.2%</strong></td></tr>
+        </table>
+        <div style="margin-top:6px;font-size:10px;color:var(--text2)">腾讯PE 22.4x 高于同业均值17.6x，但PEG 2.7x。考虑微信生态+净现金+回购，合理倍数20-22x</div>
+      </div>
+    </div>
+    <div class="grid-3 mb-12">
+      <div class="card" style="border-color:rgba(16,185,129,0.5)">
+        <div style="text-align:center">
+          <div class="card-title">乐观 (Bull) · 概率25%</div>
+          <div style="font-size:28px;font-weight:700;color:var(--accent3)">HKD 942</div>
+          <div style="font-size:12px;color:var(--accent3)">+97.1%</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px">AI革命 · 视频号爆发 · 版号常态化 · 经济复苏</div>
+        </div>
+      </div>
+      <div class="card card-highlight">
+        <div style="text-align:center">
+          <div class="card-title">基准 (Base) · 概率55%</div>
+          <div style="font-size:28px;font-weight:700;color:var(--accent)">HKD 617</div>
+          <div style="font-size:12px;color:var(--accent)">+29.0%</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px">WACC 8.42% · TG 3.0% · 稳态增长</div>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(239,68,68,0.5)">
+        <div style="text-align:center">
+          <div class="card-title">悲观 (Bear) · 概率20%</div>
+          <div style="font-size:28px;font-weight:700;color:var(--accent5)">HKD 347</div>
+          <div style="font-size:12px;color:var(--accent5)">-27.3%</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px">监管收紧 · 竞争加剧 · 宏观恶化</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span style="font-size:12px"><strong>概率加权目标价:</strong> <span style="color:var(--accent);font-size:18px;font-weight:700">HKD 630.7</span></span>
+        <span style="font-size:12px"><strong>综合目标价 (DCF+SOTP+可比):</strong> <span style="color:var(--accent3);font-size:18px;font-weight:700">HKD 507.1</span> (+6.1%)</span>
+        <span class="tag tag-green" style="font-size:12px;padding:4px 12px">评级: 增持 (Accumulate)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-tab 3: Risk Assessment -->
+  <div class="sub-page" id="subpage3">
+    <div class="section-title">全面风险评估</div>
+    <div class="grid-4 mb-12">
+      <div class="kpi-card card-highlight"><div class="kpi-label">综合风险评分</div><div class="kpi-value" style="color:var(--accent3);font-size:20px">81.2</div><div class="kpi-change" style="color:var(--accent3)">AA级 · 优秀</div></div>
+      <div class="kpi-card"><div class="kpi-label">Altman Z''-Score</div><div class="kpi-value" style="font-size:20px">3.31</div><div class="kpi-change" style="color:var(--accent3)">安全区 &lt;0.5% PD</div></div>
+      <div class="kpi-card"><div class="kpi-label">F-Score</div><div class="kpi-value" style="font-size:20px">9/9</div><div class="kpi-change" style="color:var(--accent3)">极其强劲</div></div>
+      <div class="kpi-card"><div class="kpi-label">M-Score</div><div class="kpi-value" style="font-size:20px">-2.58</div><div class="kpi-change" style="color:var(--accent3)">无操纵迹象</div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card"><div class="card-title">Altman Z''-Score 趋势 (2020-2024)</div><div class="chart-container"><canvas id="zScoreChart"></canvas></div></div>
+      <div class="card"><div class="card-title">EVA经济增加值趋势 (¥亿)</div><div class="chart-container"><canvas id="evaChart"></canvas></div></div>
+    </div>
+    <div class="grid-2 mb-12">
+      <div class="card">
+        <div class="card-title">ROIC vs WACC 趋势</div>
+        <div class="chart-container"><canvas id="roicChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">风险五维雷达</div>
+        <div class="radar-container"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+    <div class="card mb-12">
+      <div class="card-title">十大风险矩阵 (概率 × 影响)</div>
+      <div class="risk-matrix" id="riskMatrixContainer"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">风险评分组成</div>
+      <table class="data-table">
+        <tr><th>维度</th><th>得分</th><th>权重</th><th>加权</th><th>说明</th></tr>
+        <tr><td class="left">Altman Z''-Score (信用健康)</td><td>70</td><td>40%</td><td><strong style="color:var(--accent)">28.0</strong></td><td>Z''=3.31 安全区</td></tr>
+        <tr><td class="left">Piotroski F-Score (财务健康)</td><td>100</td><td>20%</td><td><strong style="color:var(--accent)">20.0</strong></td><td>9/9 极其强劲</td></tr>
+        <tr><td class="left">Beneish M-Score (财务操纵)</td><td>85</td><td>10%</td><td>8.5</td><td>-2.58 无操纵</td></tr>
+        <tr><td class="left">EVA/ROIC-WACC (价值创造)</td><td>85</td><td>15%</td><td>12.8</td><td>ROIC 19.1% &gt; WACC 8.4%</td></tr>
+        <tr><td class="left">偿债能力</td><td>80</td><td>15%</td><td>12.0</td><td>净现金 · ICR 18.3x</td></tr>
+        <tr style="background:var(--bg3)"><td class="left"><strong>综合评分</strong></td><td><strong>—</strong></td><td><strong>100%</strong></td><td><strong style="color:var(--accent3);font-size:16px">81.2</strong></td><td><span class="tag tag-green">AA级 · 优秀</span></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Page 3: Audit Report -->
+<div class="page" id="page3">
+  <div class="section-title">审计报告概览</div>
+  <div class="card mb-12">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,#10b981,#059669);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;color:#fff">P</div>
+      <div>
+        <div style="font-weight:600;font-size:16px">平安银行 · 独立审计意见</div>
+        <div style="font-size:11px;color:var(--text3)">依据中国注册会计师审计准则 · 已审计2024年度财务报表</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;line-height:1.8;padding:8px 0">
+      <span class="tag tag-green">✅ 无保留意见</span>
+      <span class="tag tag-blue">审计师: 平安银行</span>
+      <span class="tag tag-purple">审计标准: 中国CPA准则</span>
+      <span class="tag tag-yellow">报告日期: 2025年3月</span>
+    </div>
+  </div>
+  <div class="grid-2 mb-12">
+    <div class="card">
+      <div class="card-title">审计范围</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7">
+        <div>• 2024年12月31日合并资产负债表</div>
+        <div>• 2024年度合并利润表</div>
+        <div>• 2024年度合并现金流量表</div>
+        <div>• 2024年度合并股东权益变动表</div>
+        <div>• 财务报表附注</div>
+        <div>• 关键审计事项: 游戏收入确认 · 投资公允价值评估 · 商誉减值测试</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">关键审计发现</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7">
+        <div>• <strong style="color:var(--accent3)">收入确认:</strong> 游戏虚拟道具收入递延确认符合ASC 606</div>
+        <div>• <strong style="color:var(--accent3)">投资估值:</strong> 联营/合营企业按权益法核算，公允价值层次透明</div>
+        <div>• <strong style="color:var(--accent3)">商誉减值:</strong> 年度减值测试模型合理，未发现重大减值</div>
+        <div>• <strong style="color:var(--accent3)">关联交易:</strong> 披露完整，定价公允</div>
+        <div>• <strong style="color:var(--accent3)">内部控制:</strong> 财务报告相关内控有效</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">独立审计师意见</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.8;padding:8px 12px;background:var(--bg);border-radius:8px;border-left:3px solid var(--accent3)">
+      "我们认为，腾讯控股有限公司的财务报表在所有重大方面按照企业会计准则的规定编制，公允反映了腾讯控股2024年12月31日的合并财务状况以及2024年度的合并经营成果和合并现金流量。"
+    </div>
+  </div>
+</div>
+
+</div><!-- end content -->
+
+<script>
+// ===== TAB SWITCHING =====
+const mainTabs = document.querySelectorAll('.main-tab');
+const pages = document.querySelectorAll('.page');
+const subTabs = [document.querySelectorAll('#page2 .sub-tab')];
+const subPages = [document.querySelectorAll('#page2 .sub-page')];
+
+function switchMainTab(idx){
+  mainTabs.forEach((t,i)=>{t.classList.toggle('active',i===idx);});
+  pages.forEach((p,i)=>{p.classList.toggle('active',i===idx);});
+}
+
+function switchSubTab(idx){
+  const tabs = document.querySelectorAll('#page2 .sub-tab');
+  const pages = document.querySelectorAll('#page2 .sub-page');
+  tabs.forEach((t,i)=>{t.classList.toggle('active',i===idx);});
+  pages.forEach((p,i)=>{p.classList.toggle('active',i===idx);});
+}
+
+// ===== CHART UTILS =====
+function getCtx(id){
+  return document.getElementById(id).getContext('2d');
+}
+
+// ===== REVENUE CHART =====
+(function(){
+  const c = getCtx('revChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const data = [4820,5601,5546,6091,6603,7230,7953,8709,9449,10205];
+  const labels = ['20','21','22','23','24','25E','26E','27E','28E','29E'];
+  const colors = data.map((_,i)=>i<5?'rgba(0,212,255,0.85)':'rgba(124,58,237,0.85)');
+  const pad = {l:40,r:16,t:16,b:28};
+  const cw = w-pad.l-pad.r;
+  const ch = h-pad.t-pad.b;
+  const minV = 0;
+  const maxV = 11500;
+  const xStep = cw/(data.length-1);
+  const yScale = (v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  // grid
+  c.strokeStyle='rgba(30,58,95,0.4)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y = pad.t + (ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(maxV-(maxV-minV)/4*i)+'',pad.l-4,y+3);
+  }
+
+  // bars
+  const barW = cw/data.length*0.6;
+  data.forEach((v,i)=>{
+    const x = pad.l + i*(cw/(data.length-1)) - barW/2;
+    const barH = (v-minV)/(maxV-minV)*ch;
+    const grad = c.createLinearGradient(x,pad.t+ch-barH,x,pad.t+ch);
+    grad.addColorStop(0,colors[i]);
+    grad.addColorStop(1,colors[i].replace('0.85','0.2'));
+    c.fillStyle = grad;
+    c.beginPath();
+    c.roundRect(x,pad.t+ch-barH,barW,barH,[3,3,0,0]);
+    c.fill();
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(labels[i],x+barW/2,pad.t+ch+12);
+    if(i===4||i===9){
+      c.fillStyle='#e5e7eb';
+      c.font='bold 8px monospace';
+      c.fillText((v/100)+'亿',x+barW/2,pad.t+ch-barH-4);
+    }
+  });
+
+  // separator line
+  c.strokeStyle='rgba(245,158,11,0.5)';
+  c.setLineDash([4,3]);
+  c.lineWidth=1;
+  const sepX = pad.l + 4*cw/(data.length-1);
+  c.beginPath();c.moveTo(sepX,pad.t);c.lineTo(sepX,pad.t+ch);c.stroke();
+  c.setLineDash([]);
+  c.fillStyle='#f59e0b';
+  c.font='8px monospace';
+  c.textAlign='center';
+  c.fillText('|预测',sepX,pad.t-4);
+})();
+
+// ===== MARGIN CHART =====
+(function(){
+  const c = getCtx('marginChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2020,2021,2022,2023,2024];
+  const gm=[46.0,43.4,42.6,45.6,46.6];
+  const ebit=[26.6,24.4,22.6,28.0,33.2];
+  const np=[25.4,18.1,17.1,21.1,27.4];
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=12,maxV=52;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  // grid
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+(ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(minV+(maxV-minV)/4*i)+'%',pad.l-4,y+3);
+  }
+
+  // lines
+  function drawLine(data,color,fill){
+    c.beginPath();
+    data.forEach((v,i)=>{const x=pad.l+i*xStep,y=yS(v);i===0?c.moveTo(x,y):c.lineTo(x,y);});
+    c.strokeStyle=color;c.lineWidth=2;c.stroke();
+    if(fill){
+      c.lineTo(pad.l+(data.length-1)*xStep,pad.t+ch);
+      c.lineTo(pad.l,pad.t+ch);
+      c.closePath();
+      const g=c.createLinearGradient(0,pad.t,0,pad.t+ch);
+      g.addColorStop(0,color.replace('0.8','0.12'));
+      g.addColorStop(1,color.replace('0.8','0.02'));
+      c.fillStyle=g;c.fill();
+    }
+    data.forEach((v,i)=>{
+      const x=pad.l+i*xStep,y=yS(v);
+      c.beginPath();c.arc(x,y,3,0,Math.PI*2);
+      c.fillStyle=color;c.fill();
+      c.fillStyle='#e5eb';c.font='8px monospace';c.textAlign='center';
+      c.fillText(v+'%',x,y-8);
+    });
+  }
+  drawLine(gm,'rgba(0,212,255,0.8)',true);
+  drawLine(ebit,'rgba(124,58,237,0.8)',false);
+  drawLine(np,'rgba(16,185,129,0.8)',false);
+
+  // labels
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'',pad.l+i*xStep,pad.t+ch+14);
+  });
+
+  // legend
+  const legendY=10;
+  c.font='9px monospace';
+  [
+    ['毛利率','rgba(0,212,255,0.8)',30],
+    ['EBIT%','rgba(124,58,237,0.8)',95],
+    ['净利率','rgba(16,185,129,0.8)',155]
+  ].forEach(([lbl,clr,x])=>{
+    c.fillStyle=clr;c.fillRect(x,legendY+2,10,4);
+    c.fillStyle='#9ca3af';c.textAlign='left';
+    c.fillText(lbl,x+14,legendY+7);
+  });
+})();
+
+// ===== GROWTH RATE CHART =====
+(function(){
+  const c = getCtx('growthChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2020,2021,2022,2023,2024,2025,2026,2027,2028,2029];
+  const g=[27.8,16.2,-1.0,9.9,8.4,9.5,10.0,9.5,8.5,8.0];
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=-5,maxV=32;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+(ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(minV+(maxV-minV)/4*i)+'%',pad.l-4,y+3);
+  }
+
+  // zero line
+  c.strokeStyle='rgba(239,68,68,0.3)';
+  c.lineWidth=1;
+  const zy=yS(0);
+  c.beginPath();c.moveTo(pad.l,zy);c.lineTo(w-pad.r,zy);c.stroke();
+
+  // bars
+  const barW=xStep*0.5;
+  g.forEach((v,i)=>{
+    const x=pad.l+i*xStep-barW/2;
+    const bh=i<5?'rgba(0,212,255,0.75)':v>0?'rgba(16,185,129,0.75)':'rgba(239,68,68,0.75)';
+    if(v>0){
+      c.fillStyle=bh;
+      c.beginPath();
+      c.roundRect(x,zy-(v/(maxV-minV))*ch,barW,(v/(maxV-minV))*ch,[3,3,0,0]);
+      c.fill();
+    }else{
+      c.fillStyle=bh;
+      c.beginPath();
+      c.roundRect(x,zy,barW,(-v/(maxV-minV))*ch,[0,0,3,3]);
+      c.fill();
+    }
+    if(i%2===0||i===4||i===9){
+      c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+      c.fillText(v+'%',x+barW/2,pad.t+ch+14);
+    }
+  });
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'',pad.l+i*xStep,pad.t+ch+22);
+  });
+  c.fillStyle='rgba(239,68,68,0.4)';
+  c.font='8px monospace';
+  c.fillText('--- 0%',pad.l-4,zy-2);
+})();
+
+// ===== FCFF CHART =====
+(function(){
+  const c = getCtx('fcffChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2025,2026,2027,2028,2029];
+  const pv=[1769,1838,1894,1923,1943];
+  const fcff=[1918,2161,2414,2657,2910];
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=0,maxV=3500;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=3;i++){
+    const y=pad.t+(ch/3)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(maxV/3*(3-i))+'',pad.l-4,y+3);
+  }
+
+  // FCFF bars
+  fcff.forEach((v,i)=>{
+    const x=pad.l+i*xStep-14;
+    const barH=(v-minV)/(maxV-minV)*ch;
+    const grad=c.createLinearGradient(x,pad.t+ch-barH,x,pad.t+ch);
+    grad.addColorStop(0,'rgba(124,58,237,0.85)');
+    grad.addColorStop(1,'rgba(124,58,237,0.2)');
+    c.fillStyle=grad;
+    c.beginPath();c.roundRect(x,pad.t+ch-barH,22,barH,[3,3,0,0]);c.fill();
+    c.fillStyle='#e5e7eb';c.font='bold 8px monospace';c.textAlign='center';
+    c.fillText(v+'',x+11,pad.t+ch-barH-4);
+  });
+
+  // PV bars
+  pv.forEach((v,i)=>{
+    const x=pad.l+i*xStep+14-14+26;
+    const barH=(v-minV)/(maxV-minV)*ch;
+    const grad=c.createLinearGradient(x,pad.t+ch-barH,x,pad.t+ch);
+    grad.addColorStop(0,'rgba(0,212,255,0.8)');
+    grad.addColorStop(1,'rgba(0,212,255,0.2)');
+    c.fillStyle=grad;
+    c.beginPath();c.roundRect(x,pad.t+ch-barH,22,barH,[3,3,0,0]);c.fill();
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText('P'+v,27+pad.l+i*xStep,pad.t+ch-barH-4);
+  });
+
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'E',pad.l+i*xStep,pad.t+ch+14);
+  });
+
+  c.font='8px monospace';
+  c.fillStyle='rgba(124,58,237,0.8)';c.fillRect(pad.l,4,10,4);
+  c.fillStyle='#9ca3af';c.textAlign='left';c.fillText('FCFF',pad.l+14,9);
+  c.fillStyle='rgba(0,212,255,0.8)';c.fillRect(pad.l+60,4,10,4);
+  c.fillStyle='#9ca3af';c.textAlign='left';c.fillText('PV',pad.l+74,9);
+})();
+
+// ===== DEBT CHART =====
+(function(){
+  const c = getCtx('debtChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const cx=w/2,cy=h/2-10,r=Math.min(w,h)/2-30;
+  const data=[{l:'净现金 ¥380亿',v:380,c:'#10b981'},{l:'总债务 ¥1,476亿',v:1476,c:'#ef4444'}];
+  const total=data.reduce((s,d)=>s+d.v,0);
+  let sa=-Math.PI/2;
+  data.forEach(d=>{
+    const a=(d.v/total)*2*Math.PI;
+    c.beginPath();
+    c.moveTo(cx,cy);
+    c.arc(cx,cy,r,sa,sa+a);
+    c.closePath();
+    c.fillStyle=d.c;
+    c.globalAlpha=0.6;c.fill();c.globalAlpha=1;
+    c.strokeStyle=d.c;c.lineWidth=2;c.stroke();
+    const ma=sa+a/2;
+    const lx=cx+Math.cos(ma)*(r+12);
+    const ly=cy+Math.sin(ma)*(r+12);
+    c.fillStyle='#e5e7eb';c.font='9px monospace';c.textAlign='center';
+    c.fillText(d.l,lx,ly+3);
+    sa+=a;
+  });
+  // net cash annotation
+  c.fillStyle='rgba(16,185,129,0.15)';
+  c.beginPath();c.arc(cx,cy,r*0.4,0,Math.PI*2);c.fill();
+  c.fillStyle='#10b981';c.font='bold 11px monospace';c.textAlign='center';
+  c.fillText('净现金',cx,cy-4);
+  c.font='bold 14px monospace';
+  c.fillText('状态',cx,cy+12);
+})();
+
+// ===== ICR CHART =====
+(function(){
+  const c = getCtx('icrChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2020,2021,2022,2023,2024];
+  const icr=[10.18,10.16,10.18,10.18,18.29];
+  const ebitda=[12.98,13.02,13.45,13.19,23.22];
+  const fcf=[8.44,7.68,8.25,7.54,13.89];
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=0,maxV=28;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+(ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(maxV/4*(4-i))+'x',pad.l-4,y+3);
+  }
+
+  function drawL(data,clr){
+    c.beginPath();
+    data.forEach((v,i)=>{const x=pad.l+i*xStep,y=yS(v);i===0?c.moveTo(x,y):c.lineTo(x,y);});
+    c.strokeStyle=clr;c.lineWidth=2;c.stroke();
+    data.forEach((v,i)=>{
+      const x=pad.l+i*xStep,y=yS(v);
+      c.beginPath();c.arc(x,y,3,0,Math.PI*2);c.fillStyle=clr;c.fill();
+      c.fillStyle='#e5e7eb';c.font='8px monospace';c.textAlign='center';
+      c.fillText(v+'x',x,pad.t-8);
+    });
+  }
+  drawL(icr,'rgba(0,212,255,0.8)');
+  drawL(ebitda,'rgba(124,58,237,0.8)');
+  drawL(fcf,'rgba(16,185,129,0.8)');
+
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'',pad.l+i*xStep,pad.t+ch+14);
+  });
+})();
+
+// ===== CAP STRUCT CHART =====
+(function(){
+  const c = getCtx('capStructChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  // Donut: Equity 82.1%, Debt 17.9%
+  const cx=w/2,cy=h/2, r=Math.min(w,h)/2-30;
+  const items=[{l:'Equity 82.1%',v:82.1,c:'rgba(0,212,255,0.7)'},{l:'Debt 17.9%',v:17.9,c:'rgba(124,58,237,0.7)'}];
+  const total=100;
+  let sa=-Math.PI/2;
+  items.forEach(d=>{
+    const a=(d.v/total)*2*Math.PI;
+    c.beginPath();c.moveTo(cx,cy);
+    c.arc(cx,cy,r,sa,sa+a);c.closePath();
+    c.fillStyle=d.c;c.fill();
+    c.strokeStyle='#111827';c.lineWidth=2;c.stroke();
+    const ma=sa+a/2;
+    c.fillStyle='#e5e7eb';c.font='10px monospace';c.textAlign='center';
+    c.fillText(d.l,cx+Math.cos(ma)*(r+14),cy+Math.sin(ma)*(r+14)+3);
+    sa+=a;
+  });
+  c.fillStyle='rgba(17,24,39,0.8)';
+  c.beginPath();c.arc(cx,cy,r*0.45,0,Math.PI*2);c.fill();
+  c.fillStyle='var(--accent)';c.font='bold 12px monospace';c.textAlign='center';
+  c.fillText('WACC',cx,cy-4);
+  c.font='bold 16px monospace';
+  c.fillText('8.42%',cx,cy+14);
+})();
+
+// ===== HEATMAP =====
+(function(){
+  const table = document.getElementById('heatmapTable');
+  const wacc = ['7.0%','7.5%','8.0%','8.4%','9.0%','9.5%','10.0%'];
+  const tg = ['2.0%','2.5%','3.0%','3.5%','4.0%','4.5%'];
+  const matrix = {
+    '7.0%':[684.9,743.0,815.7,909.0,1033.5,1207.8],
+    '7.5%':[627.5,674.2,731.2,802.5,894.2,1016.4],
+    '8.0%':[579.7,617.9,663.7,719.7,789.7,879.6],
+    '8.4%':[545.4,578.0,616.6,663.2,720.2,791.8],
+    '9.0%':[504.7,531.4,562.5,599.3,643.4,697.4],
+    '9.5%':[474.7,497.4,523.6,554.2,590.3,633.6],
+    '10.0%':[448.5,468.0,490.3,516.0,546.0,581.5]
+  };
+  const allVals = Object.values(matrix).flat();
+  const minV = Math.min(...allVals);
+  const maxV = Math.max(...allVals);
+
+  function heatColor(v){
+    const t = (v-minV)/(maxV-minV);
+    if(t<0.25){
+      const p=t/0.25;
+      return `rgba(16,185,129,${0.3+p*0.5})`;
+    }else if(t<0.5){
+      const p=(t-0.25)/0.25;
+      return `rgba(59,130,246,${0.5+p*0.3})`;
+    }else if(t<0.75){
+      const p=(t-0.5)/0.25;
+      return `rgba(139,92,246,${0.6+p*0.3})`;
+    }else{
+      const p=(t-0.75)/0.25;
+      return `rgba(239,68,68,${0.5+p*0.4})`;
+    }
+  }
+
+  wacc.forEach((waccVal,i)=>{
+    const tr = document.createElement('tr');
+    const th = document.createElement('th');
+    th.textContent = waccVal;
+    tr.appendChild(th);
+    matrix[waccVal].forEach((v,j)=>{
+      const td = document.createElement('td');
+      td.className = 'heatmap-cell';
+      td.textContent = v.toFixed(0);
+      td.style.background = heatColor(v);
+      const isBase = (waccVal==='8.4%' && tg[j]==='3.0%');
+      if(isBase) td.className += ' heatmap-base';
+      td.title = `WACC ${waccVal} × TG ${tg[j]} → HKD ${v.toFixed(0)}`;
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+  });
+})();
+
+// ===== TORNADO CHART =====
+(function(){
+  const c = getCtx('tornadoChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 300;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const items = [
+    {label:'WACC',low:529.5,high:743.6,base:616.7},
+    {label:'收入增长',low:572.3,high:664.4,base:616.7},
+    {label:'永续增长',low:578.1,high:663.2,base:616.7},
+    {label:'EBIT利润率',low:586.1,high:647.3,base:616.7},
+    {label:'CapEx/收入',low:597.5,high:636.0,base:616.7},
+    {label:'投资折价',low:607.4,high:626.1,base:616.7},
+  ];
+  const pad={l:100,r:100,t:20,b:20};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const allV=[].concat(...items.map(d=>[d.low,d.high]));
+  const minX=Math.min(...allV);
+  const maxX=Math.max(...allV);
+  const xPad=(maxX-minX)*0.15;
+  const barH=ch/items.length*0.65;
+  const gap=ch/items.length;
+
+  function xS(v){return pad.l+((v-(minX-xPad))/((maxX-xPad+xPad)-(minX-xPad)))*cw;}
+
+  // grid
+  c.strokeStyle='rgba(30,58,95,0.2)';
+  c.lineWidth=0.5;
+  const baseX=xS(616.7);
+  for(let i=0;i<=6;i++){
+    const x=pad.l+i*cw/6;
+    c.beginPath();c.moveTo(x,pad.t);c.lineTo(x,pad.t+ch);c.stroke();
+  }
+
+  // baseline
+  c.strokeStyle='rgba(0,212,255,0.6)';
+  c.setLineDash([3,3]);
+  c.lineWidth=1;
+  c.beginPath();c.moveTo(baseX,pad.t);c.lineTo(baseX,pad.t+ch);c.stroke();
+  c.setLineDash([]);
+  c.fillStyle='rgba(0,212,255,0.8)';
+  c.font='8px monospace';c.textAlign='center';
+  c.fillText('基准 616.7',baseX,pad.t-4);
+
+  items.forEach((d,i)=>{
+    const y=pad.t+i*gap;
+    const lx=xS(d.low),hx=xS(d.high);
+
+    // label
+    c.fillStyle='#e5e7eb';
+    c.font='10px monospace';c.textAlign='right';
+    c.fillText(d.label,pad.l-6,y+barH/2+3);
+
+    // low bar (left)
+    const lw=Math.abs(baseX-lx);
+    if(lx<baseX){
+      c.fillStyle='rgba(16,185,129,0.7)';
+      c.beginPath();c.roundRect(lx,y,lw,barH,[0,2,2,0]);c.fill();
+    }else if(lx>baseX){
+      c.fillStyle='rgba(239,68,68,0.7)';
+      c.beginPath();c.roundRect(baseX,y,lw,barH,[2,0,0,2]);c.fill();
+    }
+
+    // high bar
+    const hw=Math.abs(baseX-hx);
+    if(hx>baseX){
+      c.fillStyle='rgba(16,185,129,0.7)';
+      c.beginPath();c.roundRect(baseX,y,hw,barH,[2,0,0,2]);c.fill();
+    }else{
+      c.fillStyle='rgba(239,68,68,0.7)';
+      c.beginPath();c.roundRect(hx,y,hw,barH,[0,2,2,0]);c.fill();
+    }
+
+    // value labels
+    c.fillStyle='#e5e7eb';
+    c.font='bold 8px monospace';
+    if(d.low<616.7){
+      c.textAlign='right';
+      c.fillText('HKD '+d.low,lx-2,y+barH/2+3);
+    }else{
+      c.textAlign='left';
+      c.fillText('HKD '+d.low,lx+2,y+barH/2+3);
+    }
+    if(d.high>616.7){
+      c.textAlign='left';
+      c.fillText('HKD '+d.high,hx+2,y+barH/2+3);
+    }else{
+      c.textAlign='right';
+      c.fillText('HKD '+d.high,hx-2,y+barH/2+3);
+    }
+  });
+})();
+
+// ===== Z-SCORE CHART =====
+(function(){
+  const c = getCtx('zScoreChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2020,2021,2022,2023,2024];
+  const z=[3.19,2.57,2.95,3.16,3.31];
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=1.5,maxV=3.8;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  // zones
+  c.fillStyle='rgba(239,68,68,0.06)';
+  c.fillRect(pad.l,pad.t,cw,ch*(2.6-minV)/(maxV-minV));
+  c.fillStyle='rgba(245,158,11,0.06)';
+  c.fillRect(pad.l,pad.t+ch*(2.6-minV)/(maxV-minV),cw,ch*(3.0-2.6)/(maxV-minV));
+  c.fillStyle='rgba(16,185,129,0.06)';
+  c.fillRect(pad.l,pad.t+ch*(3.0-minV)/(maxV-minV),cw,ch*(maxV-3.0)/(maxV-minV));
+
+  // zone lines
+  c.strokeStyle='rgba(239,68,68,0.4)';
+  c.setLineDash([4,3]);c.lineWidth=1;
+  const gY=yS(2.6);
+  c.beginPath();c.moveTo(pad.l,gY);c.lineTo(w-pad.r,gY);c.stroke();
+  c.fillStyle='rgba(239,68,68,0.5)';c.font='8px monospace';c.textAlign='left';
+  c.fillText('危险 2.6',w-pad.r-70,gY+10);
+
+  c.strokeStyle='rgba(245,158,11,0.4)';
+  const sY=yS(3.0);
+  c.beginPath();c.moveTo(pad.l,sY);c.lineTo(w-pad.r,sY);c.stroke();
+  c.fillStyle='rgba(245,158,11,0.5)';
+  c.fillText('灰色 3.0',w-pad.r-70,sY+10);
+  c.setLineDash([]);
+
+  // grid
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+(ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+  }
+
+  // line
+  c.beginPath();
+  z.forEach((v,i)=>{const x=pad.l+i*xStep,y=yS(v);i===0?c.moveTo(x,y):c.lineTo(x,y);});
+  c.strokeStyle='rgba(16,185,129,0.8)';c.lineWidth=2.5;c.stroke();
+
+  // fill
+  c.lineTo(pad.l+(z.length-1)*xStep,pad.t+ch);
+  c.lineTo(pad.l,pad.t+ch);
+  c.closePath();
+  const grad=c.createLinearGradient(0,pad.t,0,pad.t+ch);
+  grad.addColorStop(0,'rgba(16,185,129,0.2)');
+  grad.addColorStop(1,'rgba(16,185,129,0.02)');
+  c.fillStyle=grad;c.fill();
+
+  // points
+  z.forEach((v,i)=>{
+    const x=pad.l+i*xStep,y=yS(v);
+    c.beginPath();c.arc(x,y,4,0,Math.PI*2);
+    c.fillStyle='rgba(16,185,129,1)';c.fill();
+    c.strokeStyle='#0a0e1a';c.lineWidth=2;c.stroke();
+    c.fillStyle='#e5e7eb';c.font='bold 8px monospace';c.textAlign='center';
+    c.fillText(v.toFixed(2),x,y-8);
+  });
+
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'',pad.l+i*xStep,pad.t+ch+14);
+  });
+
+  c.fillStyle='#6b7280';c.font='8px monospace';c.textAlign='right';
+  c.fillText('Z\"-Score',w-pad.r,pad.t-4);
+})();
+
+// ===== EVA CHART =====
+(function(){
+  const c = getCtx('evaChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2020,2021,2022,2023,2024];
+  const eva=[977,798,597,749,985]; // 亿
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=0,maxV=1200;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+(ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(maxV/4*(4-i))+'',pad.l-4,y+3);
+  }
+
+  // bars
+  const barW=xStep*0.5;
+  eva.forEach((v,i)=>{
+    const x=pad.l+i*xStep-barW/2;
+    const barH=(v-minV)/(maxV-minV)*ch;
+    const grad=c.createLinearGradient(x,pad.t+ch-barH,x,pad.t+ch);
+    const clr=v>800?'rgba(16,185,129,0.85)':'rgba(0,212,255,0.85)';
+    if(v<700){
+      grad.addColorStop(0,'rgba(245,158,11,0.8)');
+      grad.addColorStop(1,'rgba(245,158,11,0.2)');
+    }else{
+      grad.addColorStop(0,clr);
+      grad.addColorStop(1,clr.replace('0.85','0.15'));
+    }
+    c.fillStyle=grad;
+    c.beginPath();c.roundRect(x,pad.t+ch-barH,barW,barH,[3,3,0,0]);c.fill();
+    c.fillStyle='#e5e7eb';c.font='bold 8px monospace';c.textAlign='center';
+    c.fillText('¥'+v+'亿',x+barW/2,pad.t+ch-barH-4);
+  });
+
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'',pad.l+i*xStep,pad.t+ch+14);
+  });
+
+  c.fillStyle='#6b7280';c.font='8px monospace';c.textAlign='right';
+  c.fillText('¥亿',w-pad.r,pad.t-4);
+})();
+
+// ===== ROIC VS WACC CHART =====
+(function(){
+  const c = getCtx('roicChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = c.canvas.parentElement.clientWidth||600;
+  const h = 240;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const yrs=[2020,2021,2022,2023,2024];
+  const roic=[20.11,15.98,14.94,16.57,19.12];
+  const wacc=[8.39,8.11,8.30,8.33,8.42];
+  const spread=[11.72,7.87,6.64,8.24,10.70];
+  const pad={l:36,r:12,t:16,b:24};
+  const cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+  const minV=0,maxV=26;
+  const xStep=cw/(yrs.length-1);
+  const yS=(v)=>(1-(v-minV)/(maxV-minV))*ch+pad.t;
+
+  c.strokeStyle='rgba(30,58,95,0.3)';
+  c.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+(ch/4)*i;
+    c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();
+    c.fillStyle='#6b7280';c.font='9px monospace';c.textAlign='right';
+    c.fillText(Math.round(maxV/4*(4-i))+'%',pad.l-4,y+3);
+  }
+
+  function drawL(data,clr,lbl){
+    c.beginPath();
+    data.forEach((v,i)=>{const x=pad.l+i*xStep,y=yS(v);i===0?c.moveTo(x,y):c.lineTo(x,y);});
+    c.strokeStyle=clr;c.lineWidth=2;c.stroke();
+    data.forEach((v,i)=>{
+      const x=pad.l+i*xStep,y=yS(v);
+      c.beginPath();c.arc(x,y,3,0,Math.PI*2);c.fillStyle=clr;c.fill();
+      c.fillStyle='#e5e7eb';c.font='bold 8px monospace';c.textAlign='center';
+      c.fillText(v.toFixed(1)+'%',x,y-8);
+    });
+  }
+  drawL(roic,'rgba(16,185,129,0.8)');
+  drawL(wacc,'rgba(239,68,68,0.8)');
+
+  yrs.forEach((y,i)=>{
+    c.fillStyle='#9ca3af';c.font='8px monospace';c.textAlign='center';
+    c.fillText(y+'',pad.l+i*xStep,pad.t+ch+14);
+  });
+
+  c.font='8px monospace';
+  c.fillStyle='rgba(16,185,129,0.8)';c.fillRect(pad.l,4,10,4);
+  c.fillStyle='#9ca3af';c.textAlign='left';c.fillText('ROIC',pad.l+14,9);
+  c.fillStyle='rgba(239,68,68,0.8)';c.fillRect(pad.l+60,4,10,4);
+  c.fillStyle='#9ca3af';c.textAlign='left';c.fillText('WACC',pad.l+74,9);
+
+  // spread annotation
+  const lastX=pad.l+4*xStep;
+  c.fillStyle='rgba(16,185,129,0.2)';
+  c.fillRect(lastX-8,yS(roic[4]),16,yS(wacc[4])-yS(roic[4]));
+  c.fillStyle='var(--accent3)';c.font='8px monospace';c.textAlign='center';
+  c.fillText('Spread 10.7pp',lastX,yS(roic[4])+(yS(wacc[4])-yS(roic[4]))/2+3);
+})();
+
+// ===== RADAR CHART =====
+(function(){
+  const c = getCtx('radarChart');
+  const dpr = window.devicePixelRatio||1;
+  const w = Math.min(c.canvas.parentElement.clientWidth||320,320);
+  const h = w;
+  c.canvas.width = w*dpr;
+  c.canvas.height = h*dpr;
+  c.canvas.style.width = w+'px';
+  c.canvas.style.height = h+'px';
+  c.scale(dpr,dpr);
+  const cx=w/2,cy=h/2,r=w/2-30;
+  const labels=['Z\"-Score\n信用健康','F-Score\n财务健康','M-Score\n无操纵','EVA/ROIC\n价值创造','偿债能力\n偿付'];
+  const values=[70,100,85,85,80]; // out of 100
+  const levels=5;
+
+  // grid
+  for(let l=1;l<=levels;l++){
+    const lr=r*l/levels;
+    c.beginPath();
+    for(let i=0;i<labels.length;i++){
+      const a=Math.PI*2*i/labels.length-Math.PI/2;
+      const x=cx+Math.cos(a)*lr,y=cy+Math.sin(a)*lr;
+      i===0?c.moveTo(x,y):c.lineTo(x,y);
+    }
+    c.closePath();
+    c.strokeStyle=`rgba(30,58,95,${0.2+l*0.1})`;
+    c.lineWidth=0.5;
+    c.stroke();
+  }
+
+  // data
+  c.beginPath();
+  values.forEach((v,i)=>{
+    const a=Math.PI*2*i/labels.length-Math.PI/2;
+    const lr=r*v/100;
+    const x=cx+Math.cos(a)*lr,y=cy+Math.sin(a)*lr;
+    i===0?c.moveTo(x,y):c.lineTo(x,y);
+  });
+  c.closePath();
+  const grad=c.createRadialGradient(cx,cy,0,cx,cy,r);
+  grad.addColorStop(0,'rgba(0,212,255,0.35)');
+  grad.addColorStop(1,'rgba(0,212,255,0.05)');
+  c.fillStyle=grad;c.fill();
+  c.strokeStyle='rgba(0,212,255,0.8)';c.lineWidth=2;c.stroke();
+
+  // points + labels
+  values.forEach((v,i)=>{
+    const a=Math.PI*2*i/labels.length-Math.PI/2;
+    const lr=r*v/100;
+    const x=cx+Math.cos(a)*lr,y=cy+Math.sin(a)*lr;
+    c.beginPath();c.arc(x,y,4,0,Math.PI*2);
+    c.fillStyle='rgba(0,212,255,1)';c.fill();
+    c.strokeStyle='#0a0e1a';c.lineWidth=2;c.stroke();
+
+    // label
+    const lx=cx+Math.cos(a)*(r+14),ly=cy+Math.sin(a)*(r+14);
+    c.textAlign='center';c.textBaseline='middle';
+    c.fillStyle='#e5e7eb';c.font='bold 9px monospace';
+    c.fillText(v+'分',lx,ly);
+    c.fillStyle='var(--text2)';c.font='8px monospace';
+    c.fillText('('+labels[i].split('\n')[0]+')',lx,ly+(i===labels.length-1?2:0));
+  });
+})();
+
+// ===== RISK MATRIX =====
+(function(){
+  const risks = [
+    {id:'R01',desc:'金融科技监管收紧',score:16,cls:'risk-crit',label:'🔴 16'},
+    {id:'R02',desc:'字节跳动竞争加剧',score:16,cls:'risk-crit',label:'🔴 16'},
+    {id:'R03',desc:'中美地缘政治',score:12,cls:'risk-high',label:'🟠 12'},
+    {id:'R04',desc:'游戏版号监管',score:12,cls:'risk-high',label:'🟠 12'},
+    {id:'R05',desc:'AI竞争落后',score:9,cls:'risk-med',label:'🟡 9'},
+    {id:'R06',desc:'经济持续放缓',score:9,cls:'risk-med',label:'🟡 9'},
+    {id:'R07',desc:'数据安全合规',score:9,cls:'risk-med',label:'🟡 9'},
+    {id:'R08',desc:'微信时长下降',score:8,cls:'risk-med',label:'🟡 8'},
+    {id:'R09',desc:'投资组合减值',score:6,cls:'risk-low',label:'🔵 6'},
+    {id:'R10',desc:'商誉减值',score:4,cls:'risk-low',label:'🔵 4'},
+  ];
+  const container = document.getElementById('riskMatrixContainer');
+  risks.forEach(r=>{
+    const el = document.createElement('div');
+    el.className = 'risk-cell ' + r.cls;
+    el.title = r.desc + ' · 风险评分: ' + r.score + '/20';
+    el.innerHTML = `<div style="font-size:16px;font-weight:700">${r.label}</div><div style="font-size:9px;margin-top:2px;opacity:0.8">${r.desc}</div>`;
+    container.appendChild(el);
+  });
+})();
+
+// ===== LINEROUNDRECT POLYFILL =====
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,radii){
+    const r=Array.isArray(radii)?radii:[radii||0,radii||0,radii||0,radii||0];
+    const [tl,tr,br,bl]=[r[0]||0,r[1]||0,r[2]||0,r[3]||0];
+    this.moveTo(x+tl,y);
+    this.lineTo(x+w-tr,y);
+    this.quadraticCurveTo(x+w,y,x+w,y+tr);
+    this.lineTo(x+w,y+h-br);
+    this.quadraticCurveTo(x+w,y+h,x+w-br,y+h);
+    this.lineTo(x+bl,y+h);
+    this.quadraticCurveTo(x,y+h,x,y+h-bl);
+    this.lineTo(x,y+tl);
+    this.quadraticCurveTo(x,y,x+tl,y);
+    this.closePath();
+  };
+}
+
+// ===== RESIZE HANDLER =====
+window.addEventListener('resize',()=>{
+  // Simple: reload charts on resize. For production: throttle + redraw.
+  // For now we rely on the fixed layout.
+});
+</script>
+</body>
+</html>

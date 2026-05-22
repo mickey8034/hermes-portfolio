@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>九号公司(689009.SH) · 投行级投入深度分析 v4</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0a0e1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--text2:#9ca3af;--text3:#6b7280;
+--blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+--blueBg:rgba(59,130,246,.12);--cyanBg:rgba(6,182,212,.12);--greenBg:rgba(16,185,129,.12);--orangeBg:rgba(245,158,11,.12);--purpleBg:rgba(139,92,246,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track:var(--bg)::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,14,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;height:48px;gap:14px;overflow-x:auto}
+nav .logo{font-weight:700;font-size:14px;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+nav a{color:var(--text2);text-decoration:none;font-size:11px;white-space:nowrap;cursor:pointer;transition:color .2s}
+nav a:hover,nav a.active{color:var(--cyan)}
+nav .badge{color:var(--text3);font-size:10px;white-space:nowrap;margin-left:auto}
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0a0e1a 100%);padding:36px 16px 28px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(6,182,212,.08) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(59,130,246,.08) 0%,transparent 60%)}
+.hero h1{font-size:24px;font-weight:800;margin-bottom:4px;position:relative}
+.hero h1 span{background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--text2);font-size:12px;margin-bottom:12px;position:relative}
+.hero .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;position:relative}
+.hero .tags .tag{display:inline-block;padding:3px 10px;border-radius:16px;font-size:10px;font-weight:600}
+.hero .tags .t1{background:var(--blueBg);color:var(--blue);border:1px solid rgba(59,130,246,.3)}
+.hero .tags .t2{background:var(--greenBg);color:var(--green);border:1px solid rgba(16,185,129,.3)}
+.hero .tags .t3{background:var(--purpleBg);color:var(--purple);border:1px solid rgba(139,92,246,.3)}
+.container{max-width:1400px;margin:0 auto;padding:16px}
+.section{margin-bottom:24px}
+.section-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.section-hd .ic{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.section-hd .ic.b{background:var(--blueBg);color:var(--blue)}
+.section-hd .ic.c{background:var(--cyanBg);color:var(--cyan)}
+.section-hd .ic.g{background:var(--greenBg);color:var(--green)}
+.section-hd .ic.o{background:var(--orangeBg);color:var(--orange)}
+.section-hd .ic.p{background:var(--purpleBg);color:var(--purple)}
+.section-hd h2{font-size:16px;font-weight:700}
+.section-hd .sb{font-size:9px;padding:2px 6px;border-radius:10px;background:var(--blueBg);color:var(--blue);letter-spacing:.5px}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:1024px){.g2,.g4{grid-template-columns:1fr 1fr}}@media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.chart-card .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.chart-card .ct2{font-size:12px;font-weight:600}
+.chart-card .cs2{font-size:9px;color:var(--text3)}
+.chart-card canvas{max-height:260px;max-width:100%}
+.kpi{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.kpi-card{flex:1;min-width:130px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0}
+.kpi-card.blue::before{background:var(--blue)}.kpi-card.green::before{background:var(--green)}
+.kpi-card.cyan::before{background:var(--cyan)}.kpi-card.orange::before{background:var(--orange)}
+.kpi-card.purple::before{background:var(--purple)}
+.kpi-card .kl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.kpi-card .kv{font-size:20px;font-weight:700;margin:2px 0}
+.kpi-card .kc{font-size:11px}
+.up{color:var(--green)}.down{color:var(--red)}
+table.data-table{width:100%;border-collapse:collapse;font-size:11px}
+table.data-table th{padding:6px 8px;text-align:right;border-bottom:2px solid var(--border);color:var(--text2);font-weight:600;font-size:9px;text-transform:uppercase;letter-spacing:.5px}
+table.data-table th:first-child{text-align:left}
+table.data-table td{padding:6px 8px;text-align:right;border-bottom:1px solid rgba(31,41,55,.5)}
+table.data-table td:first-child{text-align:left;font-weight:500}
+table.data-table tr:hover{background:rgba(59,130,246,.05)}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.tag-sm{display:inline-block;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:500}
+.tag-sm.tg{background:var(--greenBg);color:var(--green)}.tag-sm.tb{background:var(--blueBg);color:var(--blue)}
+.tag-sm.to{background:var(--orangeBg);color:var(--orange)}
+.annotation{background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.12);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:11px;color:var(--text2)}
+.annotation strong{color:var(--text)}
+.thermometer{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.thermometer .t-label{font-size:10px;color:var(--text3);margin-bottom:3px}
+.thermometer .t-bar-wrap{background:rgba(31,41,55,.5);height:6px;border-radius:3px;overflow:hidden;margin:3px 0}
+.thermometer .t-bar{height:100%;border-radius:3px}.thermometer .t-val{font-size:13px;font-weight:700}
+footer{border-top:1px solid var(--border);padding:16px;text-align:center;color:var(--text3);font-size:10px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">⚡ NINEBOT v4</div>
+  <a class="active" onclick="s('overview')">投入总览</a>
+  <a onclick="s('roic')">ROIC对比</a>
+  <a onclick="s('detail')">细分拆解</a>
+  <a onclick="s('peer')">可比矩阵</a>
+  <div class="badge">📅 2026-05-20 | 投入专题</div>
+</nav>
+<div class="hero">
+  <h1><span>九号公司</span> 实际投入多维度深度分析</h1>
+  <div class="sub">Segway-Ninebot (689009.SH) · ROIC · Capex · 研发 · 可比四公司投入产出对比</div>
+  <div class="tags">
+    <span class="tag t1">🏦 ROIC 23.3% 行业领跑</span>
+    <span class="tag t2">💰 固资周转率 13.3x</span>
+    <span class="tag t3">🔬 研发投入 9.6亿</span>
+  </div>
+</div>
+<div class="container">
+
+<div class="section" id="overview">
+  <div class="section-hd"><div class="ic c">📊</div><h2>投入核心指标一览</h2><span class="sb">2025年报</span></div>
+  <div class="kpi" id="invKPIRow"></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">ROIC趋势 · 可比公司对比</div><div class="cs2">%</div></div><canvas id="roicTrendChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">资本开支 vs 研发投入 · 九号公司</div><div class="cs2">亿元</div></div><canvas id="capexRDChart"></canvas></div>
+  </div>
+</div>
+
+<div class="section" id="roic">
+  <div class="section-hd"><div class="ic g">📈</div><h2>ROIC与价值创造分析</h2><span class="sb">Return on Invested Capital</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">ROIC vs WACC · 净资产</div><div class="cs2">% / 亿元</div></div><canvas id="roicDetailChart"></canvas></div>
+    <div class="card">
+      <div class="ch" style="margin-bottom:6px;"><div class="ct2">ROIC价值创造拆解</div><div class="cs2">杜邦视角</div></div>
+      <table style="width:100%;font-size:11px;border-collapse:collapse;">
+        <tr><td style="padding:4px 0;color:var(--text2)">2025 ROIC</td><td style="text-align:right;font-weight:700;color:var(--green)">23.3%</td></tr>
+        <tr><td style="padding:4px 0;color:var(--text2)">WACC</td><td style="text-align:right">9.5%</td></tr>
+        <tr><td style="padding:4px 0;color:var(--text2)">价值创造（EVA Spread）</td><td style="text-align:right;font-weight:700;color:var(--cyan)">+13.8pp</td></tr>
+        <tr><td style="padding:4px 0;color:var(--text2);border-top:1px solid var(--border);padding-top:8px;">NOPAT估算 (2025)</td><td style="text-align:right;border-top:1px solid var(--border);padding-top:8px;">~19.2亿</td></tr>
+        <tr><td style="padding:4px 0;color:var(--text2)">投入资本 (IC)</td><td style="text-align:right">~82.5亿</td></tr>
+        <tr><td style="padding:4px 0;color:var(--text2)">EVA (经济增加值)</td><td style="text-align:right;font-weight:700;color:var(--green)">~11.4亿</td></tr>
+        <tr><td style="padding:4px 0;color:var(--text2)">3年EVA累计</td><td style="text-align:right;color:var(--green)">~22.8亿</td></tr>
+      </table>
+      <div class="annotation" style="margin-top:8px;"><strong>💡 ROIC解读：</strong>九号公司ROIC从2022年9.3%提升至2025年23.3%，远超WACC(9.5%)，年经济增加值(EVA)约11.4亿。在四家可比公司中ROIC排名第1，且是唯一ROIC持续提升的公司。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="detail">
+  <div class="section-hd"><div class="ic p">🔬</div><h2>投入要素细分拆解</h2><span class="sb">2022-2025</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">毛利率趋势 · 可比公司对比</div><div class="cs2">%</div></div><canvas id="gmPeerChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">固定资产周转率 · 可比对比</div><div class="cs2">x</div></div><canvas id="fatPeerChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">现金流结构与自由现金流</div><div class="cs2">亿元</div></div><canvas id="cfDetailChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">资产负债率 · 可比对比</div><div class="cs2">%</div></div><canvas id="debtPeerChart"></canvas></div>
+  </div>
+</div>
+
+<div class="section" id="peer">
+  <div class="section-hd"><div class="ic b">🏢</div><h2>可比公司投入产出矩阵</h2><span class="sb">2025年度</span></div>
+  <div class="card" style="overflow-x:auto;margin-bottom:12px;">
+    <div class="ch" style="margin-bottom:6px;"><div class="ct2">投入产出多维度对比</div><div class="cs2">可比四公司 (2025年报)</div></div>
+    <table class="data-table" id="peerInvTable"><thead><tr><th>公司</th><th>ROIC</th><th>ROIC 3YΔ</th><th>OCF(亿)</th><th>ICF(亿)</th><th>FCF(亿)</th><th>净资产(亿)</th><th>毛利率</th><th>流动比率</th><th>固资周转率</th><th>负债率</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card" style="overflow-x:auto;">
+    <div class="ch" style="margin-bottom:6px;"><div class="ct2">多维度评分矩阵</div><div class="cs2">10分制 · 投行级评估</div></div>
+    <table class="data-table" id="scoreTable"><thead><tr><th>评估维度</th><th>九号公司</th><th>爱玛科技</th><th>春风动力</th><th>八方股份</th></tr></thead><tbody></tbody></table>
+    <div class="annotation" style="margin-top:8px;"><strong>📌 综合评估：</strong>九号公司在ROIC、固资周转率、增长持续性、毛利率趋势四个维度领先同业。主要薄弱环节为负债率偏高(66.3%，行业最高)和流动比率偏低(1.20)，需关注偿债风险。整体投入产出效率在可比公司中表现最优。</div>
+  </div>
+</div>
+
+<footer>
+  <p>九号公司(689009.SH) 投入多维度深度分析 · 数据来源：东方财富公开数据 · 分析日期：2026-05-20</p>
+  <p style="margin-top:4px;">本报告仅供研究参考，不构成投资建议 · Built with Hermes Agent 🤖</p>
+</footer>
+</div>
+
+<script>document.addEventListener('DOMContentLoaded',function(){
+Chart.defaults.color='#9ca3af';
+Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif";
+
+// === DATA: 九号公司 ===
+var REV=[101.2,102.2,142.0,212.8];
+var PROF=[4.51,5.98,10.84,17.58];
+var ROE=[9.8,11.5,19.1,26.1];
+var ROIC=[9.3,10.1,16.5,23.3];
+var GM=[26.0,25.2,28.2,29.6];
+var OCF=[15.9,23.2,33.5,44.4];
+var ICF=[-6.6,-4.5,-24.6,-24.3];
+var FCF=[13.6,20.0,24.7,19.2];
+var EQ=[49.5,55.3,62.3,72.6];
+var DBTR=[47.3,49.0,60.2,66.3];
+var LD=[1.71,1.50,1.40,1.20];
+var FAT=[13.3,10.2,12.6,13.3];
+var CAPEX=[3.2,4.0,5.5,6.8];
+var RDv=[3.8,4.2,5.8,9.6];
+var RDR=[3.8,4.1,4.1,4.5];
+var YL=['2022','2023','2024','2025'];
+
+// === DATA: 可比公司 ===
+var PEER={
+  aima:{n:'爱玛科技',rv:[210.4,216.1,250.9],pf:[18.81,19.88,20.35],roe:[25.4,23.8,21.2],roic:[17.7,17.0,16.5],gm:[16.5,17.8,18.3],ocf:[18.6,31.7,37.8],icf:[-19.1,-67.8,-31.7],fcf:[0.6,-38.6,-11.5],eq:[77.8,91.4,100.8],db:[60.9,60.8,60.6],fat:[8.3,7.4,5.6]},
+  cfdl:{n:'春风动力',rv:[121.1,150.4,197.5],pf:[10.08,14.72,16.75],roe:[21.7,26.2,24.5],roic:[18.9,22.2,20.1],gm:[32.7,30.1,26.9],ocf:[13.8,29.7,39.7],icf:[-8.6,-4.0,-7.7],fcf:[2.7,27.0,30.2],eq:[51.7,63.5,77.4],db:[49.9,57.4,59.8],fat:[8.4,9.6,10.7]},
+  bf:{n:'八方股份',rv:[16.5,13.6,13.4],pf:[1.28,0.64,1.03],roe:[4.6,2.4,3.8],roic:[3.4,1.6,3.7],gm:[26.4,24.5,24.9],ocf:[4.6,1.7,1.4],icf:[-0.7,-8.6,-2.1],fcf:[4.1,-7.5,0.1],eq:[27.5,26.5,27.3],db:[17.6,16.3,16.8],fat:[2.3,2.0,1.7]}
+};
+
+var C={blue:'#3b82f6',cyan:'#06b6d4',green:'#10b981',orange:'#f59e0b',purple:'#8b5cf6',red:'#ef4444'};
+var CB={blue:'rgba(59,130,246,.2)',cyan:'rgba(6,182,212,.2)',green:'rgba(16,185,129,.2)',orange:'rgba(245,158,11,.2)',purple:'rgba(139,92,246,.2)'};
+
+function opts(ext){
+  var b={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{padding:10,usePointStyle:true,pointStyle:'circle'}},tooltip:{backgroundColor:'#1a2332',padding:8}},scales:{x:{grid:{color:'rgba(31,41,55,.5)'}},y:{grid:{color:'rgba(31,41,55,.5)'}}}};
+  for(var k in ext){b[k]=ext[k];}return b;
+}
+function mc(id,type,data,ext){new Chart(document.getElementById(id),{type:type,data:data,options:opts(ext||{})});}
+
+// ===== 1. ROIC趋势对比 =====
+var yr3=['2023','2024','2025'];
+mc('roicTrendChart','line',{
+  labels:yr3,
+  datasets:[
+    {label:'九号公司',data:ROIC.slice(1,4),borderColor:C.cyan,borderWidth:3,pointRadius:5,tension:.3},
+    {label:'爱玛科技',data:PEER.aima.roic,borderColor:C.blue,borderWidth:2,pointRadius:4,tension:.3},
+    {label:'春风动力',data:PEER.cfdl.roic,borderColor:C.green,borderWidth:2,pointRadius:4,tension:.3},
+    {label:'八方股份',data:PEER.bf.roic,borderColor:C.orange,borderWidth:2,pointRadius:4,borderDash:[5,5],tension:.3}
+  ]
+},{});
+
+// ===== 2. Capex vs R&D =====
+mc('capexRDChart','bar',{
+  labels:YL,
+  datasets:[
+    {label:'资本开支(亿元)',data:CAPEX,backgroundColor:CB.cyan,borderColor:C.cyan,borderWidth:2},
+    {label:'研发投入(亿元)',data:RDv,backgroundColor:CB.purple,borderColor:C.purple,borderWidth:2}
+  ]
+},{});
+
+// ===== 3. 投入资本收益率 =====
+mc('roicDetailChart','bar',{
+  labels:YL,
+  datasets:[
+    {label:'ROIC(%)',data:ROIC,backgroundColor:CB.green,borderColor:C.green,borderWidth:2,yAxisID:'y'},
+    {label:'WACC(%)',data:[9.5,9.5,9.5,9.5],type:'line',borderColor:C.orange,borderWidth:2,borderDash:[5,5],yAxisID:'y',fill:false},
+    {label:'净资产(亿元)',data:EQ,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2,yAxisID:'y1'}
+  ]
+},{scales:{y:{position:'left',title:{display:true,text:'%'}},y1:{position:'right',grid:{display:false},title:{display:true,text:'亿元'}}}});
+
+// ===== 4. 毛利率对比 =====
+mc('gmPeerChart','bar',{
+  labels:yr3,
+  datasets:[
+    {label:'九号公司',data:GM.slice(1,4),backgroundColor:CB.cyan,borderColor:C.cyan,borderWidth:2},
+    {label:'爱玛科技',data:PEER.aima.gm,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2},
+    {label:'春风动力',data:PEER.cfdl.gm,backgroundColor:CB.green,borderColor:C.green,borderWidth:2},
+    {label:'八方股份',data:PEER.bf.gm,backgroundColor:CB.orange,borderColor:C.orange,borderWidth:2}
+  ]
+},{});
+
+// ===== 5. OCF vs ICF 现金流 =====
+mc('cfDetailChart','bar',{
+  labels:YL,
+  datasets:[
+    {label:'经营现金流(亿)',data:OCF,backgroundColor:CB.green,borderColor:C.green,borderWidth:2},
+    {label:'投资现金流(亿)',data:ICF,backgroundColor:CB.red,borderColor:C.red,borderWidth:2},
+    {label:'自由现金流(亿)',data:FCF,type:'line',borderColor:C.cyan,borderWidth:3,pointRadius:4,fill:false}
+  ]
+},{});
+
+// ===== 6. 固资周转率对比 =====
+mc('fatPeerChart','bar',{
+  labels:yr3,
+  datasets:[
+    {label:'九号公司',data:FAT.slice(1,4),backgroundColor:CB.cyan,borderColor:C.cyan,borderWidth:2},
+    {label:'爱玛科技',data:PEER.aima.fat,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2},
+    {label:'春风动力',data:PEER.cfdl.fat,backgroundColor:CB.green,borderColor:C.green,borderWidth:2},
+    {label:'八方股份',data:PEER.bf.fat,backgroundColor:CB.orange,borderColor:C.orange,borderWidth:2}
+  ]
+},{});
+
+// ===== 7. 负债率对比 =====
+mc('debtPeerChart','bar',{
+  labels:yr3,
+  datasets:[
+    {label:'九号公司',data:DBTR.slice(1,4),backgroundColor:CB.cyan,borderColor:C.cyan,borderWidth:2},
+    {label:'爱玛科技',data:PEER.aima.db,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2},
+    {label:'春风动力',data:PEER.cfdl.db,backgroundColor:CB.green,borderColor:C.green,borderWidth:2},
+    {label:'八方股份',data:PEER.bf.db,backgroundColor:CB.orange,borderColor:C.orange,borderWidth:2}
+  ]
+},{});
+
+// ===== TABLES =====
+// 投入产出对比矩阵
+var pe=document.querySelector('#peerInvTable tbody');
+var peerList=[{n:'九号公司',roic:23.3,roic3y:23.3-9.3,ocf:44.4,icf:-24.3,fcf:19.2,eq:72.6,gm:29.6,ld:1.20,fat:13.3,debt:66.3},
+  {n:'爱玛科技',roic:16.5,roic3y:16.5-17.7,ocf:37.8,icf:-31.7,fcf:-11.5,eq:100.8,gm:18.3,ld:0.87,fat:5.6,debt:60.6},
+  {n:'春风动力',roic:20.1,roic3y:20.1-18.9,ocf:39.7,icf:-7.7,fcf:30.2,eq:77.4,gm:26.9,ld:1.37,fat:10.7,debt:59.8},
+  {n:'八方股份',roic:3.7,roic3y:3.7-3.4,ocf:1.4,icf:-2.1,fcf:0.1,eq:27.3,gm:24.9,ld:4.11,fat:1.7,debt:16.8}];
+peerList.forEach(function(p){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><strong>'+p.n+'</strong></td><td>'+p.roic.toFixed(1)+'%</td><td class="'+(p.roic3y>0?'pos':'neg')+'">'+(p.roic3y>0?'+':'')+p.roic3y.toFixed(1)+'pp</td><td>'+p.ocf.toFixed(1)+'</td><td>'+p.icf.toFixed(1)+'</td><td class="'+(p.fcf>0?'pos':'neg')+'">'+p.fcf.toFixed(1)+'</td><td>'+p.eq.toFixed(1)+'</td><td>'+p.gm.toFixed(1)+'%</td><td>'+p.ld.toFixed(2)+'</td><td>'+p.fat.toFixed(1)+'x</td><td>'+p.debt.toFixed(1)+'%</td>';
+  pe.appendChild(tr);
+});
+
+// 多维度评分
+var se=document.querySelector('#scoreTable tbody');
+var scores=[
+  {d:'盈利能力(ROIC)',n:9,a:7,c:8,b:2},
+  {d:'资本效率(固资周转)',n:9,a:4,c:7,b:1},
+  {d:'现金流质量(FCF)',n:7,a:2,c:9,b:3},
+  {d:'研发投入强度',n:7,a:3,c:6,b:3},
+  {d:'增长持续性',n:9,a:5,c:8,b:1},
+  {d:'财务安全性',n:5,a:7,c:6,b:9},
+];
+var names=['九号公司','爱玛科技','春风动力','八方股份'];
+scores.forEach(function(s){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td>'+s.d+'</td><td><span class="tag-sm tg">'+s.n+'/10</span></td><td>'+s.a+'/10</td><td>'+s.c+'/10</td><td>'+s.b+'/10</td>';
+  se.appendChild(tr);
+});
+
+// KPI rows
+var ikr=document.getElementById('invKPIRow');
+[
+  {l:'2025 ROIC',v:'23.3%',c:'行业第1',cl:'green'},
+  {l:'ROIC-WACC差',v:'13.8pp',c:'价值创造领先',cl:'green'},
+  {l:'固资周转率',v:'13.3x',c:'行业第1',cl:'cyan'},
+  {l:'研发投入',v:'9.6亿',c:'3年CAGR 36%',cl:'blue'},
+  {l:'OCF/营收',v:'20.9%',c:'现金回收优异',cl:'green'},
+  {l:'Capex强度',v:'3.2%',c:'轻资产模式',cl:'purple'},
+].forEach(function(k){
+  var e=document.createElement('div');e.className='kpi-card '+k.cl;
+  e.innerHTML='<div class="kl">'+k.l+'</div><div class="kv">'+k.v+'</div><div class="kc up">'+k.c+'</div>';
+  ikr.appendChild(e);
+});
+
+console.log('v4 OK');
+});</script>
+</body>
+</html>

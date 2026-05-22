@@ -489,9 +489,18 @@ const projects = [
     status: 'ready',
     versions: 12,
     filesList: [
-      {name: 'ninebot_financial_analysis_v12.html', desc: '最终版 · 完整财报分析报告'},
-      {name: 'ninebot_financial_analysis_v11.html', desc: '迭代版'},
-      {name: 'ninebot_financial_analysis_v1~10.html', desc: '早期迭代版本(1-10)'}
+      {name: 'ninebot_financial_analysis_v12.html', desc: '最终版 · 完整财报分析报告', uploaded: true},
+      {name: 'ninebot_financial_analysis_v11.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v10.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v9.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v8.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v7.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v6.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v5.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v4.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v3.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v2.html', desc: '迭代版', uploaded: true},
+      {name: 'ninebot_financial_analysis_v1.html', desc: '初版', uploaded: true}
     ]
   },
   {
@@ -504,9 +513,22 @@ const projects = [
     status: 'ready',
     versions: 3,
     filesList: [
-      {name: 'moutai_ib_dashboard_v2.html', desc: '投行级分析仪表板 v2'},
-      {name: 'moutai_complete_dashboard.html', desc: '完整版分析报告'},
-      {name: 'maotai_dashboard.html', desc: '基础版分析看板'}
+      {name: 'moutai_ib_dashboard_v2.html', desc: '投行级分析仪表板 v2', uploaded: true},
+      {name: 'moutai_complete_dashboard.html', desc: '完整版分析报告', uploaded: true},
+      {name: 'maotai_dashboard.html', desc: '基础版分析看板', uploaded: true}
+    ]
+  },
+  {
+    id: '腾讯控股_投行级分析',
+    name: '腾讯控股 投行级分析',
+    icon: '🐧',
+    filter: 'finance',
+    desc: '腾讯控股投行级分析报告，包含四层估值体系、财务健康度评分、同业对标矩阵与情景分析。',
+    files: 1,
+    status: 'ready',
+    versions: 1,
+    filesList: [
+      {name: '腾讯控股_投行级分析_v1.html', desc: '投行级完整分析报告', uploaded: true}
     ]
   },
   {
@@ -519,8 +541,8 @@ const projects = [
     status: 'ready',
     versions: 2,
     filesList: [
-      {name: 'A5_中国平安2024审计智慧大屏.html', desc: '2024审计智慧大屏'},
-      {name: '中国平安_内部控制审计报告_dashboard.html', desc: '内控审计报告看板'}
+      {name: 'A5_中国平安2024审计智慧大屏.html', desc: '2024审计智慧大屏', uploaded: true},
+      {name: '中国平安_内部控制审计报告_dashboard.html', desc: '内控审计报告看板', uploaded: true}
     ]
   },
   {
@@ -535,19 +557,6 @@ const projects = [
     filesList: [
       {name: '华兴集团·财务共享中心智慧大屏 v3.0.html', desc: 'FSSC 智慧大屏 v3.0'},
       {name: 'fssc_dashboard.html', desc: 'FSSC 运营看板'}
-    ]
-  },
-  {
-    id: '腾讯控股_投行级分析',
-    name: '腾讯控股 投行级分析',
-    icon: '🐧',
-    filter: 'finance',
-    desc: '腾讯控股投行级分析报告，包含四层估值体系、财务健康度评分、同业对标矩阵与情景分析。',
-    files: 1,
-    status: 'ready',
-    versions: 1,
-    filesList: [
-      {name: '腾讯控股_投行级分析_v1.html', desc: '投行级完整分析报告'}
     ]
   },
   {
@@ -626,13 +635,19 @@ function openDialog(id){
 
   const list = document.getElementById('dialogFiles');
   if(p.filesList && p.filesList.length > 0){
-    list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => `
-      <li class="file-item">
-        <span>📄</span>
-        <span class="name">${f.name}</span>
-        <span class="status">待上传</span>
-      </li>
-    `).join('') + '</ul>';
+    list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => {
+      const status = f.uploaded
+        ? '<span class="status" style="background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)">✅ 已上传</span>'
+        : '<span class="status">待上传</span>';
+      const href = f.uploaded ? `projects/${p.id}/${encodeURIComponent(f.name)}` : '#';
+      return `
+        <li class="file-item">
+          <span>📄</span>
+          <a href="${href}" target="_blank" class="name" style="text-decoration:none;color:inherit;flex:1">${f.name}</a>
+          ${status}
+        </li>
+      `;
+    }).join('') + '</ul>';
   } else {
     list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
   }

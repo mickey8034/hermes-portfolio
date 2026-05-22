@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>六公司 · 投入产出深度分析 · Apple设计</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.5;-webkit-font-smoothing:antialiased}
+.header{background:linear-gradient(180deg,#f5f5f7 0%,#fff 100%);padding:48px 24px 32px;text-align:center;border-bottom:1px solid #d2d2d7}
+.header h1{font-size:36px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(135deg,#1d1d1f,#6e6e73);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.header .sub{font-size:15px;color:#6e6e73;margin-bottom:16px}
+.header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.header .tags span{padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500}
+.t0{background:#e8f0fe;color:#1a73e8;border:1px solid #d2e3fc}.t1{background:#e6f4ea;color:#1e8e3e;border:1px solid #ceead6}
+.t2{background:#f3e8fd;color:#7c3aed;border:1px solid #e4d5f7}.t3{background:#fce8e6;color:#d93025;border:1px solid #f5c6c2}
+.t4{background:#fef3e2;color:#e37400;border:1px solid #fde0b2}.t5{background:#fef9e7;color:#b8860b;border:1px solid #f9e79f}
+.tab-nav{display:flex;justify-content:center;gap:2px;padding:14px 24px 0;background:#fff;border-bottom:1px solid #d2d2d7;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;color:#6e6e73;background:transparent;border:none;border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s}
+.tab-btn:hover{color:#1d1d1f;background:#f5f5f7}.tab-btn.active{color:#1d1d1f;background:#fff;font-weight:600}
+.tab-btn.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:#1d1d1f;border-radius:1px}
+.tab-btn .bdg{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:500;margin-left:4px;background:#e8e8ed;color:#6e6e73}
+.tab-btn.active .bdg{background:#1d1d1f;color:#fff}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.tab-content{display:none}.tab-content.active{display:block}
+.sec{margin-bottom:32px}.sec-title{font-size:22px;font-weight:700;margin-bottom:20px;color:#1d1d1f;letter-spacing:-.3px}
+.sec-title .ss{font-size:13px;font-weight:400;color:#6e6e73;margin-left:8px}
+.cg{display:grid;gap:16px}.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:900px){.c2,.c3,.c4{grid-template-columns:1fr 1fr}}@media(max-width:600px){.c2,.c3,.c4{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06);transition:box-shadow .3s}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.chart-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+.ch-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:4px}
+.ch-hd .ct{font-size:16px;font-weight:600;color:#1d1d1f}.ch-hd .cs{font-size:12px;color:#6e6e73}
+.krow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.krow{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.krow{grid-template-columns:repeat(2,1fr)}}
+.kbox{background:#fff;border-radius:14px;padding:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+.kbox .kl{font-size:11px;font-weight:500;color:#6e6e73;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kbox .kv{font-size:24px;font-weight:700;letter-spacing:-.5px}.kbox .ks{font-size:12px;margin-top:2px}
+.tw{overflow-x:auto;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+table th{padding:10px 12px;text-align:left;font-weight:600;color:#6e6e73;border-bottom:1px solid #d2d2d7;background:#fafafa;font-size:12px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+table td{padding:10px 12px;border-bottom:1px solid #e8e8ed;color:#1d1d1f;font-size:13px}
+table tr:hover td{background:#f5f5f7}table .num{text-align:right;font-family:'SF Mono','SF Pro',monospace;font-size:12px;font-weight:500}
+.best{color:#1e8e3e;font-weight:600}.worst{color:#d93025}
+.note{font-size:13px;color:#6e6e73;line-height:1.6;padding:14px 18px;background:#fafafa;border-left:3px solid #1a73e8;border-radius:10px;margin-top:12px}
+.note strong{color:#1d1d1f}
+.fcard{background:#fff;border-radius:14px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06);margin-bottom:10px}
+.fcard h4{font-size:15px;font-weight:600;margin-bottom:6px}
+.fcard ul{list-style:none;padding:0}.fcard li{padding:4px 0 4px 16px;font-size:13px;color:#6e6e73;position:relative;line-height:1.5}
+.fcard li::before{content:'\25b8';position:absolute;left:0;color:#1a73e8;font-weight:700}
+.insight{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border:1px solid #d2e3fc;border-radius:14px;padding:18px 22px;margin-bottom:16px}
+.insight h3{font-size:15px;color:#1a73e8;margin-bottom:6px}.insight p{font-size:13px;color:#444;line-height:1.5}
+.footer{text-align:center;padding:24px;color:#6e6e73;font-size:12px;border-top:1px solid #d2d2d7;margin-top:24px}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:12px;font-size:11px;font-weight:700;margin-right:6px}
+.r1{background:#fef3e2;color:#e37400}.r2{background:#e8e8ed;color:#6e6e73}.r3{background:#fce8e6;color:#d93025}
+.pill{display:inline-block;padding:3px 12px;border-radius:14px;font-size:12px;font-weight:600;color:#fff;margin:0 3px}
+.ii{display:flex;justify-content:space-between;padding:5px 8px;background:#f5f5f7;border-radius:6px;font-size:12px;margin-bottom:3px}
+.ii .k{color:#6e6e73}.ii .v{font-weight:600;font-family:'SF Mono',monospace}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>投入产出 · 投行级六公司深度论证</h1>
+<div class="sub">基于 2023-2025 年报 + 2026Q1 · 六维度全拆解 · Apple设计风格</div>
+<div class="tags">
+<span class="t0">🔵 九号 689009</span>
+<span class="t1">🟢 涛涛 301345</span>
+<span class="t2">🟣 安克 300866</span>
+<span class="t3">🔴 爱玛 603529</span>
+<span class="t4">🟠 春风 603129</span>
+<span class="t5">🟡 雅迪 01585</span>
+</div>
+</div>
+
+<div class="tab-nav" id="tabNav">
+<button class="tab-btn active" data-tab="overview">总览 <span class="bdg">6</span></button>
+<button class="tab-btn" data-tab="roic">投入回报 <span class="bdg">6</span></button>
+<button class="tab-btn" data-tab="rd">研发创新 <span class="bdg">6</span></button>
+<button class="tab-btn" data-tab="ops">运营效率 <span class="bdg">6</span></button>
+<button class="tab-btn" data-tab="debt">资本结构 <span class="bdg">6</span></button>
+<button class="tab-btn" data-tab="score">综合评分 <span class="bdg">6</span></button>
+</div>
+
+<div class="container">
+
+<!-- TAB 1: OVERVIEW -->
+<div class="tab-content active" id="tab-overview">
+
+<div class="insight">
+<h3>🔵 2026Q1 关键信号</h3>
+<p><strong>九号公司</strong> Q1利润2.03亿(-55%)需关注，属季节性淡季+研发前置。<strong>涛涛车业</strong> Q1营收+65.7%、利润+104.5%，全场最强动量。<strong>安克创新</strong> Q1利润微降(-4.9%)，大基数下可接受。</p>
+</div>
+
+<div class="sec-title">核心指标矩阵</div>
+<div class="tw">
+<table>
+<thead><tr><th>指标</th><th>🔵 九号</th><th>🟢 涛涛</th><th>🟣 安克</th><th>🔴 爱玛</th><th>🟠 春风</th><th>🟡 雅迪</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:600">营收 (亿元)</td><td class="num">212.8</td><td class="num">39.4</td><td class="num best">305.1</td><td class="num">250.9</td><td class="num">197.5</td><td class="num">409.7</td></tr>
+<tr><td style="font-weight:600">营收增速</td><td class="num best">+49.9%</td><td class="num">+32.4%</td><td class="num">+23.5%</td><td class="num worst">+16.1%</td><td class="num">+31.3%</td><td class="num">+18.1%</td></tr>
+<tr><td style="font-weight:600">净利润 (亿元)</td><td class="num">17.6</td><td class="num">8.2</td><td class="num best">25.5</td><td class="num">20.4</td><td class="num">16.8</td><td class="num">32.2</td></tr>
+<tr><td style="font-weight:600">毛利率</td><td class="num">29.6%</td><td class="num best">41.5%</td><td class="num">45.1%</td><td class="num worst">18.5%</td><td class="num">30.0%</td><td class="num">18.5%</td></tr>
+<tr><td style="font-weight:600">净利率</td><td class="num">8.3%</td><td class="num best">20.7%</td><td class="num">8.6%</td><td class="num">8.1%</td><td class="num">8.5%</td><td class="num">7.9%</td></tr>
+<tr><td style="font-weight:600">ROE</td><td class="num best">26.1%</td><td class="num">24.0%</td><td class="num">26.1%</td><td class="num">21.2%</td><td class="num">24.5%</td><td class="num">27.8%</td></tr>
+<tr><td style="font-weight:600">ROIC</td><td class="num">22.5%</td><td class="num best">24.0%</td><td class="num">26.1%</td><td class="num worst">18.0%</td><td class="num">20.0%</td><td class="num">22.0%</td></tr>
+<tr><td style="font-weight:600">研发费用率</td><td class="num">4.5%</td><td class="num worst">3.1%</td><td class="num best">9.5%</td><td class="num">2.2%</td><td class="num">4.0%</td><td class="num">2.9%</td></tr>
+<tr><td style="font-weight:600">资产周转率</td><td class="num best">1.14x</td><td class="num worst">0.76x</td><td class="num">1.66x</td><td class="num">1.10x</td><td class="num">1.00x</td><td class="num">1.50x</td></tr>
+<tr><td style="font-weight:600">资产负债率</td><td class="num worst">66.3%</td><td class="num best">38.7%</td><td class="num">46.6%</td><td class="num">60.6%</td><td class="num">59.8%</td><td class="num">55.0%</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="cg c2" style="margin-top:16px">
+<div class="chart-card">
+<div class="ch-hd"><div class="ct">营收规模 vs 增速</div><div class="cs">柱状=营收 · 折线=增速</div></div>
+<canvas id="chart0" height="260"></canvas>
+</div>
+<div class="chart-card">
+<div class="ch-hd"><div class="ct">毛利率 vs 净利率</div><div class="cs">六公司分布</div></div>
+<canvas id="chart1" height="260"></canvas>
+</div>
+</div>
+</div>
+
+<!-- TAB 2: ROIC -->
+<div class="tab-content" id="tab-roic">
+<div class="sec-title">投入回报 ROIC <span class="ss">三重复合拆解 · 含Q1年化</span></div>
+<div class="cg c2">
+<div class="chart-card"><div class="ch-hd"><div class="ct">ROIC 趋势</div><div class="cs">% · 红线=WACC 9.5%</div></div><canvas id="chart2" height="260"></canvas></div>
+<div class="chart-card"><div class="ch-hd"><div class="ct">杜邦三因子 (2025)</div><div class="cs">净利率 · 周转率 · 杠杆</div></div><canvas id="chart3" height="260"></canvas></div>
+</div>
+<div class="cg c3" style="margin-top:12px">
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">ROIC 排名</div>
+<div class="ii"><span><span class="rank r1">1</span>🟣 安克创新</span><span class="v" style="color:#7c3aed">26.1%</span></div>
+<div class="ii"><span><span class="rank r2">2</span>🟢 涛涛车业</span><span class="v" style="color:#1e8e3e">24.0%</span></div>
+<div class="ii"><span><span class="rank r2">3</span>🔵 九号公司</span><span class="v" style="color:#1a73e8">22.5%</span></div>
+<div class="ii"><span><span class="rank r3">4</span>🟡 雅迪控股</span><span class="v">22.0%</span></div>
+<div class="ii"><span>5🟠 春风动力</span><span class="v">20.0%</span></div>
+<div class="ii"><span>6🔴 爱玛科技</span><span class="v" style="color:#d93025">18.0%</span></div>
+</div>
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">ROIC 提升最快</div>
+<div style="font-size:26px;font-weight:700;color:#1a73e8">🔵 九号公司</div>
+<div style="font-size:13px;color:#6e6e73;margin-top:4px">11.5% &rarr; 26.1% &middot; CAGR +51%</div>
+<div style="margin-top:10px;font-size:13px">净利率5.3%&rarr;8.3%，周转率0.82&rarr;1.14x</div>
+</div>
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">净利率冠军</div>
+<div style="font-size:26px;font-weight:700;color:#1e8e3e">🟢 涛涛车业</div>
+<div style="font-size:13px;color:#6e6e73;margin-top:4px">净利率 20.7% 遥遥领先</div>
+<div style="margin-top:10px;font-size:13px">毛利率41.5%+费用率控制优，周转率仅0.76x</div>
+</div>
+</div>
+<div class="note"><strong>核心发现：</strong>六公司2025年ROIC均>18%，全部超越WACC(9.5%)，行业持续创造经济价值。🔵九号ROIC提升最快(CAGR+51%)；🟢涛涛净利率20.7%全行业最高；🟣安克ROIC 26.1%三因子最均衡。🔴爱玛ROIC仅18%垫底。</div>
+</div>
+
+<!-- TAB 3: R&D -->
+<div class="tab-content" id="tab-rd">
+<div class="sec-title">研发创新投入 <span class="ss">金额 &middot; 强度 &middot; 转化效率</span></div>
+<div class="cg c2">
+<div class="chart-card"><div class="ch-hd"><div class="ct">研发投入金额 vs 费率</div><div class="cs">柱状=金额 · 折线=费率%</div></div><canvas id="chart4" height="260"></canvas></div>
+<div class="chart-card"><div class="ch-hd"><div class="ct">每元研发产出净利润</div><div class="cs">转化效率</div></div><canvas id="chart5" height="260"></canvas></div>
+</div>
+<div class="cg c3" style="margin-top:12px">
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">研发投入王</div>
+<div style="font-size:26px;font-weight:700;color:#7c3aed">🟣 安克创新</div><div style="font-size:13px;color:#6e6e73;margin-top:4px">28.9亿 &middot; 费率 9.5%</div><div style="margin-top:8px;font-size:12px">全球化品牌研发驱动</div></div>
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">转化效率王</div>
+<div style="font-size:26px;font-weight:700;color:#1e8e3e">🟢 涛涛车业</div><div style="font-size:13px;color:#6e6e73;margin-top:4px">每元研发产 6.62 元净利润</div><div style="margin-top:8px;font-size:12px">制造业属性，边际研发需求低</div></div>
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">提速最快</div>
+<div style="font-size:26px;font-weight:700;color:#1a73e8">🔵 九号公司</div><div style="font-size:13px;color:#6e6e73;margin-top:4px">Q1费率 6.3% (2023年仅4.1%)</div><div style="margin-top:8px;font-size:12px">机器人+智能短交通双线布局</div></div>
+</div>
+<div class="note"><strong>研发分析：</strong>🟣安克研发双项领跑；🔵九号Q1费率飙至6.3%，机器人赛道投入从财报清晰可见；🟢涛涛研发最低但转化效率6.6元/元碾压同行；🔴爱玛研发费率2.2%行业最低，再投资意愿不足。</div>
+</div>
+
+<!-- TAB 4: OPS -->
+<div class="tab-content" id="tab-ops">
+<div class="sec-title">运营效率 <span class="ss">周转率 &middot; 现金流 &middot; 效率对比</span></div>
+<div class="cg c2">
+<div class="chart-card"><div class="ch-hd"><div class="ct">总资产周转率 (次/年)</div><div class="cs">含Q1年化</div></div><canvas id="chart6" height="260"></canvas></div>
+<div class="chart-card"><div class="ch-hd"><div class="ct">现金流质量 (2025)</div><div class="cs">OCF vs 净利润</div></div><canvas id="chart7" height="260"></canvas></div>
+</div>
+<div class="cg c4" style="margin-top:12px">
+<div class="card"><div style="font-size:11px;font-weight:600;color:#6e6e73;margin-bottom:6px">存货周转率</div>
+<div class="ii"><span class="k">🔵九号</span><span class="v" style="color:#1a73e8">5.98x</span></div>
+<div class="ii"><span class="k">🟢涛涛</span><span class="v" style="color:#1e8e3e">1.58x</span></div>
+<div class="ii"><span class="k">🟣安克</span><span class="v" style="color:#7c3aed">4.07x</span></div>
+<div class="ii"><span class="k">🔴爱玛</span><span class="v">~8.0x</span></div>
+<div class="ii"><span class="k">🟠春风</span><span class="v">~4.5x</span></div>
+<div class="ii"><span class="k">🟡雅迪</span><span class="v" style="color:#b8860b">~12x</span></div>
+</div>
+<div class="card"><div style="font-size:11px;font-weight:600;color:#6e6e73;margin-bottom:6px">AR周转率</div>
+<div class="ii"><span class="k">🔵九号</span><span class="v" style="color:#1a73e8">16.6x</span></div>
+<div class="ii"><span class="k">🟢涛涛</span><span class="v" style="color:#1e8e3e">4.81x</span></div>
+<div class="ii"><span class="k">🟣安克</span><span class="v" style="color:#7c3aed">17.3x</span></div>
+<div class="ii"><span class="k">🔴爱玛</span><span class="v">~20x</span></div>
+<div class="ii"><span class="k">🟠春风</span><span class="v">~8x</span></div>
+<div class="ii"><span class="k">🟡雅迪</span><span class="v" style="color:#b8860b">~50x</span></div>
+</div>
+<div class="card"><div style="font-size:11px;font-weight:600;color:#6e6e73;margin-bottom:6px">OCF/净利润</div>
+<div class="ii"><span class="k">🔵九号</span><span class="v" style="color:#e37400">0.75x</span></div>
+<div class="ii"><span class="k">🟢涛涛</span><span class="v" style="color:#1e8e3e">0.92x</span></div>
+<div class="ii"><span class="k">🟣安克</span><span class="v" style="color:#d93025">0.19x</span></div>
+<div class="ii"><span class="k">🔴爱玛</span><span class="v">~0.6x</span></div>
+<div class="ii"><span class="k">🟠春风</span><span class="v">~0.7x</span></div>
+<div class="ii"><span class="k">🟡雅迪</span><span class="v" style="color:#b8860b">~1.2x</span></div>
+</div>
+<div class="card"><div style="font-size:11px;font-weight:600;color:#6e6e73;margin-bottom:6px">杠杆(权益乘数)</div>
+<div class="ii"><span class="k">🔵九号</span><span class="v" style="color:#d93025">2.96x</span></div>
+<div class="ii"><span class="k">🟢涛涛</span><span class="v" style="color:#1e8e3e">1.63x</span></div>
+<div class="ii"><span class="k">🟣安克</span><span class="v">1.87x</span></div>
+<div class="ii"><span class="k">🔴爱玛</span><span class="v">~2.54x</span></div>
+<div class="ii"><span class="k">🟠春风</span><span class="v">~2.49x</span></div>
+<div class="ii"><span class="k">🟡雅迪</span><span class="v">~2.22x</span></div>
+</div>
+</div>
+<div class="note"><strong>运营分析：</strong>🔵九号资产周转持续提升(0.82&rarr;1.14x)，存货管理最优；🟣安克AR周转17.3x(亚马逊现结)，但OCF/净利仅0.19x；🟢涛涛OCF质量最好(0.92x)；🟡雅迪现金流最健康(>1x)。</div>
+</div>
+
+<!-- TAB 5: DEBT -->
+<div class="tab-content" id="tab-debt">
+<div class="sec-title">资本结构 <span class="ss">负债 &middot; 流动性 &middot; 安全边际</span></div>
+<div class="cg c2">
+<div class="chart-card"><div class="ch-hd"><div class="ct">资产负债率</div><div class="cs">深色=2025年报 浅色=Q1最新</div></div><canvas id="chart8" height="260"></canvas></div>
+<div class="chart-card"><div class="ch-hd"><div class="ct">流动性比率 (2025)</div><div class="cs">流动比率 &amp; 速动比率</div></div><canvas id="chart9" height="260"></canvas></div>
+</div>
+<div class="cg c3" style="margin-top:12px">
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">最安全</div>
+<div style="font-size:26px;font-weight:700;color:#1e8e3e">🟢 涛涛</div>
+<div style="font-size:13px;color:#6e6e73;margin-top:4px">负债率38.7% &middot; 流动比率1.98</div>
+<div style="margin-top:8px;font-size:12px">零有息负债 &middot; 现金流充裕</div></div>
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">最高杠杆</div>
+<div style="font-size:26px;font-weight:700;color:#d93025">🔵 九号</div>
+<div style="font-size:13px;color:#6e6e73;margin-top:4px">负债率66.3% &middot; 权益乘数2.96</div>
+<div style="margin-top:8px;font-size:12px">但以经营性负债为主，有息负债极低</div></div>
+<div class="card"><div style="font-size:12px;font-weight:600;color:#6e6e73;margin-bottom:8px">流动性最好</div>
+<div style="font-size:26px;font-weight:700;color:#7c3aed">🟣 安克</div>
+<div style="font-size:13px;color:#6e6e73;margin-top:4px">流动比率2.38 &middot; 速动比率1.64</div>
+<div style="margin-top:8px;font-size:12px">可转债+现金充沛</div></div>
+</div>
+</div>
+
+<!-- TAB 6: SCORE -->
+<div class="tab-content" id="tab-score">
+<div class="sec-title">综合评分 &amp; 投资排序 <span class="ss">10分制 &middot; 六维量化</span></div>
+<div class="cg c2">
+<div class="chart-card"><div class="ch-hd"><div class="ct">六维雷达对比</div><div class="cs">实线=核心三强 · 虚线=传统三强</div></div><canvas id="chart10" height="300"></canvas></div>
+<div class="card">
+<div class="ch-hd"><div class="ct">六公司六维评分</div><div class="cs">综合排名</div></div>
+<div class="tw">
+<table>
+<thead><tr><th>维度</th><th>🔵九号</th><th>🟢涛涛</th><th>🟣安克</th><th>🔴爱玛</th><th>🟠春风</th><th>🟡雅迪</th></tr></thead>
+<tbody>
+<tr><td>成长性</td><td class="num best">9.5</td><td class="num">7.0</td><td class="num">6.0</td><td class="num worst">3.0</td><td class="num">7.5</td><td class="num">5.0</td></tr>
+<tr><td>盈利能力</td><td class="num">5.5</td><td class="num best">9.5</td><td class="num">5.5</td><td class="num">4.0</td><td class="num">5.0</td><td class="num">4.5</td></tr>
+<tr><td>研发投入</td><td class="num mid1">6.0</td><td class="num worst">3.0</td><td class="num best">9.5</td><td class="num">2.5</td><td class="num">5.5</td><td class="num">3.5</td></tr>
+<tr><td>运营效率</td><td class="num best">8.5</td><td class="num worst">4.0</td><td class="num">8.0</td><td class="num mid1">6.5</td><td class="num">5.5</td><td class="num">7.0</td></tr>
+<tr><td>财务安全</td><td class="num worst">3.0</td><td class="num best">9.0</td><td class="num">6.5</td><td class="num">4.0</td><td class="num">4.5</td><td class="num">5.5</td></tr>
+<tr><td>现金流质量</td><td class="num">5.0</td><td class="num best">8.5</td><td class="num worst">2.5</td><td class="num">4.0</td><td class="num">5.0</td><td class="num">7.5</td></tr>
+<tr style="background:#f5f5f7"><td style="font-weight:700">综合得分</td><td class="num best" style="font-weight:700">8.2</td><td class="num" style="font-weight:700">8.0</td><td class="num" style="font-weight:700">7.5</td><td class="num worst" style="font-weight:700">5.8</td><td class="num" style="font-weight:700">7.0</td><td class="num" style="font-weight:700">6.8</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="cg c3" style="margin-top:12px">
+<div class="fcard" style="border-left:3px solid #1a73e8">
+<h4 style="color:#1a73e8">🔵 九号公司 &middot; 8.2/10</h4>
+<ul><li>成长最快(49.9%) &middot; ROIC提升最快(CAGR+51%)</li><li>Q1利润承压(-55%)但大概率季节性，Q2关键验证</li><li>催化剂：机器人量产+海外扩张+新国标红利</li></ul>
+</div>
+<div class="fcard" style="border-left:3px solid #1e8e3e">
+<h4 style="color:#1e8e3e">🟢 涛涛车业 &middot; 8.0/10</h4>
+<ul><li>Q1营收+65.7%/利润+104.5%，动能全场最强</li><li>高利润(20.7%)+低负债(38.7%)+好现金流(0.92x)</li><li>催化剂：IPO产能释放+海外渠道扩张</li></ul>
+</div>
+<div class="fcard" style="border-left:3px solid #7c3aed">
+<h4 style="color:#7c3aed">🟣 安克创新 &middot; 7.5/10</h4>
+<ul><li>ROIC 26.1%最高 &middot; 研发费率9.5%最高 &middot; 品牌壁垒深</li><li>大基数(305亿)下增速23.5%，稀缺龙头品质</li><li>催化剂：AI+硬件融合+新兴市场拓展</li></ul>
+</div>
+</div>
+
+<div class="note" style="border-left-color:#1d1d1f;background:#f5f5f7;font-size:14px">
+<strong>最终投资排序：</strong>
+<span class="pill" style="background:#1a73e8">1st 九号</span>
+<span class="pill" style="background:#1e8e3e">2nd 涛涛</span>
+<span class="pill" style="background:#7c3aed">3rd 安克</span>
+<span style="font-size:12px;color:#6e6e73"> &gt; 春风(7.0) &gt; 雅迪(6.8) &gt; 爱玛(5.8)</span><br>
+六公司形成「三强三弱」格局。行业整体持续创造经济价值(EVA&gt;0)，配置价值显著。
+</div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+<p>九号公司(689009) &middot; 涛涛车业(301345) &middot; 安克创新(300866) &middot; 爱玛科技(603529) &middot; 春风动力(603129) &middot; 雅迪控股(01585)</p>
+<p>数据来源：东方财富公开财务数据 | 2023-2025年报 + 2026Q1 | 分析日期：2026-05-21</p>
+<p style="margin-top:4px;font-size:11px">本报告仅供研究参考，不构成投资建议</p>
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){
+document.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active')});
+document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active')});
+this.classList.add('active');document.getElementById('tab-'+this.dataset.tab).classList.add('active');
+})});
+document.addEventListener('DOMContentLoaded',function(){
+Chart.defaults.color='#6e6e73';Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif";
+var C=['#1a73e8','#1e8e3e','#7c3aed','#d93025','#e37400','#b8860b'];
+var Cg=['rgba(26,115,232,.2)','rgba(30,142,62,.2)','rgba(124,58,237,.2)','rgba(217,48,37,.2)','rgba(227,116,0,.2)','rgba(184,134,11,.2)'];
+var YL=['2023','2024','2025','Q1*'];
+function nc(id,o){return new Chart(document.getElementById(id),o);}
+nc('chart0',{type:'bar',data:{labels:['九号','涛涛','安克','爱玛','春风','雅迪'],datasets:[
+{label:'营收(亿)',data:[212.8,39.4,305.1,250.9,197.5,409.7],backgroundColor:Cg,borderColor:C,borderWidth:2,yAxisID:'y'},
+{label:'增速%',data:[49.9,32.4,23.5,16.1,31.3,18.1],type:'line',borderColor:'#1d1d1f',backgroundColor:'rgba(29,29,31,.08)',fill:true,tension:.2,pointRadius:4,pointBackgroundColor:C,yAxisID:'y1'}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,position:'left',title:{display:true,text:'亿元',font:{size:11}}},y1:{beginAtZero:true,position:'right',max:60,title:{display:true,text:'%',font:{size:11}},grid:{drawOnChartArea:false}}}}}});
+nc('chart1',{type:'bar',data:{labels:['九号','涛涛','安克','爱玛','春风','雅迪'],datasets:[
+{label:'毛利率%',data:[29.6,41.5,45.1,18.5,30.0,18.5],backgroundColor:['rgba(26,115,232,.5)','rgba(30,142,62,.5)','rgba(124,58,237,.5)','rgba(217,48,37,.5)','rgba(227,116,0,.5)','rgba(184,134,11,.5)'],borderColor:C,borderWidth:2},
+{label:'净利率%',data:[8.3,20.7,8.6,8.1,8.5,7.9],backgroundColor:Cg,borderColor:C,borderWidth:2}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,max:55,title:{display:true,text:'%',font:{size:11}}}}}});
+nc('chart2',{type:'bar',data:{labels:YL,datasets:[
+{label:'九号',data:[11.5,19.1,26.1,20.0],backgroundColor:Cg[0],borderColor:C[0],borderWidth:2},
+{label:'涛涛',data:[10.5,14.2,24.0,25.0],backgroundColor:Cg[1],borderColor:C[1],borderWidth:2},
+{label:'安克',data:[22.0,24.9,26.1,22.0],backgroundColor:Cg[2],borderColor:C[2],borderWidth:2},
+{label:'爱玛',data:[18.0,19.5,18.0,16.0],backgroundColor:Cg[3],borderColor:C[3],borderWidth:1,borderDash:[3,3]},
+{label:'春风',data:[19.0,22.0,20.0,18.0],backgroundColor:Cg[4],borderColor:C[4],borderWidth:1,borderDash:[3,3]},
+{label:'雅迪',data:[20.0,21.5,22.0,21.0],backgroundColor:Cg[5],borderColor:C[5],borderWidth:1,borderDash:[3,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,max:35,title:{display:true,text:'%',font:{size:11}}}}}});
+setTimeout(function(){var c=Chart.getChart('chart2');if(!c)return;var ctx=c.ctx,ys=c.scales.y,y=ys.getPixelForValue(9.5),ca=c.chartArea;if(y<ca.top||y>ca.bottom)return;ctx.save();ctx.strokeStyle='#d93025';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(ca.left,y);ctx.lineTo(ca.right,y);ctx.stroke();ctx.restore();ctx.save();ctx.fillStyle='#d93025';ctx.font='11px sans-serif';ctx.fillText('WACC 9.5%',ca.right-65,y-5);ctx.restore();},500);
+nc('chart3',{type:'bar',data:{labels:['净利率%','周转率x','杠杆','ROIC%'],datasets:[
+{label:'九号',data:[8.3,1.14,2.96,26.1],backgroundColor:Cg[0],borderColor:C[0],borderWidth:2},
+{label:'涛涛',data:[20.7,0.76,1.63,24.0],backgroundColor:Cg[1],borderColor:C[1],borderWidth:2},
+{label:'安克',data:[8.6,1.66,1.87,26.1],backgroundColor:Cg[2],borderColor:C[2],borderWidth:2}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'值',font:{size:10}}},x:{ticks:{font:{size:11}}}}}});
+nc('chart4',{type:'bar',data:{labels:['九号','涛涛','安克','爱玛','春风','雅迪'],datasets:[
+{label:'研发金额(亿)',data:[9.6,1.2,28.9,5.5,8.0,12.0],backgroundColor:Cg,borderColor:C,borderWidth:2,yAxisID:'y'},
+{label:'费率%',data:[4.5,3.1,9.5,2.2,4.0,2.9],type:'line',borderColor:'#1d1d1f',backgroundColor:'rgba(29,29,31,.08)',fill:true,tension:.2,pointRadius:4,pointBackgroundColor:C,yAxisID:'y1'}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,position:'left',title:{display:true,text:'亿元',font:{size:10}}},y1:{beginAtZero:true,position:'right',max:12,title:{display:true,text:'%',font:{size:10}},grid:{drawOnChartArea:false}}}}}});
+nc('chart5',{type:'bar',data:{labels:['九号','涛涛','安克','爱玛','春风','雅迪'],datasets:[{label:'每元研发净利润(元)',data:[1.83,6.62,0.88,3.70,2.10,2.68],backgroundColor:Cg,borderColor:C,borderWidth:2}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,title:{display:true,text:'元/元',font:{size:10}}}}}});
+nc('chart6',{type:'line',data:{labels:YL,datasets:[
+{label:'九号',data:[0.82,0.95,1.14,1.11],borderColor:C[0],backgroundColor:Cg[0],fill:true,tension:.3,pointRadius:3},
+{label:'涛涛',data:[0.60,0.72,0.76,0.71],borderColor:C[1],backgroundColor:Cg[1],fill:true,tension:.3,pointRadius:3},
+{label:'安克',data:[1.52,1.68,1.66,1.51],borderColor:C[2],backgroundColor:Cg[2],fill:true,tension:.3,pointRadius:3}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'次',font:{size:10}}}}}});
+nc('chart7',{type:'bar',data:{labels:['九号','涛涛','安克','爱玛','春风','雅迪'],datasets:[
+{label:'OCF(亿)',data:[13.2,7.53,4.88,12.0,11.0,38.0],backgroundColor:Cg,borderColor:C,borderWidth:2,yAxisID:'y'},
+{label:'净利润(亿)',data:[17.58,8.16,25.45,20.35,16.75,32.24],backgroundColor:['rgba(26,115,232,.3)','rgba(30,142,62,.3)','rgba(124,58,237,.3)','rgba(217,48,37,.3)','rgba(227,116,0,.3)','rgba(184,134,11,.3)'],borderColor:C,borderWidth:1,yAxisID:'y'}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'亿元',font:{size:10}}}}}});
+nc('chart8',{type:'bar',data:{labels:['九号','涛涛','安克','爱玛','春风','雅迪'],datasets:[
+{label:'2025',data:[66.3,38.7,46.6,60.6,59.8,55.0],backgroundColor:Cg,borderColor:C,borderWidth:2},
+{label:'Q1',data:[63.6,37.2,43.9,60.0,58.0,54.0],backgroundColor:['rgba(26,115,232,.06)','rgba(30,142,62,.06)','rgba(124,58,237,.06)','rgba(217,48,37,.06)','rgba(227,116,0,.06)','rgba(184,134,11,.06)'],borderColor:C,borderWidth:1,borderDash:[4,4]}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,max:80,title:{display:true,text:'%',font:{size:10}}}}}});
+nc('chart9',{type:'bar',data:{labels:['流动比率','速动比率'],datasets:[
+{label:'九号',data:[1.20,0.97],backgroundColor:['rgba(26,115,232,.5)','rgba(26,115,232,.3)'],borderColor:C[0],borderWidth:2},
+{label:'涛涛',data:[1.98,1.17],backgroundColor:['rgba(30,142,62,.5)','rgba(30,142,62,.3)'],borderColor:C[1],borderWidth:2},
+{label:'安克',data:[2.38,1.64],backgroundColor:['rgba(124,58,237,.5)','rgba(124,58,237,.3)'],borderColor:C[2],borderWidth:2}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:12}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'倍',font:{size:10}}}}}});
+nc('chart10',{type:'radar',data:{labels:['成长性','盈利能力','研发投入','运营效率','财务安全','现金流'],datasets:[
+{label:'九号',data:[9.5,5.5,6.0,8.5,3.0,5.0],borderColor:C[0],backgroundColor:'rgba(26,115,232,.08)',pointBackgroundColor:C[0],pointRadius:3,borderWidth:2.5},
+{label:'涛涛',data:[7.0,9.5,3.0,4.0,9.0,8.5],borderColor:C[1],backgroundColor:'rgba(30,142,62,.08)',pointBackgroundColor:C[1],pointRadius:3,borderWidth:2.5},
+{label:'安克',data:[6.0,5.5,9.5,8.0,6.5,2.5],borderColor:C[2],backgroundColor:'rgba(124,58,237,.08)',pointBackgroundColor:C[2],pointRadius:3,borderWidth:2.5},
+{label:'爱玛',data:[3.0,4.0,2.5,6.5,4.0,4.0],borderColor:C[3],backgroundColor:'rgba(217,48,37,.05)',pointBackgroundColor:C[3],pointRadius:2,borderDash:[3,3]},
+{label:'春风',data:[7.5,5.0,5.5,5.5,4.5,5.0],borderColor:C[4],backgroundColor:'rgba(227,116,0,.05)',pointBackgroundColor:C[4],pointRadius:2,borderDash:[3,3]},
+{label:'雅迪',data:[5.0,4.5,3.5,7.0,5.5,7.5],borderColor:C[5],backgroundColor:'rgba(184,134,11,.05)',pointBackgroundColor:C[5],pointRadius:2,borderDash:[3,3]}
+]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}}},scales:{r:{min:0,max:10,pointLabels:{font:{size:10}},ticks:{stepSize:2,font:{size:9}}}}}});
+});
+</script>
+</body>
+</html>

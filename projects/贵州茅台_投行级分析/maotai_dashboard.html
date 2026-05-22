@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>贵州茅台 2024 财务智慧大屏</title>
+<style>
+:root {
+  --bg: #05080f;
+  --card: #0c1424;
+  --card2: #111b33;
+  --border: #1e293b;
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --accent3: #22d3ee;
+  --accent4: #f59e0b;
+  --accent5: #ec4899;
+  --accent6: #10b981;
+  --accent7: #ef4444;
+  --text: #e2e8f0;
+  --dim: #64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI','PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 20% 50%,rgba(0,229,255,.03) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(124,58,237,.03) 0%,transparent 50%);
+}
+.wrap{max-width:1400px;margin:0 auto;padding:16px}
+.header{
+  text-align:center;padding:28px 0 18px;position:relative;
+  border-bottom:1px solid transparent;
+  border-image:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent)1;
+}
+.header h1{
+  font-size:28px;font-weight:700;letter-spacing:4px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.header .sub{font-size:13px;color:var(--dim);margin-top:4px;letter-spacing:2px}
+.header .sub span{color:var(--accent);-webkit-text-fill-color:var(--accent)}
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;
+  margin:20px 0;
+}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.stat-card:hover{transform:translateY(-3px);border-color:rgba(0,229,255,.3);box-shadow:0 0 25px rgba(0,229,255,.1)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent)}
+.stat-card.s1::before{background:linear-gradient(90deg,var(--accent),transparent)}
+.stat-card.s2::before{background:linear-gradient(90deg,var(--accent6),transparent)}
+.stat-card.s3::before{background:linear-gradient(90deg,var(--accent4),transparent)}
+.stat-card.s4::before{background:linear-gradient(90deg,var(--accent2),transparent)}
+.stat-card.s5::before{background:linear-gradient(90deg,var(--accent5),transparent)}
+.stat-card .num{
+  font-size:22px;font-weight:700;letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-card.s2 .num{background:linear-gradient(135deg,var(--accent6),var(--accent3));-webkit-background-clip:text}
+.stat-card.s3 .num{background:linear-gradient(135deg,var(--accent4),var(--accent6));-webkit-background-clip:text}
+.stat-card.s4 .num{background:linear-gradient(135deg,var(--accent2),var(--accent5));-webkit-background-clip:text}
+.stat-card.s5 .num{background:linear-gradient(135deg,var(--accent5),var(--accent4));-webkit-background-clip:text}
+.stat-card .lbl{font-size:11px;color:var(--dim);margin-top:3px}
+.stat-card .chg{font-size:11px;margin-top:2px}
+.chg.up{color:var(--accent6)}
+.chg.dn{color:var(--accent7)}
+.section-title{
+  font-size:16px;font-weight:600;margin:24px 0 14px;letter-spacing:2px;
+  padding-left:12px;border-left:3px solid var(--accent);
+  color:var(--text);
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:16px;position:relative;overflow:hidden;
+}
+.card h3{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;letter-spacing:1px}
+.card .val-big{font-size:28px;font-weight:700;margin:4px 0}
+.card .sub-text{font-size:11px;color:var(--dim);margin-top:2px}
+canvas{width:100%!important;height:auto!important;display:block;border-radius:6px;background:transparent}
+.dupont-tree{
+  display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0;
+}
+.dupont-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.dupont-node{
+  background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  padding:10px 18px;text-align:center;min-width:90px;
+}
+.dupont-node .dval{font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.dupont-node .dlbl{font-size:11px;color:var(--dim);margin-top:2px}
+.dupont-node.highlight{border-color:var(--accent);box-shadow:0 0 15px rgba(0,229,255,.08)}
+.dupont-node .dcontrib{font-size:10px;color:var(--accent4);margin-top:1px}
+.dupont-formula{
+  text-align:center;font-size:12px;color:var(--dim);margin:8px 0 4px;
+  font-family:'Courier New',monospace;
+}
+.rating-row{
+  display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;
+}
+.rating-item{
+  display:flex;align-items:center;gap:6px;background:var(--card2);
+  padding:6px 12px;border-radius:6px;border:1px solid var(--border);font-size:12px;
+}
+.rating-item .stars{color:var(--accent4);letter-spacing:1px}
+.rating-item .label{color:var(--dim)}
+.risk-list{list-style:none;padding:0}
+.risk-list li{
+  padding:6px 0 6px 16px;position:relative;font-size:12px;color:var(--dim);
+  border-bottom:1px solid rgba(255,255,255,.03);
+}
+.risk-list li::before{content:'⚠';position:absolute;left:-2px;top:5px;font-size:11px}
+.risk-list li:last-child{border:none}
+.viz-wrap{position:relative;min-height:220px}
+.dupont-arrow{text-align:center;font-size:14px;color:var(--dim);padding:1px 0}
+.dupont-eq{text-align:center;font-size:12px;color:var(--accent);padding:4px 0 8px;font-family:'Courier New',monospace;letter-spacing:1px}
+.tab-bar{display:flex;gap:6px;margin-bottom:12px}
+.tab-btn{
+  padding:6px 16px;border:1px solid var(--border);border-radius:6px;
+  background:transparent;color:var(--dim);font-size:12px;cursor:pointer;
+  transition:all .2s;
+}
+.tab-btn.on{background:rgba(0,229,255,.1);border-color:var(--accent);color:var(--accent)}
+.tab-btn:hover{border-color:rgba(0,229,255,.3);color:var(--text)}
+.panel{display:none}
+.panel.on{display:block}
+.footer{
+  text-align:center;padding:20px 0 10px;font-size:11px;color:var(--dim);
+  border-top:1px solid var(--border);margin-top:28px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <h1>⿅ 贵州茅台 · 2024 财务智慧大屏</h1>
+  <div class="sub">600519.SH ｜ 分析日期: 2025-05-19 ｜ <span>数据来源: 2024年年报</span></div>
+</div>
+
+<!-- KPI Cards -->
+<div class="stats-row" id="kpiRow"></div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn on" onclick="switchTab('trend',this)">营业趋势</button>
+  <button class="tab-btn" onclick="switchTab('dupont',this)">杜邦分解</button>
+  <button class="tab-btn" onclick="switchTab('val',this)">估值参考</button>
+  <button class="tab-btn" onclick="switchTab('rating',this)">综合评级</button>
+</div>
+
+<!-- Panel: Trend -->
+<div class="panel on" id="p-trend">
+  <div class="grid2">
+    <div class="card"><h3>营收 & 净利润 趋势 (亿元)</h3><canvas id="revChart"></canvas></div>
+    <div class="card"><h3>利润率趋势</h3><canvas id="marginChart"></canvas></div>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="card"><h3>现金流指标 (亿元)</h3><canvas id="cfChart"></canvas></div>
+    <div class="card"><h3>关键比率趋势</h3><canvas id="ratioChart"></canvas></div>
+  </div>
+</div>
+
+<!-- Panel: DuPont -->
+<div class="panel" id="p-dupont">
+  <div class="card">
+    <h3>杜邦分析框架 · ROE 分解</h3>
+    <div class="dupont-eq">ROE = 净利率 × 总资产周转率 × 权益乘数 = 36.44%</div>
+    <div class="dupont-tree">
+      <div class="dupont-row">
+        <div class="dupont-node highlight"><div class="dval">36.44%</div><div class="dlbl">ROE</div></div>
+      </div>
+      <div style="color:var(--dim);font-size:18px">×</div>
+      <div class="dupont-row">
+        <div class="dupont-node"><div class="dval">51.23%</div><div class="dlbl">净利率</div><div class="dcontrib">🏆 核心驱动</div></div>
+        <div class="dupont-node"><div class="dval">0.60×</div><div class="dlbl">总资产周转率</div><div class="dcontrib">⚡ 中等</div></div>
+        <div class="dupont-node"><div class="dval">1.19×</div><div class="dlbl">权益乘数</div><div class="dcontrib">⚙️ 极低杠杆</div></div>
+      </div>
+      <div style="color:var(--dim);font-size:18px">=</div>
+      <div class="dupont-row">
+        <div class="dupont-node"><div class="dval">51.23%</div><div class="dlbl">净利率</div></div>
+        <div class="dupont-node"><div class="dval">×</div><div class="dlbl"><span style="color:var(--dim)">——</span></div></div>
+        <div class="dupont-node"><div class="dval">0.60</div><div class="dlbl">周转率</div></div>
+        <div class="dupont-node"><div class="dval">×</div><div class="dlbl"><span style="color:var(--dim)">——</span></div></div>
+        <div class="dupont-node"><div class="dval">1.19</div><div class="dlbl">乘数</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid3" style="margin-top:14px">
+    <div class="card"><h3>🔬 盈利能力</h3><div class="val-big" style="background:linear-gradient(135deg,var(--accent6),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">92.97%</div><div class="sub-text">毛利率 — 每卖¥100酒,成本仅¥7</div></div>
+    <div class="card"><h3>⚡ 运营效率</h3><div class="val-big" style="background:linear-gradient(135deg,var(--accent4),var(--accent6));-webkit-background-clip:text;-webkit-text-fill-color:transparent">0.60×</div><div class="sub-text">总资产周转率 (存货4年陈酿周期影响)</div></div>
+    <div class="card"><h3>⚙️ 财务杠杆</h3><div class="val-big" style="background:linear-gradient(135deg,var(--accent2),var(--accent5));-webkit-background-clip:text;-webkit-text-fill-color:transparent">1.19×</div><div class="sub-text">权益乘数 · 资产负债率仅16%</div></div>
+  </div>
+</div>
+
+<!-- Panel: Valuation -->
+<div class="panel" id="p-val">
+  <div class="grid2">
+    <div class="card">
+      <h3>估值指标 (假设股价 ¥1,600)</h3>
+      <div class="stats-row" style="margin:6px 0 0">
+        <div class="stat-card" style="padding:10px 12px"><div class="num" style="font-size:18px">¥1,600</div><div class="lbl">假设股价</div></div>
+        <div class="stat-card s2" style="padding:10px 12px"><div class="num" style="font-size:18px">~20,096亿</div><div class="lbl">总市值</div></div>
+        <div class="stat-card s3" style="padding:10px 12px"><div class="num" style="font-size:18px">22.5×</div><div class="lbl">市盈率 PE</div></div>
+        <div class="stat-card s4" style="padding:10px 12px"><div class="num" style="font-size:18px">8.2×</div><div class="lbl">市净率 PB</div></div>
+        <div class="stat-card s5" style="padding:10px 12px"><div class="num" style="font-size:18px">3.42%</div><div class="lbl">股息率</div></div>
+      </div>
+      <div style="margin-top:10px;padding:10px;background:var(--card2);border-radius:6px;font-size:12px;color:var(--dim)">
+        估值水平与A股核心消费龙头对标，PE 22.5×在高端白酒板块处于合理偏低区间，股息率3.42%已具配置吸引力。
+      </div>
+    </div>
+    <div class="card"><h3>估值水位对比</h3><canvas id="valChart"></canvas></div>
+  </div>
+</div>
+
+<!-- Panel: Rating -->
+<div class="panel" id="p-rating">
+  <div class="grid2">
+    <div class="card">
+      <h3>综合评级 · 五维评分</h3>
+      <div class="rating-row" id="ratingRow"></div>
+      <canvas id="radarChart" style="margin-top:10px;max-height:240px"></canvas>
+    </div>
+    <div class="card">
+      <h3>风险关注</h3>
+      <ul class="risk-list">
+        <li>存货511亿（占总资产17.5%），需关注行业去库存压力</li>
+        <li>合同负债58.34亿变动趋势反映经销商信心</li>
+        <li>增速从20%+区间回落至15%，进入中速增长阶段</li>
+        <li>房地产、地方债等宏观因素对高端白酒消费的影响</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Generated by Hermes Agent · Report Editor · 2025-05-19
+</div>
+
+</div>
+
+<script>
+// ======================== DATA ========================
+const DATA = {
+  years: ['2020','2021','2022','2023','2024'],
+  revenue: [980,1095,1276,1506,1741],   // 亿元
+  netProfit: [495,557,653,778,892],
+  grossMargin: [91.4,91.5,91.9,92.6,93.0],
+  netMargin: [50.5,50.9,51.2,51.7,51.2],
+  ocf: [517,640,669,712,801],
+  fcf: [495,620,648,690,784],
+  debtRatio: [19.3,18.2,17.2,16.8,16.0],
+  roe: [33.1,33.8,34.2,35.8,36.4],
+  roa: [26.8,27.5,28.1,29.6,30.8],
+  dividend: [1.3,1.5,1.7,2.0,2.4],    // 股息(元/股)
+  ratings: [
+    ['盈利能力',5,'核心驱动—白酒天花板'],
+    ['偿债安全',5,'几乎零财务风险'],
+    ['运营效率',4,'存货周期长是工艺特性'],
+    ['现金流',5,'现金奶牛，无融资需求'],
+    ['成长性',4,'双位数增长但速度趋稳'],
+  ]
+};
+
+// ======================== DORY ========================
+function dpr(){return window.devicePixelRatio||1}
+function setupCanvas(canvas,w,h){
+  const d=dpr();
+  canvas.width=w*d;canvas.height=h*d;
+  canvas.style.width=w+'px';canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(d,d);
+  return ctx;
+}
+function drawGrid(ctx,cx,cy,R,N){
+  for(let r=5;r>=1;r--){
+    ctx.beginPath();const ri=R*r/5;
+    for(let i=0;i<N;i++){const a=-1.57+i*6.283/N,x=cx+ri*Math.cos(a),y=cy+ri*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+    ctx.closePath();ctx.strokeStyle=`rgba(0,229,255,${0.02+r*0.02})`;ctx.lineWidth=0.5;ctx.stroke();
+  }
+  for(let i=0;i<N;i++){const a=-1.57+i*6.283/N,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle='rgba(0,229,255,.08)';ctx.lineWidth=0.5;ctx.stroke()}
+}
+
+// ======================== KPI CARDS ========================
+function renderKPI(){
+  const kpis=[
+    {n:'毛利率',v:'92.97%',s:'s1',c:'+2.3pp 同比改善'},
+    {n:'净利率',v:'51.23%',s:'s2',c:'+0.1pp 稳定'},
+    {n:'ROE',v:'36.44%',s:'s3',c:'+0.6pp 持续提升'},
+    {n:'营收',v:'1,741亿',s:'s4',c:'+15.66% YoY',u:true},
+    {n:'归母净利',v:'892亿',s:'s5',c:'+14.63% YoY',u:true},
+    {n:'资产负债率',v:'16.00%',s:'s1',c:'极低杠杆'},
+    {n:'经营CF',v:'801亿',s:'s2',c:'现金奶牛'},
+    {n:'自由现金流',v:'784亿',s:'s3',c:'盈利质量0.90×'},
+    {n:'每股收益',v:'¥71.02',s:'s4',c:'—'},
+    {n:'PE (¥1,600)',v:'22.5×',s:'s5',c:'合理偏低区间'},
+  ];
+  document.getElementById('kpiRow').innerHTML=kpis.map(k=>`
+    <div class="stat-card ${k.s}">
+      <div class="num">${k.v}</div>
+      <div class="lbl">${k.n}</div>
+      <div class="chg ${k.u?'up':'dn'}">${k.c}</div>
+    </div>`).join('');
+}
+
+// ======================== REVENUE CHART ========================
+function drawRevChart(){
+  const c=document.getElementById('revChart');
+  const pr=c.parentElement;
+  const W=pr.clientWidth-4,H=180;
+  const ctx=setupCanvas(c,W,H);
+  const pad={t:24,b:30,l:45,r:20};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const yrs=DATA.years,rev=DATA.revenue,np=DATA.netProfit;
+  const maxV=Math.max(...rev)*1.12;
+  const barW=cw/yrs.length*0.28;
+  const gap=cw/yrs.length;
+
+  // bg lines
+  for(let i=0;i<5;i++){const y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;ctx.stroke()}
+
+  // bars
+  yrs.forEach((yr,i)=>{
+    const x=pad.l+i*gap+gap*0.22;
+    // revenue bar
+    const rh=(rev[i]/maxV)*ch;
+    ctx.fillStyle='rgba(0,229,255,.6)';
+    ctx.fillRect(x,pad.t+ch-rh,barW,rh);
+    ctx.fillStyle='rgba(0,229,255,.3)';
+    ctx.fillRect(x,pad.t+ch-rh,barW,2);
+    // NP bar
+    const nh=(np[i]/maxV)*ch;
+    ctx.fillStyle='rgba(16,185,129,.6)';
+    ctx.fillRect(x+barW+4,pad.t+ch-nh,barW,nh);
+    ctx.fillStyle='rgba(16,185,129,.3)';
+    ctx.fillRect(x+barW+4,pad.t+ch-nh,barW,2);
+    // year label
+    ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='9px sans-serif';ctx.textAlign='center';
+    ctx.fillText(yr,x+barW+2,pad.t+ch+16);
+  });
+
+  // legend
+  ctx.fillStyle='var(--accent)';ctx.font='9px sans-serif';ctx.textAlign='left';
+  ctx.fillRect(W-130,4,10,8);ctx.fillStyle='var(--accent)';ctx.fillText('营收',W-116,12);
+  ctx.fillStyle='var(--accent6)';ctx.fillRect(W-76,4,10,8);ctx.fillText('净利',W-62,12);
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='8px sans-serif';ctx.textAlign='right';
+  ctx.fillText('亿元',W-pad.r,12);
+}
+
+// ======================== MARGIN CHART ========================
+function drawMarginChart(){
+  const c=document.getElementById('marginChart');
+  const pr=c.parentElement;
+  const W=pr.clientWidth-4,H=180;
+  const ctx=setupCanvas(c,W,H);
+  const pad={t:24,b:30,l:42,r:16};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const yrs=DATA.years,gm=DATA.grossMargin,nm=DATA.netMargin;
+
+  function toX(i){return pad.l+i*cw/(yrs.length-1)}
+  function toY(v){return pad.t+ch-(v-40)/60*ch}
+
+  // grid
+  for(let v=40;v<=100;v+=10){const y=toY(v);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;ctx.stroke();ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='8px sans-serif';ctx.textAlign='right';ctx.fillText(v+'%',pad.l-4,y+3)}
+  
+  // gross margin line
+  ctx.beginPath();gm.forEach((v,i)=>{const x=toX(i),y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)})
+  ctx.strokeStyle='rgba(0,229,255,.8)';ctx.lineWidth=2;ctx.stroke();
+  // fill
+  ctx.lineTo(toX(yrs.length-1),toY(40));ctx.closePath();ctx.fillStyle='rgba(0,229,255,.05)';ctx.fill();
+
+  // net margin line
+  ctx.beginPath();nm.forEach((v,i)=>{const x=toX(i),y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)})
+  ctx.strokeStyle='rgba(16,185,129,.8)';ctx.lineWidth=2;ctx.stroke();
+  ctx.lineTo(toX(yrs.length-1),toY(40));ctx.closePath();ctx.fillStyle='rgba(16,185,129,.05)';ctx.fill();
+
+  // dots
+  gm.forEach((v,i)=>{ctx.beginPath();ctx.arc(toX(i),toY(v),2.5,0,7);ctx.fillStyle='var(--accent)';ctx.fill()})
+  nm.forEach((v,i)=>{ctx.beginPath();ctx.arc(toX(i),toY(v),2.5,0,7);ctx.fillStyle='var(--accent6)';ctx.fill()})
+
+  // x labels
+  yrs.forEach((yr,i)=>{ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(yr,toX(i),pad.t+ch+14)})
+
+  // legend
+  ctx.fillStyle='var(--accent)';ctx.font='9px sans-serif';ctx.textAlign='left';
+  ctx.fillRect(W-120,4,10,8);ctx.fillText('毛利率',W-106,12);
+  ctx.fillStyle='var(--accent6)';ctx.fillRect(W-58,4,10,8);ctx.fillText('净利率',W-44,12);
+}
+
+// ======================== CF CHART ========================
+function drawCFChart(){
+  const c=document.getElementById('cfChart');
+  const pr=c.parentElement;
+  const W=pr.clientWidth-4,H=180;
+  const ctx=setupCanvas(c,W,H);
+  const pad={t:24,b:30,l:45,r:16};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const yrs=DATA.years,ocf=DATA.ocf,fcf=DATA.fcf;
+  const maxV=Math.max(...ocf)*1.12;
+  const barW=cw/yrs.length*0.3;
+  const gap=cw/yrs.length;
+
+  for(let i=0;i<5;i++){const y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;ctx.stroke();ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='8px sans-serif';ctx.textAlign='right';ctx.fillText(Math.round(maxV*i/4),pad.l-4,y+3)}
+  yrs.forEach((yr,i)=>{
+    const x=pad.l+i*gap+gap*0.2;
+    const oh=(ocf[i]/maxV)*ch;ctx.fillStyle='rgba(0,229,255,.55)';ctx.fillRect(x,pad.t+ch-oh,barW,oh);
+    const fh=(fcf[i]/maxV)*ch;ctx.fillStyle='rgba(124,58,237,.6)';ctx.fillRect(x+barW+5,pad.t+ch-fh,barW,fh);
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(yr,x+barW+2.5,pad.t+ch+14)
+  });
+  ctx.fillStyle='var(--accent)';ctx.font='9px sans-serif';ctx.textAlign='left';
+  ctx.fillRect(W-130,4,10,8);ctx.fillText('经营CF',W-116,12);
+  ctx.fillStyle='var(--accent2)';ctx.fillRect(W-66,4,10,8);ctx.fillText('FCF',W-52,12);
+  ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='8px sans-serif';ctx.textAlign='right';ctx.fillText('亿元',W-pad.r,12);
+}
+
+// ======================== RATIO CHART ========================
+function drawRatioChart(){
+  const c=document.getElementById('ratioChart');
+  const pr=c.parentElement;
+  const W=pr.clientWidth-4,H=180;
+  const ctx=setupCanvas(c,W,H);
+  const pad={t:24,b:30,l:42,r:16};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const yrs=DATA.years,debt=DATA.debtRatio,roe=DATA.roe,roa=DATA.roa;
+
+  function toX(i){return pad.l+i*cw/(yrs.length-1)}
+  function toY(v,minV,maxV){return pad.t+ch-(v-minV)/(maxV-minV)*ch}
+  const minV=15,maxV=40;
+
+  for(let v=15;v<=40;v+=5){const y=toY(v,minV,maxV);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;ctx.stroke();ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='8px sans-serif';ctx.textAlign='right';ctx.fillText(v+'%',pad.l-4,y+3)}
+  
+  [debt,roe,roa].forEach((arr,idx)=>{
+    const color=['var(--accent4)','var(--accent)','var(--accent6)'][idx];
+    ctx.beginPath();arr.forEach((v,i)=>{const x=toX(i),y=toY(v,minV,maxV);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)})
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+    arr.forEach((v,i)=>{ctx.beginPath();ctx.arc(toX(i),toY(v,minV,maxV),2.5,0,7);ctx.fillStyle=color;ctx.fill()})
+  });
+  yrs.forEach((yr,i)=>{ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(yr,toX(i),pad.t+ch+14)})
+  ctx.fillStyle='var(--accent4)';ctx.font='9px sans-serif';ctx.textAlign='left';
+  ctx.fillRect(W-130,4,10,8);ctx.fillText('负债率',W-116,12);
+  ctx.fillStyle='var(--accent)';ctx.fillRect(W-66,4,10,8);ctx.fillText('ROE',W-52,12);
+  ctx.fillRect(W-66,16,10,8);ctx.fillStyle='var(--accent6)';ctx.fillText('ROA',W-52,24);ctx.fillStyle='var(--accent6)';ctx.fillRect(W-66,16,10,8)
+}
+
+// ======================== VALUATION CHART ========================
+function drawValChart(){
+  const c=document.getElementById('valChart');
+  const pr=c.parentElement;
+  const W=pr.clientWidth-4,H=200;
+  const ctx=setupCanvas(c,W,H);
+  const pad={t:24,b:42,l:42,r:60};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const items=[
+    ['市盈率 PE',22.5,'— 22.5×',25],
+    ['市净率 PB',8.2,'— 8.2×',10],
+    ['股息率 %',3.42,'— 3.42%',4],
+    ['ROE %',36.4,'— 36.4%',40],
+  ];
+  const barW=cw/items.length*0.5;
+  const gap=cw/items.length;
+  const maxV=45;
+
+  for(let i=0;i<5;i++){const y=pad.t+ch*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;ctx.stroke();ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='8px sans-serif';ctx.textAlign='right';ctx.fillText(Math.round(maxV*i/4)+'',pad.l-4,y+3)}
+  items.forEach((item,i)=>{
+    const x=pad.l+i*gap+gap*0.25;
+    const h=(item[1]/maxV)*ch;
+    const colors=['#00e5ff','#7c3aed','#f59e0b','#10b981'];
+    ctx.fillStyle=colors[i]+'99';ctx.fillRect(x,pad.t+ch-h,barW,h);
+    ctx.fillStyle=colors[i];ctx.fillRect(x,pad.t+ch-h,barW,2);
+    ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='10px sans-serif';ctx.textAlign='center';
+    ctx.fillText(item[2],x+barW/2,pad.t+ch-h-4);
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='9px sans-serif';
+    ctx.fillText(item[0],x+barW/2,pad.t+ch+14);
+  });
+}
+
+// ======================== RADAR CHART ========================
+function drawRadar(){
+  const c=document.getElementById('radarChart');
+  const pr=c.parentElement;
+  const W=pr.clientWidth-4,H=230;
+  const ctx=setupCanvas(c,W,H);
+  const cx=W/2,cy=H/2,R=Math.min(W/3.2,75);
+  const N=5;
+  const labels=DATA.ratings.map(r=>r[0]);
+  const values=DATA.ratings.map(r=>r[1]/5);
+
+  drawGrid(ctx,cx,cy,R,N);
+  // axis labels
+  for(let i=0;i<N;i++){const a=-1.57+i*6.283/N;ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='11px sans-serif, PingFang SC';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(labels[i],cx+(R+22)*Math.cos(a),cy+(R+22)*Math.sin(a))}
+  // data
+  ctx.beginPath();values.forEach((v,i)=>{const a=-1.57+i*6.283/N,r=R*v,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)})
+  ctx.closePath();ctx.fillStyle='rgba(0,229,255,.12)';ctx.fill();ctx.strokeStyle='rgba(0,229,255,.6)';ctx.lineWidth=1.5;ctx.stroke();
+  values.forEach((v,i)=>{const a=-1.57+i*6.283/N,r=R*v;ctx.beginPath();ctx.arc(cx+r*Math.cos(a),cy+r*Math.sin(a),3,0,7);ctx.fillStyle='var(--accent)';ctx.fill();ctx.strokeStyle='rgba(0,229,255,.8)';ctx.lineWidth=1;ctx.stroke()})
+  // score text
+  values.forEach((v,i)=>{const a=-1.57+i*6.283/N,r=R*v;ctx.fillStyle='var(--accent4)';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(Math.round(v*5*10)/10,cx+r*Math.cos(a)+14*Math.cos(a),cy+r*Math.sin(a)+10*Math.sin(a))})
+}
+
+// ======================== RATINGS ========================
+function renderRatings(){
+  document.getElementById('ratingRow').innerHTML=DATA.ratings.map(r=>`
+    <div class="rating-item">
+      <span class="label">${r[0]}</span>
+      <span class="stars">${'⭐'.repeat(r[1])}</span>
+      <span style="font-size:9px;color:var(--dim)">${r[2]}</span>
+    </div>`).join('');
+}
+
+// ======================== TAB ========================
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['trend','dupont','val','rating'].forEach(t=>document.getElementById('p-'+t).classList.remove('on'));
+  document.getElementById('p-'+tab).classList.add('on');
+  if(tab==='trend'){requestAnimationFrame(()=>{drawRevChart();drawMarginChart();drawCFChart();drawRatioChart()})}
+  if(tab==='val')requestAnimationFrame(drawValChart);
+  if(tab==='rating')requestAnimationFrame(drawRadar);
+}
+
+// ======================== INIT ========================
+window.addEventListener('DOMContentLoaded',()=>{
+  renderKPI();
+  renderRatings();
+  requestAnimationFrame(()=>{
+    drawRevChart();
+    drawMarginChart();
+    drawCFChart();
+    drawRatioChart();
+  });
+});
+window.addEventListener('resize',()=>{
+  requestAnimationFrame(()=>{
+    drawRevChart();drawMarginChart();drawCFChart();drawRatioChart();
+    drawValChart();drawRadar();
+  });
+});
+</script>
+</body>
+</html>

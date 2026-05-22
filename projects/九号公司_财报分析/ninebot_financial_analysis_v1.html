@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九号公司(689009.SH) · 近三年财报深度分析</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-orange: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-purple: #8b5cf6;
+  --border-color: #1f2937;
+  --chart-grid: #1f2937;
+  --shadow: 0 4px 24px rgba(0,0,0,.3);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+
+/* ===== Navigation ===== */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,14,26,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 24px;
+  display: flex; align-items: center; height: 56px;
+  gap: 32px;
+}
+nav .logo { font-weight: 700; font-size: 18px; background: linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; }
+nav .nav-links { display: flex; gap: 24px; overflow-x: auto; flex: 1; }
+nav .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; white-space: nowrap; transition: color .2s; cursor: pointer; }
+nav .nav-links a:hover, nav .nav-links a.active { color: var(--accent-cyan); }
+nav .date-badge { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+
+/* ===== Hero ===== */
+.hero {
+  background: linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0a0e1a 100%);
+  padding: 60px 24px 48px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0; 
+  background: radial-gradient(ellipse at 20% 50%, rgba(6,182,212,.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 50%, rgba(59,130,246,.08) 0%, transparent 60%);
+}
+.hero h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; position: relative; }
+.hero h1 span { background: linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero .subtitle { color: var(--text-secondary); font-size: 16px; margin-bottom: 20px; position: relative; }
+.hero .stock-info { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; position: relative; }
+.hero .stock-info .item { text-align: center; }
+.hero .stock-info .label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.hero .stock-info .value { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+.hero .stock-info .value.positive { color: var(--accent-green); }
+.hero .stock-info .value.negative { color: var(--accent-red); }
+
+/* ===== Layout ===== */
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+.section { margin-bottom: 32px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.section-header .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.section-header .icon.blue { background: rgba(59,130,246,.15); color: var(--accent-blue); }
+.section-header .icon.green { background: rgba(16,185,129,.15); color: var(--accent-green); }
+.section-header .icon.orange { background: rgba(245,158,11,.15); color: var(--accent-orange); }
+.section-header .icon.purple { background: rgba(139,92,246,.15); color: var(--accent-purple); }
+.section-header .icon.cyan { background: rgba(6,182,212,.15); color: var(--accent-cyan); }
+.section-header h2 { font-size: 20px; font-weight: 700; }
+.section-header .badge { font-size: 11px; padding: 2px 10px; border-radius: 20px; background: rgba(59,130,246,.15); color: var(--accent-blue); letter-spacing: .5px; }
+
+/* ===== Grid ===== */
+.grid { display: grid; gap: 16px; }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+@media(max-width:1024px){ .grid-2, .grid-4 { grid-template-columns: 1fr 1fr; } }
+@media(max-width:768px){ .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all .3s ease;
+}
+.card:hover { border-color: #374151; }
+.card .card-title { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+.card .card-value { font-size: 28px; font-weight: 700; }
+.card .card-sub { font-size: 13px; margin-top: 4px; }
+.card .trend-up { color: var(--accent-green); }
+.card .trend-down { color: var(--accent-red); }
+
+/* ===== Chart Cards ===== */
+.chart-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; }
+.chart-card .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.chart-card .chart-title { font-size: 14px; font-weight: 600; }
+.chart-card .chart-source { font-size: 11px; color: var(--text-muted); }
+.chart-card canvas { max-height: 320px; max-width: 100%; }
+
+/* ===== KPI Row ===== */
+.kpi-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.kpi-card {
+  flex: 1; min-width: 160px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  position: relative; overflow: hidden;
+}
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
+.kpi-card.blue::before { background: var(--accent-blue); }
+.kpi-card.green::before { background: var(--accent-green); }
+.kpi-card.orange::before { background: var(--accent-orange); }
+.kpi-card.cyan::before { background: var(--accent-cyan); }
+.kpi-card.purple::before { background: var(--accent-purple); }
+.kpi-card .kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+.kpi-card .kpi-value { font-size: 26px; font-weight: 700; margin: 4px 0; }
+.kpi-card .kpi-change { font-size: 13px; }
+.kpi-card .kpi-change.up { color: var(--accent-green); }
+.kpi-card .kpi-change.down { color: var(--accent-red); }
+
+/* ===== Table ===== */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table thead th { padding: 10px 12px; text-align: right; border-bottom: 2px solid var(--border-color); color: var(--text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+.data-table thead th:first-child { text-align: left; }
+.data-table tbody td { padding: 10px 12px; text-align: right; border-bottom: 1px solid rgba(31,41,55,.5); }
+.data-table tbody td:first-child { text-align: left; color: var(--text-primary); font-weight: 500; }
+.data-table tbody tr:hover { background: rgba(59,130,246,.05); }
+.data-table .highlight { color: var(--accent-cyan); font-weight: 600; }
+.data-table .positive { color: var(--accent-green); }
+.data-table .negative { color: var(--accent-red); }
+
+/* ===== SWOT ===== */
+.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:768px){ .swot-grid { grid-template-columns: 1fr; } }
+.swot-item { padding: 20px; border-radius: var(--radius-sm); position: relative; overflow: hidden; }
+.swot-item::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+.swot-item h4 { font-size: 14px; margin-bottom: 8px; }
+.swot-item ul { list-style: none; font-size: 13px; color: var(--text-secondary); }
+.swot-item ul li { padding: 4px 0; padding-left: 16px; position: relative; }
+.swot-item ul li::before { content: '›'; position: absolute; left: 0; color: inherit; font-weight: 700; }
+.swot-s { background: rgba(16,185,129,.08); } .swot-s::before { background: var(--accent-green); } .swot-s h4 { color: var(--accent-green); }
+.swot-w { background: rgba(239,68,68,.08); } .swot-w::before { background: var(--accent-red); } .swot-w h4 { color: var(--accent-red); }
+.swot-o { background: rgba(59,130,246,.08); } .swot-o::before { background: var(--accent-blue); } .swot-o h4 { color: var(--accent-blue); }
+.swot-t { background: rgba(245,158,11,.08); } .swot-t::before { background: var(--accent-orange); } .swot-t h4 { color: var(--accent-orange); }
+
+/* ===== Forecast ===== */
+.forecast-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+@media(max-width:768px){ .forecast-grid { grid-template-columns: 1fr; } }
+.forecast-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+.forecast-item .scenario { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.forecast-item .scenario-label { font-size: 16px; font-weight: 700; margin: 4px 0; }
+.forecast-item .scenario-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+.forecast-item .scenario-num { font-size: 20px; font-weight: 700; }
+.forecast-item.optimistic { border-color: rgba(16,185,129,.3); } .forecast-item.optimistic .scenario-label { color: var(--accent-green); }
+.forecast-item.base { border-color: rgba(59,130,246,.3); } .forecast-item.base .scenario-label { color: var(--accent-blue); }
+.forecast-item.pessimistic { border-color: rgba(245,158,11,.3); } .forecast-item.pessimistic .scenario-label { color: var(--accent-orange); }
+
+/* ===== Annotation ===== */
+.annotation { background: rgba(6,182,212,.05); border: 1px solid rgba(6,182,212,.15); border-radius: var(--radius-sm); padding: 14px 18px; margin-top: 16px; font-size: 13px; color: var(--text-secondary); }
+.annotation strong { color: var(--text-primary); }
+
+/* ===== Footer ===== */
+footer { border-top: 1px solid var(--border-color); padding: 24px; text-align: center; color: var(--text-muted); font-size: 12px; }
+footer a { color: var(--accent-cyan); text-decoration: none; }
+
+/* ===== Tag ===== */
+.tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.tag-blue { background: rgba(59,130,246,.12); color: var(--accent-blue); }
+.tag-green { background: rgba(16,185,129,.12); color: var(--accent-green); }
+.tag-orange { background: rgba(245,158,11,.12); color: var(--accent-orange); }
+.tag-red { background: rgba(239,68,68,.12); color: var(--accent-red); }
+
+/* ===== Loading ===== */
+.loading { text-align: center; padding: 40px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="logo">⚡ NINEBOT Analytics</div>
+  <div class="nav-links">
+    <a class="active" onclick="scrollToSection('overview')">概览</a>
+    <a onclick="scrollToSection('financial')">财务分析</a>
+    <a onclick="scrollToSection('comparison')">可比公司</a>
+    <a onclick="scrollToSection('dupont')">杜邦分析</a>
+    <a onclick="scrollToSection('strategy')">战略分析</a>
+    <a onclick="scrollToSection('forecast')">业绩预测</a>
+  </div>
+  <div class="date-badge">📅 2026-05-20</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1><span>九号公司</span> · 近三年财报深度分析</h1>
+  <div class="subtitle">Segway-Ninebot (689009.SH) | 2022-2025年度财务数据 | 智能短交通与机器人领军企业</div>
+  <div class="stock-info">
+    <div class="item"><div class="label">最新股价</div><div class="value">40.00</div><div class="card-sub">元</div></div>
+    <div class="item"><div class="label">总市值</div><div class="value" style="color:var(--accent-cyan);">286亿</div></div>
+    <div class="item"><div class="label">PE(TTM)</div><div class="value">~16.3x</div></div>
+    <div class="item"><div class="label">52周高/低</div><div class="value">42.50 / 18.88</div><div class="card-sub">元</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===== Section 1: Overview KPI ===== -->
+<div class="section" id="overview">
+  <div class="section-header">
+    <div class="icon blue">📊</div>
+    <h2>核心指标一览</h2>
+    <span class="badge">FY2022-FY2025</span>
+  </div>
+  <div class="kpi-row" id="kpiRow"></div>
+</div>
+
+<!-- ===== Section 2: Financial Analysis ===== -->
+<div class="section" id="financial">
+  <div class="section-header">
+    <div class="icon cyan">📈</div>
+    <h2>财务深度分析</h2>
+    <span class="badge">3-Year Trend</span>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:16px;">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">营收与净利润趋势</div>
+        <div class="chart-source">亿元 · 年度数据</div>
+      </div>
+      <canvas id="revenueProfitChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">营收增速与净利润增速</div>
+        <div class="chart-source">同比增长率 (%)</div>
+      </div>
+      <canvas id="growthChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">净利率与ROE趋势</div>
+        <div class="chart-source">盈利能力指标 (%)</div>
+      </div>
+      <canvas id="profitMarginChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">季度营收拆解</div>
+        <div class="chart-source">2024-2025 各季度 (亿元)</div>
+      </div>
+      <canvas id="quarterlyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Revenue Breakdown Table -->
+  <div class="card">
+    <div class="chart-card" style="border:none;padding:0;">
+      <div class="chart-header">
+        <div class="chart-title">年度财务数据明细</div>
+        <div class="chart-source">数据来源：东方财富 | 单位：亿元</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="financialTable">
+          <thead>
+            <tr>
+              <th>财务指标</th>
+              <th>2022年</th>
+              <th>2023年</th>
+              <th>2024年</th>
+              <th>2025年</th>
+              <th>CAGR</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Section 3: DuPont Analysis ===== -->
+<div class="section" id="dupont">
+  <div class="section-header">
+    <div class="icon purple">🔬</div>
+    <h2>杜邦分析</h2>
+    <span class="badge">DuPont Decomposition</span>
+  </div>
+  <div class="grid grid-2" style="margin-bottom:16px;">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">杜邦分析三因子拆解</div>
+        <div class="chart-source">净利率 × 资产周转率 × 权益乘数</div>
+      </div>
+      <canvas id="dupontChart"></canvas>
+    </div>
+    <div class="card">
+      <div class="chart-header" style="margin-bottom:12px;">
+        <div class="chart-title">ROE驱动因素分析</div>
+        <div class="chart-source">McKinsey M&A Box 框架</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="dupontTable">
+          <thead>
+            <tr><th>杜邦因子</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>趋势</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="annotation" style="margin-top:16px;">
+        <strong>💡 分析要点：</strong>九号公司ROE从9.85%提升至26.08%，核心驱动为<strong>净利率提升</strong>（从4.46%→8.26%）和<strong>资产周转率加速</strong>（营收增速远超资产增速），权益乘数保持稳定，表明增长质量较高。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Section 4: Comparable Companies ===== -->
+<div class="section" id="comparison">
+  <div class="section-header">
+    <div class="icon green">🏢</div>
+    <h2>可比公司分析</h2>
+    <span class="badge">Peer Comparison</span>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:16px;">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">营收规模对比</div>
+        <div class="chart-source">2022-2025年度 (亿元)</div>
+      </div>
+      <canvas id="peerRevenueChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">净利率对比</div>
+        <div class="chart-source">2024年度 (%)</div>
+      </div>
+      <canvas id="peerMarginChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">ROE对比</div>
+        <div class="chart-source">2022-2025年度 (%)</div>
+      </div>
+      <canvas id="peerROEChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">营收增速对比 (2024→2025)</div>
+        <div class="chart-source">同比增长率 (%)</div>
+      </div>
+      <canvas id="peerGrowthChart"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chart-card" style="border:none;padding:0;">
+      <div class="chart-header">
+        <div class="chart-title">可比公司综合对比矩阵</div>
+        <div class="chart-source">数据来源：东方财富 | 单位：亿元</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="peerTable">
+          <thead>
+            <tr>
+              <th>公司</th>
+              <th>代码</th>
+              <th>2024营收</th>
+              <th>2025营收</th>
+              <th>2024净利</th>
+              <th>2025净利</th>
+              <th>2024 ROE</th>
+              <th>2025 ROE</th>
+              <th>市值(亿)</th>
+              <th>估值定位</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="annotation" style="margin-top:12px;">
+        <strong>📌 核心发现：</strong>九号公司2024→2025营收增速达<strong>49.9%</strong>，远超爱玛科技(16.1%)和春风动力(31.3%)，在可比公司中增速领跑；ROE也从19.1%提升至26.08%，盈利质量持续优化。净利率8.26%在行业中处于领先水平。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Section 5: Strategic Analysis ===== -->
+<div class="section" id="strategy">
+  <div class="section-header">
+    <div class="icon orange">🎯</div>
+    <h2>战略分析</h2>
+    <span class="badge">SWOT + Porter's Five Forces</span>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="chart-header" style="margin-bottom:12px;">
+        <div class="chart-title">业务收入结构分析</div>
+        <div class="chart-source">2025年估算</div>
+      </div>
+      <canvas id="revenueMixChart" style="max-height:260px;"></canvas>
+    </div>
+    <div class="card">
+      <div class="chart-header" style="margin-bottom:12px;">
+        <div class="chart-title">波特五力分析</div>
+        <div class="chart-source">Porter's Five Forces</div>
+      </div>
+      <canvas id="porterChart" style="max-height:260px;"></canvas>
+    </div>
+  </div>
+
+  <div class="swot-grid" style="margin-bottom:16px;">
+    <div class="swot-item swot-s">
+      <h4>💪 优势 (Strengths)</h4>
+      <ul>
+        <li>Segway全球品牌认知度，技术壁垒深厚</li>
+        <li>电动两轮车高端定位，毛利率领先同业</li>
+        <li>研发投入占比高，智能化核心能力</li>
+        <li>全地形车/机器人等新增长曲线已成型</li>
+        <li>营收增速远超行业平均 (49.9%)</li>
+      </ul>
+    </div>
+    <div class="swot-item swot-w">
+      <h4>⚠️ 劣势 (Weaknesses)</h4>
+      <ul>
+        <li>营收规模仍小于雅迪/爱玛等传统龙头</li>
+        <li>线下渠道覆盖度不及竞品</li>
+        <li>海外业务受地缘政治因素影响</li>
+        <li>机器人业务尚未实现规模化盈利</li>
+        <li>小米生态链依赖度下降过程中的阵痛</li>
+      </ul>
+    </div>
+    <div class="swot-item swot-o">
+      <h4>🚀 机会 (Opportunities)</h4>
+      <ul>
+        <li>国内两轮电动车新国标替换周期 (2024-2025)</li>
+        <li>海外电动滑板车/全地形车市场高速增长</li>
+        <li>服务机器人商业化加速</li>
+        <li>智能短交通渗透率提升空间大</li>
+        <li>欧美"最后一公里"出行电气化趋势</li>
+      </ul>
+    </div>
+    <div class="swot-item swot-t">
+      <h4>🔥 威胁 (Threats)</h4>
+      <ul>
+        <li>雅迪/爱玛等传统巨头加速智能化转型</li>
+        <li>小牛电动等新势力价格竞争</li>
+        <li>原材料价格波动 (锂电池/稀土)</li>
+        <li>海外贸易壁垒与关税风险</li>
+        <li>行业增速放缓后价格战风险</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Section 6: Forecast ===== -->
+<div class="section" id="forecast">
+  <div class="section-header">
+    <div class="icon cyan">🔮</div>
+    <h2>业绩预测</h2>
+    <span class="badge">2026E-2028E</span>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="chart-header" style="margin-bottom:16px;">
+      <div class="chart-title">营收与净利润预测 (三情景分析)</div>
+      <div class="chart-source">Base / Optimistic / Pessimistic</div>
+    </div>
+    <canvas id="forecastChart" style="max-height:340px;"></canvas>
+  </div>
+
+  <div class="grid grid-3" style="margin-bottom:16px;">
+    <div class="forecast-item base">
+      <div class="scenario">基准情景</div>
+      <div class="scenario-label">Base Case</div>
+      <div class="scenario-desc">行业增速15-20%，市占率稳步提升</div>
+      <div class="scenario-num" style="color:var(--accent-blue);">2028E营收: 360亿</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">净利润: 32亿 · CAGR: ~19%</div>
+    </div>
+    <div class="forecast-item optimistic">
+      <div class="scenario">乐观情景</div>
+      <div class="scenario-label">Optimistic Case</div>
+      <div class="scenario-desc">新国标红利+海外高速扩张+机器人放量</div>
+      <div class="scenario-num" style="color:var(--accent-green);">2028E营收: 430亿</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">净利润: 42亿 · CAGR: ~26%</div>
+    </div>
+    <div class="forecast-item pessimistic">
+      <div class="scenario">保守情景</div>
+      <div class="scenario-label">Pessimistic Case</div>
+      <div class="scenario-desc">行业竞争加剧，增速放缓至个位数</div>
+      <div class="scenario-num" style="color:var(--accent-orange);">2028E营收: 290亿</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">净利润: 24亿 · CAGR: ~11%</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="chart-header" style="margin-bottom:12px;">
+      <div class="chart-title">收入驱动因子分解</div>
+      <div class="chart-source">量 × 价 × 渠道 价值链测算</div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="forecastDrivers">
+        <thead>
+          <tr><th>驱动因子</th><th>2024A</th><th>2025A</th><th>2026E</th><th>2027E</th><th>2028E</th><th>假设依据</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>⚡ 预测方法论：</strong>本预测采用麦肯锡三情景分析框架，基于九号公司历史增速(2024年+39%，2025年+50%)、行业渗透率曲线、新国标替换周期、海外市场扩展及机器人业务商业化进度综合测算。<br>
+    <strong>⚠️ 免责声明：</strong>以上预测仅供参考，不构成投资建议。实际业绩受宏观经济、行业政策、竞争格局等多重因素影响。
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>九号公司(689009.SH) 财务深度分析 · 数据来源：东方财富公开数据 · 分析日期：2026-05-20</p>
+  <p style="margin-top:4px;">本报告仅供研究参考，不构成投资建议 · Built with Hermes Agent 🤖</p>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+// ===== Data =====
+const data = {
+  nf: {
+    name: '九号公司',
+    revenue: [101.24, 102.22, 141.96, 212.78],
+    profit: [4.51, 5.98, 10.84, 17.58],
+    roe: [9.85, 11.50, 19.10, 26.08],
+    netMargin: [4.46, 5.85, 7.64, 8.26],
+    assetTurnover: [0.88, 0.82, 0.95, 1.18],
+    equityMultiplier: [2.51, 2.39, 2.63, 2.68],
+    quarterlyRev: [[19.17, 29.03, 28.12, 24.92], [16.62, 27.18, 31.46, 26.96], [25.62, 41.04, 42.39, 32.91], [51.12, 66.30, 66.48, 28.88]],
+    quarterlyProfit: [[0.38, 2.18, 1.38, 0.57], [0.17, 2.05, 1.57, 2.19], [1.36, 4.60, 3.74, 1.14], [4.56, 7.86, 5.45, 0.61]],
+    revGrowth: [3.15, 0.97, 38.88, 49.90],
+    profitGrowth: [1.12, 32.59, 81.27, 62.18],
+  },
+  peers: {
+    aima: { name: '爱玛科技', revenue: [208.0, 210.4, 216.1, 250.9], profit: [18.73,18.81,19.88,20.35], roe: [31.15,25.40,23.75,21.18] },
+    cfdl: { name: '春风动力', revenue: [113.8, 121.1, 150.4, 197.5], profit: [7.01,10.08,14.72,16.75], roe: [17.93,21.67,26.25,24.49] },
+    bf: { name: '八方股份', revenue: [28.5, 16.5, 13.6, 13.4], profit: [5.12,1.28,0.64,1.03], roe: [18.51,4.59,2.35,3.83] },
+  },
+  forecast: {
+    labels: ['2024A','2025A','2026E','2027E','2028E'],
+    base: { rev: [141.96, 212.78, 255, 305, 360], profit: [10.84, 17.58, 21.5, 26.5, 32] },
+    optimistic: { rev: [141.96, 212.78, 275, 345, 430], profit: [10.84, 17.58, 24.5, 33, 42] },
+    pessimistic: { rev: [141.96, 212.78, 235, 265, 290], profit: [10.84, 17.58, 19, 21.5, 24] },
+  }
+};
+
+Chart.defaults.color = '#9ca3af';
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif";
+
+// ===== KPI Row =====
+function buildKPI() {
+  const row = document.getElementById('kpiRow');
+  const nf = data.nf;
+  const last = nf.revenue.length - 1;
+  const revGrowth = ((nf.revenue[last] / nf.revenue[last-1] - 1) * 100).toFixed(1);
+  const profitGrowth = ((nf.profit[last] / nf.profit[last-1] - 1) * 100).toFixed(1);
+  const roeChg = (nf.roe[last] - nf.roe[last-1]).toFixed(1);
+  const marginChg = (nf.netMargin[last] - nf.netMargin[last-1]).toFixed(1);
+
+  const kpis = [
+    { label: '2025年营收', value: `${nf.revenue[last].toFixed(1)}亿`, change: `+${revGrowth}% YoY`, cls: 'green', up: true },
+    { label: '2025年净利润', value: `${nf.profit[last].toFixed(1)}亿`, change: `+${profitGrowth}% YoY`, cls: 'green', up: true },
+    { label: '净资产收益率', value: `${nf.roe[last].toFixed(1)}%`, change: `${roeChg > 0 ? '+' : ''}${roeChg}pp`, cls: 'cyan', up: roeChg > 0 },
+    { label: '净利率', value: `${nf.netMargin[last].toFixed(1)}%`, change: `${marginChg > 0 ? '+' : ''}${marginChg}pp`, cls: 'blue', up: marginChg > 0 },
+    { label: '营收3年CAGR', value: '28.1%', change: '2022→2025', cls: 'orange', up: true },
+    { label: '净利润3年CAGR', value: '57.3%', change: '2022→2025', cls: 'purple', up: true },
+  ];
+  kpis.forEach(k => {
+    const card = document.createElement('div');
+    card.className = `kpi-card ${k.cls}`;
+    card.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div><div class="kpi-change ${k.up ? 'up' : 'down'}">${k.change}</div>`;
+    row.appendChild(card);
+  });
+}
+buildKPI();
+
+// ===== Chart Setup Helpers =====
+const colorScheme = {
+  blue: 'rgba(59,130,246,1)', blueBg: 'rgba(59,130,246,.15)',
+  cyan: 'rgba(6,182,212,1)', cyanBg: 'rgba(6,182,212,.15)',
+  green: 'rgba(16,185,129,1)', greenBg: 'rgba(16,185,129,.15)',
+  orange: 'rgba(245,158,11,1)', orangeBg: 'rgba(245,158,11,.15)',
+  purple: 'rgba(139,92,246,1)', purpleBg: 'rgba(139,92,246,.15)',
+  red: 'rgba(239,68,68,1)', redBg: 'rgba(239,68,68,.15)',
+};
+const years = ['2022','2023','2024','2025'];
+const yearLabels = ['2022年','2023年','2024年','2025年'];
+
+function chartOpts(plugins) {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { padding: 16, usePointStyle: true, pointStyle: 'circle' } },
+      tooltip: { backgroundColor: '#1a2332', titleColor: '#e5e7eb', bodyColor: '#9ca3af', borderColor: '#374151', borderWidth: 1, padding: 12, cornerRadius: 8 },
+      ...plugins,
+    },
+    scales: {
+      x: { grid: { color: 'rgba(31,41,55,.5)' }, ticks: { color: '#9ca3af' } },
+      y: { grid: { color: 'rgba(31,41,55,.5)' }, ticks: { color: '#9ca3af' } },
+    }
+  };
+}
+
+// ===== 1. Revenue & Profit =====
+new Chart(document.getElementById('revenueProfitChart'), {
+  type: 'bar', data: {
+    labels: yearLabels,
+    datasets: [
+      { label: '营收 (亿元)', data: data.nf.revenue, backgroundColor: colorScheme.blueBg, borderColor: colorScheme.blue, borderWidth: 2, borderRadius: 4, yAxisID: 'y' },
+      { label: '净利润 (亿元)', data: data.nf.profit, backgroundColor: colorScheme.greenBg, borderColor: colorScheme.green, borderWidth: 2, borderRadius: 4, yAxisID: 'y1' },
+    ]
+  },
+  options: {
+    ...chartOpts(),
+    scales: { y: { position: 'left', title: { display: true, text: '营收 (亿元)', color: '#9ca3af' } }, y1: { position: 'right', title: { display: true, text: '净利润 (亿元)', color: '#9ca3af' }, grid: { display: false } } }
+  }
+});
+
+// ===== 2. Growth =====
+new Chart(document.getElementById('growthChart'), {
+  type: 'line', data: {
+    labels: yearLabels,
+    datasets: [
+      { label: '营收增速 (%)', data: data.nf.revGrowth, borderColor: colorScheme.blue, backgroundColor: colorScheme.blueBg, fill: true, tension: .3, pointRadius: 5 },
+      { label: '净利润增速 (%)', data: data.nf.profitGrowth, borderColor: colorScheme.green, backgroundColor: colorScheme.greenBg, fill: true, tension: .3, pointRadius: 5 },
+    ]
+  },
+  options: chartOpts()
+});
+
+// ===== 3. Margin & ROE =====
+new Chart(document.getElementById('profitMarginChart'), {
+  type: 'line', data: {
+    labels: yearLabels,
+    datasets: [
+      { label: '净利率 (%)', data: data.nf.netMargin, borderColor: colorScheme.blue, tension: .3, pointRadius: 5, pointBackgroundColor: colorScheme.blue },
+      { label: 'ROE (%)', data: data.nf.roe, borderColor: colorScheme.cyan, tension: .3, pointRadius: 5, pointBackgroundColor: colorScheme.cyan, borderDash: [5,5] },
+    ]
+  },
+  options: chartOpts({ annotation: {} })
+});
+
+// ===== 4. Quarterly =====
+new Chart(document.getElementById('quarterlyChart'), {
+  type: 'bar', data: {
+    labels: ['Q1','Q2','Q3','Q4'],
+    datasets: [
+      { label: '2024', data: data.nf.quarterlyRev[2], backgroundColor: 'rgba(59,130,246,.5)', borderColor: colorScheme.blue, borderWidth: 2, borderRadius: 4 },
+      { label: '2025', data: data.nf.quarterlyRev[3], backgroundColor: 'rgba(6,182,212,.5)', borderColor: colorScheme.cyan, borderWidth: 2, borderRadius: 4 },
+    ]
+  },
+  options: chartOpts()
+});
+
+// ===== 5. DuPont =====
+new Chart(document.getElementById('dupontChart'), {
+  type: 'bar', data: {
+    labels: yearLabels,
+    datasets: [
+      { label: '净利率 (%)', data: data.nf.netMargin, backgroundColor: colorScheme.blueBg, borderColor: colorScheme.blue, borderWidth: 2, borderRadius: 4 },
+      { label: '资产周转率 (次)', data: data.nf.assetTurnover, backgroundColor: colorScheme.cyanBg, borderColor: colorScheme.cyan, borderWidth: 2, borderRadius: 4 },
+      { label: '权益乘数', data: data.nf.equityMultiplier, backgroundColor: colorScheme.orangeBg, borderColor: colorScheme.orange, borderWidth: 2, borderRadius: 4 },
+    ]
+  },
+  options: chartOpts()
+});
+
+// ===== 6. Peer Revenue =====
+new Chart(document.getElementById('peerRevenueChart'), {
+  type: 'bar', data: {
+    labels: yearLabels,
+    datasets: [
+      { label: '九号公司', data: data.nf.revenue, backgroundColor: colorScheme.cyanBg, borderColor: colorScheme.cyan, borderWidth: 2, borderRadius: 4 },
+      { label: '爱玛科技', data: data.peers.aima.revenue, backgroundColor: colorScheme.blueBg, borderColor: colorScheme.blue, borderWidth: 2, borderRadius: 4 },
+      { label: '春风动力', data: data.peers.cfdl.revenue, backgroundColor: colorScheme.greenBg, borderColor: colorScheme.green, borderWidth: 2, borderRadius: 4 },
+    ]
+  },
+  options: chartOpts()
+});
+
+// ===== 7. Peer Net Margin =====
+const netMargins2024 = [
+  (data.nf.profit[2]/data.nf.revenue[2]*100).toFixed(1),
+  (data.peers.aima.profit[2]/data.peers.aima.revenue[2]*100).toFixed(1),
+  (data.peers.cfdl.profit[2]/data.peers.cfdl.revenue[2]*100).toFixed(1),
+  (data.peers.bf.profit[2]/data.peers.bf.revenue[2]*100).toFixed(1),
+];
+new Chart(document.getElementById('peerMarginChart'), {
+  type: 'bar', data: {
+    labels: ['九号公司','爱玛科技','春风动力','八方股份'],
+    datasets: [{ label: '净利率 (2024, %)', data: netMargins2024, backgroundColor: [colorScheme.cyanBg, colorScheme.blueBg, colorScheme.greenBg, colorScheme.orangeBg], borderColor: [colorScheme.cyan, colorScheme.blue, colorScheme.green, colorScheme.orange], borderWidth: 2, borderRadius: 6 }]
+  },
+  options: chartOpts()
+});
+
+// ===== 8. Peer ROE =====
+new Chart(document.getElementById('peerROEChart'), {
+  type: 'line', data: {
+    labels: yearLabels,
+    datasets: [
+      { label: '九号公司', data: data.nf.roe, borderColor: colorScheme.cyan, tension: .3, pointRadius: 5 },
+      { label: '爱玛科技', data: data.peers.aima.roe, borderColor: colorScheme.blue, tension: .3, pointRadius: 5 },
+      { label: '春风动力', data: data.peers.cfdl.roe, borderColor: colorScheme.green, tension: .3, pointRadius: 5 },
+      { label: '八方股份', data: data.peers.bf.roe, borderColor: colorScheme.orange, tension: .3, pointRadius: 5, borderDash: [4,4] },
+    ]
+  },
+  options: chartOpts()
+});
+
+// ===== 9. Peer Growth =====
+const peerGrowthData = [
+  ((data.nf.revenue[3]/data.nf.revenue[2]-1)*100).toFixed(1),
+  ((data.peers.aima.revenue[3]/data.peers.aima.revenue[2]-1)*100).toFixed(1),
+  ((data.peers.cfdl.revenue[3]/data.peers.cfdl.revenue[2]-1)*100).toFixed(1),
+  ((data.peers.bf.revenue[3]/data.peers.bf.revenue[2]-1)*100).toFixed(1),
+];
+new Chart(document.getElementById('peerGrowthChart'), {
+  type: 'bar', data: {
+    labels: ['九号公司','爱玛科技','春风动力','八方股份'],
+    datasets: [{ label: '营收增速 (2024→2025, %)', data: peerGrowthData, backgroundColor: peerGrowthData.map(v => v > 0 ? 'rgba(16,185,129,.3)' : 'rgba(239,68,68,.3)'), borderColor: peerGrowthData.map(v => v > 0 ? colorScheme.green : colorScheme.red), borderWidth: 2, borderRadius: 6 }]
+  },
+  options: chartOpts()
+});
+
+// ===== 10. Revenue Mix =====
+new Chart(document.getElementById('revenueMixChart'), {
+  type: 'doughnut', data: {
+    labels: ['电动两轮车', '电动滑板车/平衡车', '全地形车', '机器人及其他'],
+    datasets: [{ data: [55, 25, 12, 8], backgroundColor: ['rgba(6,182,212,.7)', 'rgba(59,130,246,.7)', 'rgba(16,185,129,.7)', 'rgba(139,92,246,.7)'], borderColor: ['#06b6d4','#3b82f6','#10b981','#8b5cf6'], borderWidth: 2 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { padding: 12, usePointStyle: true, color: '#9ca3af' } },
+      tooltip: { backgroundColor: '#1a2332', titleColor: '#e5e7eb', bodyColor: '#9ca3af', borderColor: '#374151', borderWidth: 1, padding: 12, cornerRadius: 8,
+        callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` }
+      }
+    }
+  }
+});
+
+// ===== 11. Porter's Five Forces =====
+new Chart(document.getElementById('porterChart'), {
+  type: 'radar', data: {
+    labels: ['现有竞争强度', '新进入者威胁', '替代品威胁', '供应商议价力', '买方议价力'],
+    datasets: [
+      { label: '九号公司', data: [4, 3, 2, 3, 3], borderColor: colorScheme.cyan, backgroundColor: 'rgba(6,182,212,.1)', pointBackgroundColor: colorScheme.cyan, borderWidth: 2 },
+      { label: '行业平均', data: [4, 3, 3, 3, 4], borderColor: '#6b7280', backgroundColor: 'rgba(107,114,128,.05)', pointBackgroundColor: '#6b7280', borderWidth: 1, borderDash: [4,4] },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { r: { min: 1, max: 5, ticks: { stepSize: 1, backdropColor: 'transparent' }, grid: { color: 'rgba(31,41,55,.4)' }, angleLines: { color: 'rgba(31,41,55,.4)' }, pointLabels: { color: '#9ca3af', font: { size: 11 } } } },
+    plugins: {
+      legend: { labels: { padding: 16, usePointStyle: true, color: '#9ca3af' } },
+      tooltip: { backgroundColor: '#1a2332', titleColor: '#e5e7eb', bodyColor: '#9ca3af', borderColor: '#374151', borderWidth: 1, padding: 12, cornerRadius: 8 }
+    }
+  }
+});
+
+// ===== 12. Forecast =====
+new Chart(document.getElementById('forecastChart'), {
+  type: 'line', data: {
+    labels: data.forecast.labels,
+    datasets: [
+      { label: '营收-乐观 (亿)', data: data.forecast.optimistic.rev, borderColor: colorScheme.green, backgroundColor: 'rgba(16,185,129,.05)', fill: false, tension: .3, pointRadius: 5, pointBackgroundColor: colorScheme.green, borderWidth: 2, borderDash: [3,3] },
+      { label: '营收-基准 (亿)', data: data.forecast.base.rev, borderColor: colorScheme.blue, backgroundColor: 'rgba(59,130,246,.1)', fill: false, tension: .3, pointRadius: 6, pointBackgroundColor: colorScheme.blue, borderWidth: 3 },
+      { label: '营收-保守 (亿)', data: data.forecast.pessimistic.rev, borderColor: colorScheme.orange, backgroundColor: 'rgba(245,158,11,.05)', fill: false, tension: .3, pointRadius: 5, pointBackgroundColor: colorScheme.orange, borderWidth: 2, borderDash: [3,3] },
+    ]
+  },
+  options: {
+    ...chartOpts(),
+    scales: { y: { beginAtZero: true, title: { display: true, text: '营收 (亿元)', color: '#9ca3af' } } }
+  }
+});
+
+// ===== Financial Table =====
+(function buildTables() {
+  // Main financial table
+  const tbody = document.querySelector('#financialTable tbody');
+  const years = ['2022','2023','2024','2025'];
+  const rows = [
+    { label: '营业收入 (亿元)', vals: data.nf.revenue, fmt: v => v.toFixed(1) },
+    { label: '归母净利润 (亿元)', vals: data.nf.profit, fmt: v => v.toFixed(2) },
+    { label: '营收增速 (%)', vals: data.nf.revGrowth, fmt: v => v.toFixed(1) + '%', cls: 'positive' },
+    { label: '净利润增速 (%)', vals: data.nf.profitGrowth, fmt: v => v.toFixed(1) + '%', cls: 'positive' },
+    { label: '净利率 (%)', vals: data.nf.netMargin, fmt: v => v.toFixed(2) + '%' },
+    { label: 'ROE (%)', vals: data.nf.roe, fmt: v => v.toFixed(2) + '%' },
+  ];
+  rows.forEach(r => {
+    let tr = document.createElement('tr');
+    let cagr = ((r.vals[3] / r.vals[0]) ** (1/3) - 1) * 100;
+    let cagrStr = cagr > 0 ? `<span class="positive">+${cagr.toFixed(1)}%</span>` : `<span class="negative">${cagr.toFixed(1)}%</span>`;
+    tr.innerHTML = `<td>${r.label}</td>${r.vals.map(v => `<td>${r.fmt(v)}</td>`).join('')}<td>${cagrStr}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // DuPont table
+  const dupTbody = document.querySelector('#dupontTable tbody');
+  const dupRows = [
+    { label: '净利率 (%)', vals: data.nf.netMargin, fmt: v => v.toFixed(2) + '%' },
+    { label: '资产周转率', vals: data.nf.assetTurnover, fmt: v => v.toFixed(2) + 'x' },
+    { label: '权益乘数', vals: data.nf.equityMultiplier, fmt: v => v.toFixed(2) + 'x' },
+    { label: 'ROE (%)', vals: data.nf.roe, fmt: v => v.toFixed(2) + '%', cls: 'highlight' },
+  ];
+  dupRows.forEach(r => {
+    let tr = document.createElement('tr');
+    let trend = r.vals[3] > r.vals[0] ? '<span class="positive">↑ 提升</span>' : '<span class="negative">↓ 下降</span>';
+    tr.innerHTML = `<td>${r.label}</td>${r.vals.map(v => `<td>${r.fmt(v)}</td>`).join('')}<td>${trend}</td>`;
+    dupTbody.appendChild(tr);
+  });
+
+  // Peer table
+  const peerTbody = document.querySelector('#peerTable tbody');
+  const peers = [
+    { name: '九号公司', code: '689009.SH', rev: [data.nf.revenue[2], data.nf.revenue[3]], profit: [data.nf.profit[2], data.nf.profit[3]], roe: [data.nf.roe[2], data.nf.roe[3]], mktCap: 286 },
+    { name: '爱玛科技', code: '603529.SH', rev: [data.peers.aima.revenue[2], data.peers.aima.revenue[3]], profit: [data.peers.aima.profit[2], data.peers.aima.profit[3]], roe: [data.peers.aima.roe[2], data.peers.aima.roe[3]], mktCap: 250 },
+    { name: '春风动力', code: '603129.SH', rev: [data.peers.cfdl.revenue[2], data.peers.cfdl.revenue[3]], profit: [data.peers.cfdl.profit[2], data.peers.cfdl.profit[3]], roe: [data.peers.cfdl.roe[2], data.peers.cfdl.roe[3]], mktCap: 280 },
+    { name: '八方股份', code: '603489.SH', rev: [data.peers.bf.revenue[2], data.peers.bf.revenue[3]], profit: [data.peers.bf.profit[2], data.peers.bf.profit[3]], roe: [data.peers.bf.roe[2], data.peers.bf.roe[3]], mktCap: 80 },
+  ];
+  peers.forEach(p => {
+    let tr = document.createElement('tr');
+    let pos = '';
+    if (p.name === '九号公司') pos = ' (成长型)';
+    else if (p.name === '爱玛科技' || p.name === '春风动力') pos = ' (价值型)';
+    else pos = ' (周期型)';
+    tr.innerHTML = `<td>${p.name}</td><td>${p.code}</td><td>${p.rev[0].toFixed(1)}</td><td class="highlight">${p.rev[1].toFixed(1)}</td><td>${p.profit[0].toFixed(2)}</td><td>${p.profit[1].toFixed(2)}</td><td>${p.roe[0].toFixed(1)}%</td><td>${p.roe[1].toFixed(1)}%</td><td>${p.mktCap}</td><td>${pos}</td>`;
+    peerTbody.appendChild(tr);
+  });
+
+  // Forecast drivers
+  const driverTbody = document.querySelector('#forecastDrivers tbody');
+  const drivers = [
+    { label: '电动两轮车销量(万台)', vals: ['280', '420', '520', '620', '720'], note: '新国标替换需求释放' },
+    { label: '电动两轮车均价(元/台)', vals: ['3,200', '3,050', '2,950', '2,900', '2,850'], note: '规模效应下价格微降' },
+    { label: '海外收入占比(%)', vals: ['25%', '28%', '32%', '36%', '40%'], note: '海外渠道持续拓展' },
+    { label: '机器人收入(亿元)', vals: ['3.1', '4.5', '7', '10', '14'], note: '割草机器人+配送' },
+  ];
+  drivers.forEach(d => {
+    let tr = document.createElement('tr');
+    tr.innerHTML = `<td>${d.label}</td>${d.vals.map(v => `<td>${v}</td>`).join('')}<td style="color:var(--text-muted);font-size:12px;">${d.note}</td>`;
+    driverTbody.appendChild(tr);
+  });
+})();
+
+// ===== Navigation Scroll =====
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    const offset = 70;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    event?.target?.classList.add('active');
+    // Fallback
+    setTimeout(() => {
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.toggle('active', a.textContent.includes(
+          { overview:'概览', financial:'财务', comparison:'可比', dupont:'杜邦', strategy:'战略', forecast:'预测' }[id] || ''
+        ));
+      });
+    }, 100);
+  }
+}
+
+// Scroll spy
+window.addEventListener('scroll', () => {
+  const sections = ['overview','financial','comparison','dupont','strategy','forecast'];
+  const scrollPos = window.scrollY + 150;
+  let current = 'overview';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollPos) current = id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const labels = { overview:'概览', financial:'财务', comparison:'可比', dupont:'杜邦', strategy:'战略', forecast:'预测' };
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.textContent === labels[current]) a.classList.add('active');
+  });
+});
+
+console.log('✅ Ninebot Financial Analysis Dashboard loaded');
+</script>
+</body>
+</html>

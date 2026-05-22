@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中国平安2024年度审计智慧大屏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e1a;--bg2:#111827;--bg3:#1a2332;--bg4:#1f2a3e;
+  --accent:#00d4ff;--accent2:#7c3aed;--accent3:#f59e0b;--accent4:#ef4444;
+  --green:#10b981;--yellow:#f59e0b;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;
+  --text:#e2e8f0;--text2:#94a3b8;--border:#2a3a5c;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;min-height:100vh;overflow-x:hidden}
+.tabs{display:flex;background:var(--bg2);border-bottom:2px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:100}
+.tab{background:none;border:none;color:var(--text2);padding:16px 28px;cursor:pointer;font-size:15px;font-weight:600;letter-spacing:1px;position:relative;transition:all .3s}
+.tab:hover{color:var(--text);background:rgba(255,255,255,0.03)}
+.tab.active{color:var(--accent)}
+.tab.active::after{content:'';position:absolute;bottom:-2px;left:20%;width:60%;height:3px;background:var(--accent);border-radius:2px}
+.tab-content{display:none;padding:30px;max-width:1600px;margin:0 auto}
+.tab-content.active{display:block}
+h1{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+h2{font-size:20px;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+h2 .badge{font-size:12px;background:var(--bg4);color:var(--text2);padding:2px 10px;border-radius:12px;font-weight:400;-webkit-text-fill-color:var(--text2)}
+h3{font-size:16px;color:var(--accent);margin-bottom:12px}
+.grid{display:grid;gap:20px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+.grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform .2s}
+.card:hover{transform:translateY(-2px)}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-header .title{font-size:14px;font-weight:600;color:var(--text2)}
+.card-header .value{font-size:28px;font-weight:800}
+.stat{text-align:center;padding:16px}
+.stat .label{font-size:12px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.stat .value{font-size:32px;font-weight:800}
+.stat .sub{font-size:12px;color:var(--text2);margin-top:4px}
+.tag{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:600}
+.tag-red{background:rgba(239,68,68,0.2);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.tag-yellow{background:rgba(245,158,11,0.2);color:var(--yellow);border:1px solid rgba(245,158,11,0.3)}
+.tag-green{background:rgba(16,185,129,0.2);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
+.tag-blue{background:rgba(59,130,246,0.2);color:var(--blue);border:1px solid rgba(59,130,246,0.3)}
+.tag-purple{background:rgba(139,92,246,0.2);color:var(--purple);border:1px solid rgba(139,92,246,0.3)}
+.mb-16{margin-bottom:16px}
+.mt-16{margin-top:16px}
+.text-center{text-align:center}
+.text-right{text-align:right}
+.text-accent{color:var(--accent)}
+.text-green{color:var(--green)}
+.text-red{color:var(--red)}
+.text-yellow{color:var(--yellow)}
+.text-purple{color:var(--purple)}
+.text-muted{color:var(--text2)}
+.flex{display:flex}
+.flex-wrap{flex-wrap:wrap}
+.gap-8{gap:8px}
+.gap-16{gap:16px}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+/* Team section */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.team-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:all .3s}
+.team-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,212,255,0.15)}
+.team-card .icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px}
+.team-card .role{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.team-card .name{font-size:12px;color:var(--accent);margin-bottom:8px}
+.team-card .desc{font-size:13px;color:var(--text2);line-height:1.6}
+.team-card .badge{position:absolute;top:12px;right:12px;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--bg4);color:var(--text2);border:1px solid var(--border)}
+/* Progress and bars */
+.progress-bar{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-top:4px}
+/* Findings table */
+.findings-table{width:100%;border-collapse:collapse;font-size:13px}
+.findings-table th{text-align:left;padding:10px 12px;background:var(--bg4);color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+.findings-table td{padding:10px 12px;border-bottom:1px solid var(--bg4);color:var(--text)}
+.findings-table tr:hover td{background:rgba(0,212,255,0.05)}
+.sev-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+/* Radar chart canvas */
+.radar-container{display:flex;justify-content:center;align-items:center;padding:10px}
+/* Timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;padding:12px 0 12px 16px;border-left:2px solid transparent}
+.timeline-item .dot{position:absolute;left:-24px;top:18px;width:12px;height:12px;border-radius:50%;border:2px solid var(--accent);background:var(--bg3)}
+.timeline-item .date{font-size:11px;color:var(--text2);margin-bottom:2px}
+.timeline-item .event{font-size:14px;color:var(--text)}
+.timeline-item .desc{font-size:12px;color:var(--text2)}
+/* Risk gauge */
+.gauge{width:160px;height:80px;margin:0 auto;position:relative;overflow:hidden}
+.gauge-bg{width:160px;height:160px;border-radius:50%;border:8px solid var(--bg4);position:absolute;top:0;left:0;box-sizing:border-box}
+.gauge-fill{width:160px;height:160px;border-radius:50%;position:absolute;top:0;left:0;box-sizing:border-box;clip:rect(80px 160px 160px 0);border:8px solid var(--accent)}
+.gauge-text{position:absolute;bottom:0;left:0;width:100%;text-align:center;font-size:28px;font-weight:800;color:var(--accent)}
+.gauge-label{position:absolute;bottom:-18px;left:0;width:100%;text-align:center;font-size:11px;color:var(--text2)}
+/* Opinion card */
+.opinion-card{background:linear-gradient(135deg,var(--bg3),#0d1a2e);border:2px solid var(--green);border-radius:16px;padding:28px;text-align:center}
+.opinion-card .opinion-type{font-size:36px;font-weight:800;color:var(--green);margin-bottom:8px}
+.opinion-card .opinion-sub{font-size:14px;color:var(--text2);margin-bottom:16px}
+.opinion-card .opinion-detail{font-size:13px;color:var(--text);line-height:1.8;text-align:left}
+/* KPI circle */
+.kpi-ring{width:100px;height:100px;border-radius:50%;position:relative;margin:0 auto}
+.kpi-ring svg{transform:rotate(-90deg)}
+.kpi-ring .center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.kpi-ring .center .num{font-size:22px;font-weight:800;color:var(--text)}
+.kpi-ring .center .lbl{font-size:10px;color:var(--text2)}
+/* Matrix */
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.matrix-cell{padding:12px;border-radius:8px;text-align:center}
+.matrix-cell .matrix-label{font-size:11px;color:var(--text2);margin-bottom:4px}
+.matrix-cell .matrix-value{font-size:18px;font-weight:700}
+.matrix-pass{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)}
+.matrix-fail{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)}
+.matrix-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2)}
+/* Responsive */
+@media(max-width:1024px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+@media(max-width:768px){.tab{padding:12px 16px;font-size:13px}.tab-content{padding:16px}}
+/* Score card */
+.score-card{display:flex;align-items:center;gap:20px;padding:16px;background:var(--bg4);border-radius:10px}
+.score-card .score-value{font-size:40px;font-weight:800;color:var(--accent)}
+.score-card .score-detail{flex:1}
+.score-card .score-detail .item{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--text2);border-bottom:1px solid rgba(255,255,255,0.05)}
+/* Flow chart */
+.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 0}
+.flow-node{padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;min-width:100px}
+.flow-arrow{color:var(--text2);font-size:20px}
+/* KAM cards */
+.kam-list{display:grid;gap:16px}
+.kam-item{background:var(--bg4);border-left:4px solid var(--accent);border-radius:8px;padding:16px 20px}
+.kam-item .kam-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.kam-item .kam-desc{font-size:12px;color:var(--text2);line-height:1.6}
+/* Sparkline container */
+.sparkline{height:40px;width:100%;margin-top:8px}
+/* Tooltip style */
+[data-tip]{position:relative;cursor:help}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--bg2);color:var(--text);padding:6px 12px;border-radius:6px;font-size:12px;white-space:nowrap;z-index:10;border:1px solid var(--border)}
+/* Animation */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.tab-content.active{animation:fadeIn .3s ease}
+</style>
+</head>
+<body>
+
+<div class="tabs" id="tabNav">
+  <button class="tab active" onclick="switchTab('team')">📋 审计团队</button>
+  <button class="tab" onclick="switchTab('report')">📄 审计报告</button>
+  <button class="tab" onclick="switchTab('dashboard')">📊 智慧大屏</button>
+</div>
+
+<!-- ============================================================ TAB 1: TEAM -->
+<div class="tab-content active" id="tab-team">
+  <div class="flex items-center justify-between mb-16">
+    <div>
+      <h1>中国平安 2024年度审计 · 团队架构</h1>
+      <p style="color:var(--text2);font-size:13px;">Ping An Insurance (Group) — FY2024 Audit Engagement · 审计项目组全景</p>
+    </div>
+    <div class="text-right" style="font-size:12px;color:var(--text2);">
+      <div>审计基准日: 2024.12.31</div>
+      <div>审计标准: CSAE / IFRS 17 / IFRS 9 / COSO 2013</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <div class="card">
+      <h2>🏢 被审计单位 <span class="badge">Auditee</span></h2>
+      <div class="grid grid-2" style="gap:12px;">
+        <div><div class="label" style="font-size:11px;color:var(--text2);">公司名称</div><div style="font-size:14px;color:var(--text);font-weight:600;">中国平安保险(集团)</div></div>
+        <div><div class="label" style="font-size:11px;color:var(--text2);">股票代码</div><div style="font-size:14px;color:var(--text);font-weight:600;">601318.SH / 2318.HK</div></div>
+        <div><div class="label" style="font-size:11px;color:var(--text2);">总资产</div><div style="font-size:14px;color:var(--text);font-weight:600;">~12.4 万亿</div></div>
+        <div><div class="label" style="font-size:11px;color:var(--text2);">归母净利润</div><div style="font-size:14px;color:var(--accent);font-weight:600;">1,266亿 (+47.79%)</div></div>
+        <div><div class="label" style="font-size:11px;color:var(--text2);">总收入</div><div style="font-size:14px;color:var(--text);font-weight:600;">1.029 万亿</div></div>
+        <div><div class="label" style="font-size:11px;color:var(--text2);">ROE</div><div style="font-size:14px;color:var(--text);font-weight:600;">13.80%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🎯 审计总体评价 <span class="badge">Overview</span></h2>
+      <div class="score-card mb-16">
+        <div class="score-value">4.88%</div>
+        <div class="score-detail">
+          <div><strong style="color:var(--text);">审计风险 AR</strong> — 低于5%目标上限 ✅</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px;">AR = IR(65%) × CR(50%) × DR(15%) = 4.88%</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+        <span class="tag tag-green">无保留意见</span>
+        <span class="tag tag-yellow">3项关键审计事项</span>
+        <span class="tag tag-blue">ICFR有效(含3SD)</span>
+        <span class="tag tag-purple">基本合规</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>👥 审计团队 · 五维架构 <span class="badge">5 Profiles</span></h2>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="icon" style="background:rgba(59,130,246,0.15);color:var(--blue);">👔</div>
+      <div class="badge">Coordinator</div>
+      <div class="role">审计项目经理</div>
+      <div class="name">Audit Manager</div>
+      <div class="desc">负责审计整体规划、资源调配、意见裁定与报告审批。协调三大审计模块的工作对接，确保审计程序覆盖所有重大领域。(A4: 审计总结报告)</div>
+    </div>
+    <div class="team-card">
+      <div class="icon" style="background:rgba(16,185,129,0.15);color:var(--green);">💰</div>
+      <div class="badge">Financial</div>
+      <div class="role">财务审计师</div>
+      <div class="name">Financial Auditor</div>
+      <div class="desc">执行8项审计程序（收入确认/资产/负债/减值/关联交易/现金流等），识别14项发现（3高/6中/4正常/1待确认），出具无保留意见初步判断。(A1: 审计底稿)</div>
+    </div>
+    <div class="team-card">
+      <div class="icon" style="background:rgba(245,158,11,0.15);color:var(--yellow);">🔒</div>
+      <div class="badge">Internal Control</div>
+      <div class="role">内控审计师</div>
+      <div class="name">IC Auditor</div>
+      <div class="desc">执行39项控制测试+19项ITGC+467样本，识别12项缺陷(0MW/3SD/9CD)。COSO综合评分4.06/5.0，ICFR有效但含重要缺陷。(IC审计报告)</div>
+    </div>
+    <div class="team-card">
+      <div class="icon" style="background:rgba(139,92,246,0.15);color:var(--purple);">⚖️</div>
+      <div class="badge">Compliance</div>
+      <div class="role">合规审计师</div>
+      <div class="name">Compliance Auditor</div>
+      <div class="desc">覆盖7大合规领域检查，识别8项发现（3中/5低）。评定为"基本合规"，建议对偿付能力、关联交易、ESG 3个中风险领域整改。(合规审计报告)</div>
+    </div>
+    <div class="team-card">
+      <div class="icon" style="background:rgba(0,212,255,0.15);color:var(--accent);">📝</div>
+      <div class="badge">Editor</div>
+      <div class="role">审计报告主编</div>
+      <div class="name">Audit Editor</div>
+      <div class="desc">整合三大审计师输出，统一审计意见为「无保留意见+3项关键审计事项」。构建交互式审计智慧大屏，可视化34项发现、审计风险模型与管理建议。(A5: 本大屏)</div>
+    </div>
+  </div>
+
+  <div class="card mt-16">
+    <h2>🔄 协作流程 <span class="badge">Workflow</span></h2>
+    <div class="flow">
+      <div class="flow-node" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:var(--blue);">Audit Manager<br><small style="font-weight:400;">项目启动</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:var(--green);">Financial Auditor<br><small style="font-weight:400;">财报审计</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:var(--yellow);">IC Auditor<br><small style="font-weight:400;">内控审计</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:var(--purple);">Compliance Auditor<br><small style="font-weight:400;">合规审计</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.3);color:var(--accent);">Audit Editor<br><small style="font-weight:400;">报告整合</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="background:rgba(16,185,129,0.2);border:1px solid var(--green);color:var(--green);">✅ 审计报告<br><small style="font-weight:400;">无保留意见</small></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ TAB 2: REPORT -->
+<div class="tab-content" id="tab-report">
+  <div class="flex items-center justify-between mb-16">
+    <div>
+      <h1>中国平安 2024年度审计报告</h1>
+      <p style="color:var(--text2);font-size:13px;">Audit Report — Financial · Internal Control · Compliance · Integrated Opinion</p>
+    </div>
+  </div>
+
+  <!-- Opinion Card -->
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <div class="opinion-card">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">审计意见类型</div>
+      <div class="opinion-type">✅ 无保留意见</div>
+      <div class="opinion-sub">Unqualified Opinion — 财务报表在所有重大方面公允反映</div>
+      <div class="opinion-detail">
+        <p>我们审计了中国平安保险（集团）股份有限公司的合并财务报表，包括2024年12月31日的合并资产负债表，2024年度的合并利润表、合并现金流量表、合并股东权益变动表及相关附注。</p>
+        <p style="margin-top:8px;">我们认为，财务报表在所有重大方面按照企业会计准则（包括IFRS 17、IFRS 9等）的规定编制，公允反映了财务状况及经营成果。</p>
+      </div>
+    </div>
+    <div>
+      <div class="card mb-16">
+        <div class="card-header"><span class="title">📊 关键审计事项</span><span class="tag tag-yellow">3项 KAM</span></div>
+        <div class="kam-list">
+          <div class="kam-item" style="border-left-color:var(--red);">
+            <div class="kam-title">KAM-01: IFRS 17保险合同准备金 <span class="tag tag-red" style="float:right;">★★★★★</span></div>
+            <div class="kam-desc">寿险及健康险利润986.5亿，涉及¥8,600亿准备金。折现率假设在利率下行周期中的合理性、CSM释放节奏、以及精算假设独立签批缺失(SD-003)构成重大审计风险。</div>
+          </div>
+          <div class="kam-item" style="border-left-color:var(--yellow);">
+            <div class="kam-title">KAM-02: 金融资产公允价值估值 <span class="tag tag-yellow" style="float:right;">★★★★☆</span></div>
+            <div class="kam-desc">FVTPL(2.36万亿)+其他债权(3.16万亿)+其他权益(0.48万亿)≈5.5万亿，占总资产42%。Level 3估值模型假设合理性及665亿公允价值变动收益的市场依赖性。</div>
+          </div>
+          <div class="kam-item" style="border-left-color:var(--red);">
+            <div class="kam-title">KAM-03: 贷款信用减值测试 <span class="tag tag-red" style="float:right;">★★★★★</span></div>
+            <div class="kam-desc">信用减值损失855.8亿，占营业利润49.87%。平安银行3.426万亿贷款信用风险敞口，ECL模型三阶段划分及PD/LGD/EAD参数假设的可靠性。</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="title">⚡ 强调事项</span><span class="tag tag-blue">3项</span></div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+          <div>1️⃣ 资产管理分部亏损74.41亿，商誉457.9亿存在减值风险</div>
+          <div>2️⃣ 公允价值变动收益665亿高度依赖A股市场环境</div>
+          <div>3️⃣ 利率下行对IFRS 17折现率假设带来持续压力</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Findings Overview -->
+  <h2>🔍 审计发现总览 <span class="badge">34项总发现</span></h2>
+  <div class="grid grid-4 mb-16">
+    <div class="card stat">
+      <div class="label">财务审计发现</div>
+      <div class="value" style="color:var(--blue);">14</div>
+      <div class="sub"><span class="tag tag-red">3高</span> <span class="tag tag-yellow">6中</span> <span class="tag tag-green">4常</span> <span class="tag tag-blue">1待</span></div>
+    </div>
+    <div class="card stat">
+      <div class="label">内控发现</div>
+      <div class="value" style="color:var(--yellow);">12</div>
+      <div class="sub"><span class="tag tag-green">0MW</span> <span class="tag tag-yellow">3SD</span> <span class="tag tag-blue">9CD</span></div>
+    </div>
+    <div class="card stat">
+      <div class="label">合规发现</div>
+      <div class="value" style="color:var(--purple);">8</div>
+      <div class="sub"><span class="tag tag-yellow">3中</span> <span class="tag tag-green">5低</span></div>
+    </div>
+    <div class="card stat">
+      <div class="label">潜在调整建议</div>
+      <div class="value" style="color:var(--accent);">5</div>
+      <div class="sub"><span class="tag tag-red">P0</span> <span class="tag tag-yellow">P1×2</span> <span class="tag tag-blue">P2×2</span></div>
+    </div>
+  </div>
+
+  <!-- Cross Matrix -->
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <div class="card">
+      <h2>📋 审计发现交叉矩阵 <span class="badge">Cross-Reference</span></h2>
+      <div style="max-height:380px;overflow-y:auto;">
+        <table class="findings-table">
+          <thead><tr><th>发现</th><th>财务</th><th>内控</th><th>合规</th><th>优先级</th></tr></thead>
+          <tbody>
+            <tr><td>信用减值855.8亿(利润49.87%)</td><td><span class="sev-dot" style="background:var(--red)"></span>H-01</td><td>CD-09</td><td>—</td><td><span class="tag tag-red">P0</span></td></tr>
+            <tr><td>商誉减值风险(亏损74.41亿)</td><td><span class="sev-dot" style="background:var(--red)"></span>H-02</td><td>—</td><td>—</td><td><span class="tag tag-red">P0</span></td></tr>
+            <tr><td>IFRS 17精算假设签批缺失</td><td><span class="sev-dot" style="background:var(--yellow)"></span>M-02</td><td><span class="sev-dot" style="background:var(--yellow)"></span>SD-03</td><td>—</td><td><span class="tag tag-red">P0</span></td></tr>
+            <tr><td>公允价值变动市场依赖性</td><td><span class="sev-dot" style="background:var(--red)"></span>H-03</td><td>—</td><td>—</td><td><span class="tag tag-yellow">P1</span></td></tr>
+            <tr><td>金融资产公允价值分层验证</td><td><span class="sev-dot" style="background:var(--yellow)"></span>M-03</td><td>—</td><td>—</td><td><span class="tag tag-yellow">P1</span></td></tr>
+            <tr><td>关联交易定价复核缺失</td><td><span class="sev-dot" style="background:var(--yellow)"></span>M-04</td><td><span class="sev-dot" style="background:var(--yellow)"></span>SD-02</td><td>🔶 #3/5/7</td><td><span class="tag tag-yellow">P1</span></td></tr>
+            <tr><td>IT紧急变更管理缺陷</td><td>—</td><td><span class="sev-dot" style="background:var(--yellow)"></span>SD-01</td><td>—</td><td><span class="tag tag-yellow">P1</span></td></tr>
+            <tr><td>C-ROSS偿付能力压力</td><td>—</td><td>—</td><td>🔶 #4</td><td><span class="tag tag-yellow">P1</span></td></tr>
+            <tr><td>ESG披露国际标准差距</td><td>—</td><td>—</td><td>🔶 #8</td><td><span class="tag tag-blue">P2</span></td></tr>
+            <tr><td>投资性房地产减值</td><td><span class="sev-dot" style="background:var(--yellow)"></span>M-05</td><td>—</td><td>—</td><td><span class="tag tag-blue">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="card mb-16">
+        <h2>🏷️ 内控缺陷等级分布 <span class="badge">12项</span></h2>
+        <canvas id="defectPie" width="280" height="200"></canvas>
+        <div class="bar-label"><span>重大缺陷 (MW)</span><span style="color:var(--green);">0</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--green);"></div></div>
+        <div class="bar-label"><span>重要缺陷 (SD)</span><span style="color:var(--yellow);">3</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:25%;background:var(--yellow);"></div></div>
+        <div class="bar-label"><span>一般缺陷 (CD)</span><span style="color:var(--blue);">9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:75%;background:var(--blue);"></div></div>
+      </div>
+      <div class="card">
+        <h2>📊 COSO 综合评分 <span class="badge">4.06/5.0</span></h2>
+        <canvas id="cosoRadar" width="280" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Significant Deficiencies -->
+  <div class="card mb-16">
+    <h2>⚠️ 重要缺陷详情 <span class="badge">3项 Significant Deficiencies</span></h2>
+    <div class="grid grid-3" style="gap:16px;">
+      <div style="background:var(--bg4);border-radius:10px;padding:16px;border-left:4px solid var(--red);">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">SD-001: IT紧急变更管理</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">
+          平安云DBA权限绕过审批流程，核心保险系统数据库紧急变更后补审批缺失。补偿控制：Jenkins+Ansible自动化部署管道记录。<br>
+          <span class="tag tag-yellow" style="margin-top:4px;">高 × 可能 → 6分</span>
+        </div>
+      </div>
+      <div style="background:var(--bg4);border-radius:10px;padding:16px;border-left:4px solid var(--yellow);">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">SD-002: 关联交易定价复核缺失</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">
+          平安银行↔平安科技金融信息服务定价模型未按季度独立复核，涉及¥1.8亿。补偿控制：董事会限额+独立董事定期审查。<br>
+          <span class="tag tag-yellow" style="margin-top:4px;">中 × 很可能 → 6分</span>
+        </div>
+      </div>
+      <div style="background:var(--bg4);border-radius:10px;padding:16px;border-left:4px solid var(--red);">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">SD-003: 精算假设签批缺失</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">
+          死亡率/退保率假设年度更新缺少独立精算复核人签批，涉及¥8,600亿寿险准备金。直接影响IFRS 17准备金计量准确性。<br>
+          <span class="tag tag-red" style="margin-top:4px;">高 × 极少 → 6分</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Risk Model -->
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <div class="card">
+      <h2>🎯 审计风险模型 <span class="badge">AR = IR × CR × DR</span></h2>
+      <canvas id="riskModel" width="400" height="200"></canvas>
+      <div style="text-align:center;margin-top:12px;">
+        <span style="font-size:28px;font-weight:800;color:var(--green);">4.88%</span>
+        <span style="font-size:13px;color:var(--text2);margin-left:8px;">AR < 5% 目标 → ✅ 可接受</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📈 管理建议书要点 <span class="badge">11项改进建议</span></h2>
+      <div style="display:grid;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-red">P0</span>
+          <span style="font-size:13px;color:var(--text);">精算假设独立签批流程</span>
+          <span style="font-size:11px;color:var(--text2);">SD-003</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-red">P0</span>
+          <span style="font-size:13px;color:var(--text);">商誉减值测试</span>
+          <span style="font-size:11px;color:var(--text2);">ADJ-01</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-yellow">P1</span>
+          <span style="font-size:13px;color:var(--text);">关联交易定价季度独立复核</span>
+          <span style="font-size:11px;color:var(--text2);">SD-002</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-yellow">P1</span>
+          <span style="font-size:13px;color:var(--text);">C-ROSS资本管理长期规划</span>
+          <span style="font-size:11px;color:var(--text2);">合规#4</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-yellow">P1</span>
+          <span style="font-size:13px;color:var(--text);">紧急变更审批自动化提醒</span>
+          <span style="font-size:11px;color:var(--text2);">SD-001</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-yellow">P1</span>
+          <span style="font-size:13px;color:var(--text);">关联交易事前预审系统</span>
+          <span style="font-size:11px;color:var(--text2);">合规#5</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-blue">P2</span>
+          <span style="font-size:13px;color:var(--text);">ESG报告体系升级(ISSB S1/S2)</span>
+          <span style="font-size:11px;color:var(--text2);">合规#8</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-blue">P2</span>
+          <span style="font-size:13px;color:var(--text);">跨子公司数据报送自动化</span>
+          <span style="font-size:11px;color:var(--text2);">合规#2</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);">
+          <span class="tag tag-blue">P2</span>
+          <span style="font-size:13px;color:var(--text);">投资性房地产减值测试</span>
+          <span style="font-size:11px;color:var(--text2);">ADJ-04</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ TAB 3: DASHBOARD -->
+<div class="tab-content" id="tab-dashboard">
+  <div class="flex items-center justify-between mb-16">
+    <div>
+      <h1>中国平安 审计智慧大屏</h1>
+      <p style="color:var(--text2);font-size:13px;">Audit Intelligence Dashboard — Real-time KPI · Risk Monitor · Timeline</p>
+    </div>
+  </div>
+
+  <!-- Top KPI Row -->
+  <div class="grid grid-4 mb-16">
+    <div class="card stat">
+      <div class="label">总资产</div>
+      <div class="value" style="color:var(--accent);font-size:28px;">¥12.4万亿</div>
+      <div class="sub">综合金融集团</div>
+    </div>
+    <div class="card stat">
+      <div class="label">营业总收入</div>
+      <div class="value" style="color:var(--green);font-size:28px;">¥1.029万亿</div>
+      <div class="sub">同比 +12.60%</div>
+    </div>
+    <div class="card stat">
+      <div class="label">归母净利润</div>
+      <div class="value" style="color:var(--accent);font-size:28px;">¥1,266亿</div>
+      <div class="sub">同比 +47.79%</div>
+    </div>
+    <div class="card stat">
+      <div class="label">ROE</div>
+      <div class="value" style="color:var(--green);font-size:28px;">13.80%</div>
+      <div class="sub">加权平均 ROA 1.20%</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <!-- Pie: Revenue Structure -->
+    <div class="card">
+      <h2>🏛️ 收入结构 <span class="badge">Segment Revenue</span></h2>
+      <canvas id="revenuePie" width="400" height="240"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#3b82f6;margin-right:4px;"></span>寿险及健康险 46.58%</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#10b981;margin-right:4px;"></span>财产保险 33.65%</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#f59e0b;margin-right:4px;"></span>银行 14.26%</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#8b5cf6;margin-right:4px;"></span>其他 5.51%</div>
+      </div>
+    </div>
+
+    <!-- Compliance Health -->
+    <div class="card">
+      <h2>🔍 合规健康检查 <span class="badge">7大领域</span></h2>
+      <div style="display:grid;gap:10px;">
+        <div><div class="bar-label"><span>金融监管合规</span><span class="tag tag-green">低风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--green);"></div></div></div>
+        <div><div class="bar-label"><span>保险资金运用</span><span class="tag tag-green">低风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--green);"></div></div></div>
+        <div><div class="bar-label"><span>偿付能力(C-ROSS II)</span><span class="tag tag-yellow">中风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:70%;background:var(--yellow);"></div></div></div>
+        <div><div class="bar-label"><span>信息披露合规</span><span class="tag tag-green">低风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--green);"></div></div></div>
+        <div><div class="bar-label"><span>反洗钱合规</span><span class="tag tag-green">低风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--green);"></div></div></div>
+        <div><div class="bar-label"><span>公司治理合规</span><span class="tag tag-green">低风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:80%;background:var(--green);"></div></div></div>
+        <div><div class="bar-label"><span>ESG披露合规</span><span class="tag tag-yellow">中风险</span></div><div class="progress-bar"><div class="progress-fill" style="width:65%;background:var(--yellow);"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITGC & Control tests -->
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <div class="card">
+      <h2>🖥️ IT一般控制测试 <span class="badge">19项 · 78%通过</span></h2>
+      <canvas id="itgcChart" width="400" height="200"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px;">
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px;"></span>访问控制 80%</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--yellow);margin-right:4px;"></span>变更管理 60% ← SD</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px;"></span>系统运维 90%</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px;"></span>数据安全 80%</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🧪 控制测试结果 <span class="badge">20控制点</span></h2>
+      <canvas id="controlTestChart" width="400" height="200"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px;">
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px;"></span>保费核保 5/5</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px;"></span>理赔处理 5/5</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--yellow);margin-right:4px;"></span>投资决策 3/5</div>
+        <div style="font-size:11px;color:var(--text2);"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--yellow);margin-right:4px;"></span>关联交易审批 3/5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline & Adjustments -->
+  <div class="grid grid-2 mb-16" style="gap:24px;">
+    <div class="card">
+      <h2>📅 审计工作底稿时间线 <span class="badge">Timeline</span></h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="dot" style="border-color:var(--green);background:var(--green);"></div>
+          <div class="date">A1 · Financial Auditor</div>
+          <div class="event">财务审计工作底稿 + 发现清单</div>
+          <div class="desc">8项审计程序 · 14项发现 · 5项调整建议</div>
+        </div>
+        <div class="timeline-item">
+          <div class="dot" style="border-color:var(--yellow);background:var(--yellow);"></div>
+          <div class="date">A2 · IC Auditor</div>
+          <div class="event">内部控制审计报告 + Dashboard</div>
+          <div class="desc">39项控制测试 · 19项ITGC · COSO 4.06/5.0</div>
+        </div>
+        <div class="timeline-item">
+          <div class="dot" style="border-color:var(--purple);background:var(--purple);"></div>
+          <div class="date">A3 · Compliance Auditor</div>
+          <div class="event">合规审计报告</div>
+          <div class="desc">7大领域 · 8项发现 · 基本合规</div>
+        </div>
+        <div class="timeline-item">
+          <div class="dot" style="border-color:var(--blue);background:var(--blue);"></div>
+          <div class="date">A4 · Audit Manager</div>
+          <div class="event">审计总结报告 + 审计意见草案</div>
+          <div class="desc">34项汇总 · 风险模型4.88% · 无保留意见</div>
+        </div>
+        <div class="timeline-item">
+          <div class="dot" style="border-color:var(--accent);background:var(--accent);"></div>
+          <div class="date">A5 · Audit Editor</div>
+          <div class="event">审计智慧大屏HTML</div>
+          <div class="desc">交互式3页签 · 可视化 · 零外部依赖</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📐 审计差异矩阵 <span class="badge">5项调整建议</span></h2>
+      <canvas id="adjustmentChart" width="400" height="240"></canvas>
+    </div>
+  </div>
+
+  <!-- SOX Compliance -->
+  <div class="card">
+    <h2>📋 SOX 404 合规 <span class="badge">Sarbanes-Oxley</span></h2>
+    <div class="grid grid-5" style="gap:12px;margin-top:8px;">
+      <div class="matrix-cell matrix-pass"><div class="matrix-label">§302</div><div class="matrix-value" style="color:var(--green);">✅</div><div style="font-size:10px;color:var(--text2);">管理层认证</div></div>
+      <div class="matrix-cell matrix-pass"><div class="matrix-label">§404(a)</div><div class="matrix-value" style="color:var(--green);">✅</div><div style="font-size:10px;color:var(--text2);">ICFR评估</div></div>
+      <div class="matrix-cell matrix-warn"><div class="matrix-label">§404(b)</div><div class="matrix-value" style="color:var(--yellow);">✅※</div><div style="font-size:10px;color:var(--text2);">外部鉴证(含SD)</div></div>
+      <div class="matrix-cell matrix-pass"><div class="matrix-label">§409</div><div class="matrix-value" style="color:var(--green);">✅</div><div style="font-size:10px;color:var(--text2);">实时披露</div></div>
+      <div class="matrix-cell matrix-pass"><div class="matrix-label">§802</div><div class="matrix-value" style="color:var(--green);">✅</div><div style="font-size:10px;color:var(--text2);">记录保存</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`.tab:nth-child(${['team','report','dashboard'].indexOf(name)+1})`).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  // Redraw charts after hidden elements become visible
+  setTimeout(drawAllCharts, 100);
+}
+
+function drawAllCharts(){
+  drawDefectPie();
+  drawCosoRadar();
+  drawRiskModel();
+  drawRevenuePie();
+  drawITGC();
+  drawControlTest();
+  drawAdjustmentChart();
+}
+
+// --- Defect Pie ---
+function drawDefectPie(){
+  const c=document.getElementById('defectPie'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;const cx=w/2,cy=h/2+10,r=80;
+  ctx.clearRect(0,0,w,h);
+  const data=[{v:3,c:'#f59e0b',l:'SD 3'},{v:9,c:'#3b82f6',l:'CD 9'}];
+  const total=data.reduce((a,d)=>a+d.v,0);let start=-Math.PI/2;
+  data.forEach(d=>{
+    const a=(d.v/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,start+a);
+    ctx.fillStyle=d.c;ctx.fill();start+=a;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,r*0.55,0,Math.PI*2);ctx.fillStyle='#1a2332';ctx.fill();
+  ctx.fillStyle='#e2e8f0';ctx.font='bold 20px sans-serif';ctx.textAlign='center';
+  ctx.fillText('12',cx,cy-4);
+  ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.fillText('总缺陷',cx,cy+14);
+}
+
+// --- COSO Radar ---
+function drawCosoRadar(){
+  const c=document.getElementById('cosoRadar'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height,cx=w/2,cy=h/2+10,r=75;
+  ctx.clearRect(0,0,w,h);
+  const labels=['控制环境','风险评估','控制活动','信息与沟通','监控活动'];
+  const values=[4.3,4.1,3.8,4.2,3.9];const levels=5;
+  function point(i,v){const a=-Math.PI/2+(i/labels.length)*Math.PI*2;return{x:cx+v/levels*r*Math.cos(a),y:cy+v/levels*r*Math.sin(a)};}
+  // Grid
+  for(let l=1;l<=levels;l++){
+    ctx.beginPath();
+    for(let i=0;i<=labels.length;i++){
+      const p=point(i%labels.length,l);
+      i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);
+    }
+    ctx.strokeStyle='rgba(42,58,92,0.5)';ctx.lineWidth=1;ctx.stroke();
+  }
+  // Data
+  ctx.beginPath();
+  for(let i=0;i<=labels.length;i++){
+    const p=point(i%labels.length,values[i%labels.length]);
+    i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);
+  }
+  ctx.fillStyle='rgba(0,212,255,0.15)';ctx.fill();ctx.strokeStyle='#00d4ff';ctx.lineWidth=2;ctx.stroke();
+  // Labels
+  ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.textAlign='center';
+  labels.forEach((l,i)=>{const p=point(i,5.5);ctx.fillText(l,p.x,p.y+4);});
+}
+
+// --- Risk Model ---
+function drawRiskModel(){
+  const c=document.getElementById('riskModel'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  const data=[{l:'IR 固有风险',v:65,c:'#ef4444'},{l:'CR 控制风险',v:50,c:'#f59e0b'},{l:'DR 检查风险',v:15,c:'#3b82f6'},{l:'AR 审计风险',v:4.88,c:'#10b981'}];
+  const barW=60,gap=30,startX=(w-(data.length*barW+(data.length-1)*gap))/2;
+  data.forEach((d,i)=>{
+    const x=startX+i*(barW+gap),bh=d.v/100*(h-60);
+    const grad=ctx.createLinearGradient(x,h-30,x,h-30-bh);
+    grad.addColorStop(0,d.c);grad.addColorStop(1,d.c+'88');
+    ctx.fillStyle=grad;
+    ctx.beginPath();ctx.roundRect(x,h-30-bh,barW,bh,4);ctx.fill();
+    ctx.fillStyle='#e2e8f0';ctx.font='bold 13px sans-serif';ctx.textAlign='center';
+    ctx.fillText(d.v+'%',x+barW/2,h-30-bh-8);
+    ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.fillText(d.l,x+barW/2,h-8);
+  });
+}
+
+// --- Revenue Pie ---
+function drawRevenuePie(){
+  const c=document.getElementById('revenuePie'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height,cx=w/3,cy=h/2,r=90;
+  ctx.clearRect(0,0,w,h);
+  const segs=[{v:46.58,c:'#3b82f6',l:'寿险及健康险'},{v:33.65,c:'#10b981',l:'财产保险'},{v:14.26,c:'#f59e0b',l:'银行'},{v:4.43,c:'#8b5cf6',l:'资产管理'},{v:4.15,c:'#ec4899',l:'金融赋能'}];
+  // 去掉内部抵消-3.07%和汇兑/其他，归一化
+  const norm=segs.reduce((s,d)=>s+d.v,0);let start=-Math.PI/2;
+  segs.forEach(d=>{
+    const a=(d.v/norm)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,start+a);
+    ctx.fillStyle=d.c;ctx.fill();ctx.strokeStyle='#0a0e1a';ctx.lineWidth=2;ctx.stroke();start+=a;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,r*0.4,0,Math.PI*2);
+  ctx.fillStyle='#1a2332';ctx.fill();
+  ctx.fillStyle='#e2e8f0';ctx.font='bold 16px sans-serif';ctx.textAlign='center';
+  ctx.fillText('¥1.029',cx,cy-6);
+  ctx.fillStyle='#94a3b8';ctx.font='11px sans-serif';ctx.fillText('万亿',cx,cy+14);
+  // Legend
+  const lx=cx*1.6,ly=cy-r+20;
+  ctx.font='12px sans-serif';
+  segs.forEach((d,i)=>{ctx.fillStyle=d.c;ctx.fillRect(lx,ly+i*22,12,12);ctx.fillStyle='#e2e8f0';ctx.textAlign='left';ctx.fillText(d.l,lx+18,ly+i*22+10);ctx.fillStyle='#94a3b8';ctx.fillText(d.v+'%',lx+18,ly+i*22+22);});
+}
+
+// --- ITGC ---
+function drawITGC(){
+  const c=document.getElementById('itgcChart'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  const data=[{l:'访问控制',v:80,c:'#10b981'},{l:'变更管理',v:60,c:'#f59e0b'},{l:'系统运维',v:90,c:'#10b981'},{l:'数据安全',v:80,c:'#10b981'}];
+  const barH=28,gap=12,startY=30;
+  data.forEach((d,i)=>{
+    const y=startY+i*(barH+gap),bw=d.v/100*(w-100);
+    ctx.fillStyle='#1f2a3e';ctx.beginPath();ctx.roundRect(80,y,w-120,barH,4);ctx.fill();
+    const grad=ctx.createLinearGradient(80,y,80+bw,y);
+    grad.addColorStop(0,d.c);grad.addColorStop(1,d.c+'88');
+    ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(80,y,bw,barH,4);ctx.fill();
+    ctx.fillStyle='#e2e8f0';ctx.font='12px sans-serif';ctx.textAlign='right';ctx.fillText(d.l,70,y+18);
+    ctx.fillStyle='#e2e8f0';ctx.font='bold 12px sans-serif';ctx.textAlign='left';ctx.fillText(d.v+'%',85+bw,y+18);
+  });
+}
+
+// --- Control Test ---
+function drawControlTest(){
+  const c=document.getElementById('controlTestChart'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  const data=[{l:'保费核保',p:5},{l:'理赔处理',p:5},{l:'投资决策',p:3},{l:'关联交易',p:3}];
+  const barH=28,gap=12,startY=30,max=5;
+  data.forEach((d,i)=>{
+    const y=startY+i*(barH+gap),bw=(d.p/max)*(w-120);
+    ctx.fillStyle='#1f2a3e';ctx.beginPath();ctx.roundRect(100,y,w-140,barH,4);ctx.fill();
+    const c2=d.p===5?'#10b981':'#f59e0b';
+    const grad=ctx.createLinearGradient(100,y,100+bw,y);
+    grad.addColorStop(0,c2);grad.addColorStop(1,c2+'88');
+    ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(100,y,bw,barH,4);ctx.fill();
+    ctx.fillStyle='#e2e8f0';ctx.font='12px sans-serif';ctx.textAlign='right';ctx.fillText(d.l,90,y+18);
+    ctx.fillStyle='#e2e8f0';ctx.font='bold 12px sans-serif';ctx.textAlign='left';
+    ctx.fillText(d.p+'/'+max,105+bw,y+18);
+  });
+}
+
+// --- Adjustment chart ---
+function drawAdjustmentChart(){
+  const c=document.getElementById('adjustmentChart'); if(!c||c.offsetParent===null)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  const data=[{l:'ADJ-01\n商誉减值',v:200,c:'#ef4444'},{l:'ADJ-02\n折现率调整',v:100,c:'#f59e0b'},{l:'ADJ-05\nLevel3估值',v:30,c:'#3b82f6'},{l:'ADJ-04\n投资性地产',v:50,c:'#8b5cf6'},{l:'ADJ-03\n关联交易',v:10,c:'#10b981'}];
+  const barW=50,gap=16,startX=(w-(data.length*barW+(data.length-1)*gap))/2;
+  const maxVal=200;
+  data.forEach((d,i)=>{
+    const x=startX+i*(barW+gap),bh=(d.v/maxVal)*(h-60);
+    const grad=ctx.createLinearGradient(x,h-20,x,h-20-bh);
+    grad.addColorStop(0,d.c);grad.addColorStop(1,d.c+'88');
+    ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(x,h-20-bh,barW,bh,4);ctx.fill();
+    ctx.fillStyle='#e2e8f0';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+    ctx.fillText(d.v+'亿',x+barW/2,h-20-bh-8);
+    ctx.fillStyle='#94a3b8';ctx.font='10px sans-serif';ctx.fillText(d.l,x+barW/2,h-4);
+  });
+}
+// Canvas roundRect polyfill
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(r===undefined)r=0;
+    this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);
+    this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);
+    this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);return this;
+  };
+}
+
+// Initial draw
+setTimeout(drawAllCharts, 200);
+</script>
+</body>
+</html>

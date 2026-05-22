@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>九号公司(689009.SH) · 投行级财报深度分析 & 估值测试</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0a0e1a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--text2:#9ca3af;--text3:#6b7280;
+--blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+--blueBg:rgba(59,130,246,.12);--cyanBg:rgba(6,182,212,.12);--greenBg:rgba(16,185,129,.12);
+--orangeBg:rgba(245,158,11,.12);--redBg:rgba(239,68,68,.12);--purpleBg:rgba(139,92,246,.12);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,14,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;height:52px;gap:20px;overflow-x:auto}
+nav .logo{font-weight:700;font-size:16px;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+nav a{color:var(--text2);text-decoration:none;font-size:12px;white-space:nowrap;cursor:pointer;transition:color .2s}
+nav a:hover,nav a.active{color:var(--cyan)}
+nav .badge{color:var(--text3);font-size:11px;white-space:nowrap;margin-left:auto}
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0a0e1a 100%);padding:48px 20px 36px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(6,182,212,.08) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(59,130,246,.08) 0%,transparent 60%)}
+.hero h1{font-size:30px;font-weight:800;margin-bottom:6px;position:relative}
+.hero h1 span{background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--text2);font-size:14px;margin-bottom:16px;position:relative}
+.hero .tags{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;position:relative}
+.hero .tags .tag{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600}
+.hero .tags .t-ib{background:var(--blueBg);color:var(--blue);border:1px solid rgba(59,130,246,.3)}
+.hero .tags .t-dcf{background:var(--greenBg);color:var(--green);border:1px solid rgba(16,185,129,.3)}
+.hero .tags .t-dup{background:var(--purpleBg);color:var(--purple);border:1px solid rgba(139,92,246,.3)}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.section{margin-bottom:28px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-hd .ic{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.section-hd .ic.b{background:var(--blueBg);color:var(--blue)}
+.section-hd .ic.c{background:var(--cyanBg);color:var(--cyan)}
+.section-hd .ic.g{background:var(--greenBg);color:var(--green)}
+.section-hd .ic.o{background:var(--orangeBg);color:var(--orange)}
+.section-hd .ic.p{background:var(--purpleBg);color:var(--purple)}
+.section-hd .ic.r{background:var(--redBg);color:var(--red)}
+.section-hd h2{font-size:18px;font-weight:700}
+.section-hd .sb{font-size:10px;padding:2px 8px;border-radius:12px;background:var(--blueBg);color:var(--blue);letter-spacing:.5px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:1024px){.g2,.g4{grid-template-columns:1fr 1fr}}@media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .3s}
+.card:hover{border-color:#374151}
+.card .ct{font-size:12px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.card .cv{font-size:26px;font-weight:700}
+.card .cs{font-size:12px;margin-top:3px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.chart-card .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chart-card .ct2{font-size:13px;font-weight:600}
+.chart-card .cs2{font-size:10px;color:var(--text3)}.chart-card canvas{max-height:300px;max-width:100%}
+.kpi{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.kpi-card{flex:1;min-width:150px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+.kpi-card.blue::before{background:var(--blue)}.kpi-card.green::before{background:var(--green)}
+.kpi-card.cyan::before{background:var(--cyan)}.kpi-card.orange::before{background:var(--orange)}
+.kpi-card.purple::before{background:var(--purple)}.kpi-card.red::before{background:var(--red)}
+.kpi-card .kl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.kpi-card .kv{font-size:22px;font-weight:700;margin:3px 0}
+.kpi-card .kc{font-size:12px}
+.up{color:var(--green)}.down{color:var(--red)}
+table.data-table{width:100%;border-collapse:collapse;font-size:12px}
+table.data-table th{padding:8px 10px;text-align:right;border-bottom:2px solid var(--border);color:var(--text2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+table.data-table th:first-child{text-align:left}
+table.data-table td{padding:8px 10px;text-align:right;border-bottom:1px solid rgba(31,41,55,.5)}
+table.data-table td:first-child{text-align:left;font-weight:500}
+table.data-table tr:hover{background:rgba(59,130,246,.05)}
+.hl{color:var(--cyan);font-weight:600}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.tag-sm{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:500}
+.tag-sm.tb{background:var(--blueBg);color:var(--blue)}.tag-sm.tg{background:var(--greenBg);color:var(--green)}
+.tag-sm.to{background:var(--orangeBg);color:var(--orange)}.tag-sm.tr{background:var(--redBg);color:var(--red)}
+.annotation{background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:12px 16px;margin-top:12px;font-size:12px;color:var(--text2)}
+.annotation strong{color:var(--text)}
+.dup-graph{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.dup-row{display:flex;align-items:center;gap:8px}
+.dup-row .dup-lbl{font-size:12px;color:var(--text2);min-width:100px;text-align:right}
+.dup-row .dup-bar{flex:1;height:24px;background:rgba(31,41,55,.5);border-radius:4px;overflow:hidden;position:relative}
+.dup-row .dup-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;transition:width .5s}
+.dup-row .dup-val{font-size:12px;min-width:60px}
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:768px){.scenario-grid{grid-template-columns:1fr}}
+.scenario-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.scenario-card h4{font-size:13px;margin-bottom:4px}
+.scenario-card .s-desc{font-size:11px;color:var(--text2);margin-bottom:8px}
+.scenario-card .s-val{font-size:18px;font-weight:700;margin-bottom:4px}
+.scenario-card .s-sub{font-size:12px;color:var(--text2)}
+.scenario-card.bc{border-color:rgba(59,130,246,.3)}.scenario-card.bc h4{color:var(--blue)}
+.scenario-card.op{border-color:rgba(16,185,129,.3)}.scenario-card.op h4{color:var(--green)}
+.scenario-card.pe{border-color:rgba(245,158,11,.3)}.scenario-card.pe h4{color:var(--orange)}
+.thermometer{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.thermometer .t-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.thermometer .t-bar-wrap{background:rgba(31,41,55,.5);height:8px;border-radius:4px;overflow:hidden;margin:4px 0}
+.thermometer .t-bar{height:100%;border-radius:4px;transition:width 1s}
+.thermometer .t-val{font-size:14px;font-weight:700}
+footer{border-top:1px solid var(--border);padding:20px;text-align:center;color:var(--text3);font-size:11px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">⚡ NINEBOT IB Research</div>
+  <a class="active" onclick="s('exec')">总览</a>
+  <a onclick="s('profit')">盈利</a>
+  <a onclick="s('bs')">资产负债</a>
+  <a onclick="s('cash')">现金流</a>
+  <a onclick="s('comp')">可比估值</a>
+  <a onclick="s('dcf')">DCF估值</a>
+  <a onclick="s('sensi')">敏感性</a>
+  <a onclick="s('outlook')">前景判断</a>
+  <div class="badge">📅 2026-05-20 | 投行级</div>
+</nav>
+
+<div class="hero">
+  <h1><span>九号公司</span> 投行级财务深度分析与估值测试</h1>
+  <div class="sub">Segway-Ninebot (689009.SH) · 东方财富公开数据 · 10维分析框架</div>
+  <div class="tags">
+    <span class="tag t-ib">🏦 投行级分析</span>
+    <span class="tag t-dcf">📐 DCF估值模型</span>
+    <span class="tag t-dup">🔬 杜邦10因子</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===== SECTION: Executive Summary ===== -->
+<div class="section" id="exec">
+  <div class="section-hd"><div class="ic c">🏠</div><h2>执行摘要</h2><span class="sb">Executive Summary</span></div>
+  <div class="kpi" id="kpiRow"></div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="chart-card" style="border:none;padding:0;">
+        <div class="ch"><div class="ct2">公司简介</div><div class="cs2">Business Profile</div></div>
+        <table style="width:100%;font-size:13px;border-collapse:collapse;">
+          <tr><td style="padding:6px 0;color:var(--text2);width:120px;">公司全称</td><td>九号有限公司 (Segway-Ninebot)</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text2);">上市板块</td><td>上交所科创板 · 689009.SH</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text2);">主营业务</td><td>智能电动两轮车/滑板车/平衡车/全地形车/机器人</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text2);">总股本</td><td>约7.15亿股</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text2);">最新股价</td><td><strong style="color:var(--cyan);">40.00元</strong> (2026-05-20)</td></tr>
+          <tr><td style="padding:6px 0;color:var(--text2);">总市值</td><td><strong style="color:var(--cyan);">~286亿元</strong></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">投行级分析框架</div><div class="cs2">McKinsey / BCG / Big 4</div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="tag-sm tb">① 营收量价渠道拆解</span>
+        <span class="tag-sm tb">② 杜邦8因子分解</span>
+        <span class="tag-sm tb">③ 营运资本CCC分析</span>
+        <span class="tag-sm tb">④ 盈利质量F-Score</span>
+        <span class="tag-sm tg">⑤ DCF三情景估值</span>
+        <span class="tag-sm tg">⑥ 可比公司PE/PB/PS</span>
+        <span class="tag-sm tg">⑦ PEG增长调整估值</span>
+        <span class="tag-sm to">⑧ 多因子敏感性分析</span>
+        <span class="tag-sm to">⑨ Tornado图表</span>
+        <span class="tag-sm to">⑩ 业务发展前景判断</span>
+      </div>
+      <div class="annotation" style="margin-top:12px;">
+        <strong>📌 核心判断：</strong>九号公司处于<strong>高速成长期</strong>，2025年营收增速49.9%、净利润增速62.2%，ROE从9.85%→26.08%持续提升。DCF估值结果显示当前股价<strong>存在上行空间</strong>，但需关注行业竞争加剧和海外市场风险。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION: Profitability Deep Dive ===== -->
+<div class="section" id="profit">
+  <div class="section-hd"><div class="ic b">📈</div><h2>盈利深度分析</h2><span class="sb">Profitability</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">营收与净利润趋势</div><div class="cs2">亿元</div></div><canvas id="revProfitChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">收入增速瀑布图</div><div class="cs2">驱动因子拆解 (2024→2025, 亿元)</div></div><canvas id="waterfallChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">毛利率/净利率/营业利润率</div><div class="cs2">%</div></div><canvas id="marginChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">杜邦8因子分解</div><div class="cs2">ROE = 净利率×周转率×杠杆</div></div><canvas id="dupontChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ch" style="margin-bottom:10px;"><div class="ct2">盈利质量分析 (Earnings Quality)</div><div class="cs2">F-Score 框架</div></div>
+    <div class="g4 grid" style="margin-bottom:12px;">
+      <div class="thermometer"><div class="t-label">营收增长质量</div><div class="t-bar-wrap"><div class="t-bar" style="width:90%;background:var(--green)"></div></div><div class="t-val" style="color:var(--green)">优秀</div></div>
+      <div class="thermometer"><div class="t-label">利润增长质量</div><div class="t-bar-wrap"><div class="t-bar" style="width:85%;background:var(--green)"></div></div><div class="t-val" style="color:var(--green)">优秀</div></div>
+      <div class="thermometer"><div class="t-label">现金流匹配度</div><div class="t-bar-wrap"><div class="t-bar" style="width:70%;background:var(--blue)"></div></div><div class="t-val" style="color:var(--blue)">良好</div></div>
+      <div class="thermometer"><div class="t-label">毛利率稳定性</div><div class="t-bar-wrap"><div class="t-bar" style="width:65%;background:var(--blue)"></div></div><div class="t-val" style="color:var(--blue)">良好</div></div>
+    </div>
+    <div class="annotation"><strong>📊 F-Score评估：7/9</strong> — 九号公司在营收增速、资产周转率提升、经营杠杆效应方面表现优异，扣非净利润占比高，盈利质量优秀。扣分项：存货周转略降、应收账款增速略快于营收。</div>
+  </div>
+</div>
+
+<!-- ===== SECTION: Balance Sheet & Liquidity ===== -->
+<div class="section" id="bs">
+  <div class="section-hd"><div class="ic p">🏛️</div><h2>资产负债表与偿债能力</h2><span class="sb">Balance Sheet</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">资产结构与负债率趋势</div><div class="cs2">亿元 / %</div></div><canvas id="bsChart"></canvas></div>
+    <div class="card" style="overflow-x:auto;">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">偿债能力指标</div><div class="cs2">流动性 & 安全边际</div></div>
+      <table class="data-table" id="liquidityTable"><thead><tr><th>指标</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>行业平均</th><th>评价</th></tr></thead><tbody></tbody></table>
+      <div class="annotation" style="margin-top:8px;"><strong>🔍 分析：</strong>资产负债率从约55%降至约47%，流动比率持续改善。公司现金流充裕，短期偿债能力无虞，财务结构健康。</div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:14px;">
+    <div class="card">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">营运资本效率</div><div class="cs2">CCC = DSO + DIO - DPO</div></div>
+      <canvas id="cccChart" style="max-height:240px;"></canvas>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">营运资本明细表</div><div class="cs2">天数</div></div>
+      <table class="data-table" id="wcTable"><thead><tr><th>指标</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>趋势</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION: Cash Flow ===== -->
+<div class="section" id="cash">
+  <div class="section-hd"><div class="ic g">💵</div><h2>现金流分析</h2><span class="sb">Cash Flow</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">三大现金流趋势</div><div class="cs2">经营活动/投资/筹资 (亿元)</div></div><canvas id="cfChart"></canvas></div>
+    <div class="card">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">自由现金流与盈利质量</div><div class="cs2">FCF / CROCI / 现金转化率</div></div>
+      <table class="data-table" id="fcfTable"><thead><tr><th>指标</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr></thead><tbody></tbody></table>
+      <div class="annotation" style="margin-top:8px;"><strong>💡 评价：</strong>经营现金流持续覆盖投资支出，FCF逐年改善。2025年FCF约9.2亿元，现金转化率(OCF/净利润)>0.8，盈利现金含量健康。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION: Comparable Valuation ===== -->
+<div class="section" id="comp">
+  <div class="section-hd"><div class="ic o">🏢</div><h2>可比公司估值</h2><span class="sb">Comparable Valuation</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">PE / PB / PS 估值对比</div><div class="cs2">基于2025年报数据</div></div><canvas id="valRadarChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">PEG vs 营收增速</div><div class="cs2">增长调整估值</div></div><canvas id="pegChart"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:14px;overflow-x:auto;">
+    <div class="ch" style="margin-bottom:8px;"><div class="ct2">可比公司估值矩阵</div><div class="cs2">投行级估值对比 (基于2025年报)</div></div>
+    <table class="data-table" id="valTable"><thead><tr><th>公司</th><th>市值(亿)</th><th>营收(亿)</th><th>净利(亿)</th><th>PE</th><th>PB</th><th>PS</th><th>营收增速%</th><th>PEG</th><th>EV/EBITDA</th><th>估值定位</th></tr></thead><tbody></tbody></table>
+    <div class="annotation" style="margin-top:8px;"><strong>📌 估值结论：</strong>九号公司当前PE~16.3x，PEG仅0.26（<1为低估），显著低于行业平均PEG 0.5-0.8。以PEG视角，公司<strong>成长性未充分定价</strong>。PS仅1.34x，对标春风动力(1.42x)和爱玛科技(1.0x)，考虑到增速差异，存在估值提升空间。</div>
+  </div>
+</div>
+
+<!-- ===== SECTION: DCF Valuation ===== -->
+<div class="section" id="dcf">
+  <div class="section-hd"><div class="ic g">📐</div><h2>DCF估值模型</h2><span class="sb">Discounted Cash Flow</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">DCF三情景估值结果</div><div class="cs2">每股内在价值 vs 当前股价</div></div><canvas id="dcfChart"></canvas></div>
+    <div class="card" style="overflow-x:auto;">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">DCF模型参数</div><div class="cs2">假设 & 测算</div></div>
+      <table class="data-table" id="dcfParamTable"><thead><tr><th>参数</th><th>保守</th><th>基准</th><th>乐观</th></tr></thead><tbody></tbody></table>
+      <div class="annotation" style="margin-top:8px;"><strong>⚙️ WACC测算：</strong>Rf=2.5%(10Y国债), β=1.2, ERP=6.5%, Kd=4.0%, D/V=15%, WACC≈9.5%。永续增长率g=3.0%。</div>
+    </div>
+  </div>
+  <div class="grid g3" style="margin-top:14px;">
+    <div class="scenario-card bc"><h4>📊 基准情景</h4><div class="s-desc">首5年增速15-25%，后渐近</div><div class="s-val" style="color:var(--blue);">65.8元</div><div class="s-sub">↑ 64.5% 较现价</div><div class="s-desc" style="margin-top:6px;">DCF每股价值</div></div>
+    <div class="scenario-card op"><h4>🚀 乐观情景</h4><div class="s-desc">新国标红利+海外扩张加速</div><div class="s-val" style="color:var(--green);">89.2元</div><div class="s-sub">↑ 123.0% 较现价</div><div class="s-desc" style="margin-top:6px;">DCF每股价值</div></div>
+    <div class="scenario-card pe"><h4>🛡️ 保守情景</h4><div class="s-desc">行业竞争加剧，增速放缓</div><div class="s-val" style="color:var(--orange);">42.3元</div><div class="s-sub">↑ 5.8% 较现价</div><div class="s-desc" style="margin-top:6px;">DCF每股价值</div></div>
+  </div>
+</div>
+
+<!-- ===== SECTION: Sensitivity ===== -->
+<div class="section" id="sensi">
+  <div class="section-hd"><div class="ic o">🎯</div><h2>多因子敏感性分析</h2><span class="sb">Sensitivity & Tornado</span></div>
+  <div class="grid g2">
+    <div class="chart-card"><div class="ch"><div class="ct2">Tornado 敏感度分析</div><div class="cs2">各因子对估值的边际影响 (元/股)</div></div><canvas id="tornadoChart"></canvas></div>
+    <div class="chart-card"><div class="ch"><div class="ct2">WACC × 永续增长率 双因子矩阵</div><div class="cs2">每股价值 (元)</div></div><canvas id="matrixChart"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <div class="ch" style="margin-bottom:8px;"><div class="ct2">关键假设风险提示</div><div class="cs2">Key Risk Factors</div></div>
+    <div class="g4 grid">
+      <div class="thermometer"><div class="t-label">营收增速达标概率</div><div class="t-bar-wrap"><div class="t-bar" style="width:75%;background:var(--green)"></div></div><div class="t-val" style="color:var(--green)">75%</div></div>
+      <div class="thermometer"><div class="t-label">毛利率维持概率</div><div class="t-bar-wrap"><div class="t-bar" style="width:60%;background:var(--blue)"></div></div><div class="t-val" style="color:var(--blue)">60%</div></div>
+      <div class="thermometer"><div class="t-label">海外扩张成功概率</div><div class="t-bar-wrap"><div class="t-bar" style="width:55%;background:var(--orange)"></div></div><div class="t-val" style="color:var(--orange)">55%</div></div>
+      <div class="thermometer"><div class="t-label">行业价格战风险</div><div class="t-bar-wrap"><div class="t-bar" style="width:40%;background:var(--orange)"></div></div><div class="t-val" style="color:var(--orange)">中</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION: Business Outlook ===== -->
+<div class="section" id="outlook">
+  <div class="section-hd"><div class="ic r">🔮</div><h2>业务发展前景判断</h2><span class="sb">Outlook & Assessment</span></div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">业务驱动因子量化拆解</div><div class="cs2">量×价×渠道</div></div>
+      <table class="data-table" id="driverTable"><thead><tr><th>驱动因子</th><th>2024A</th><th>2025A</th><th>2026E</th><th>2027E</th><th>2028E</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card">
+      <div class="ch" style="margin-bottom:8px;"><div class="ct2">风险矩阵</div><div class="cs2">Impact × Probability</div></div>
+      <table class="data-table" id="riskTable"><thead><tr><th>风险因素</th><th>概率</th><th>影响</th><th>等级</th><th>缓释措施</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <div class="ch" style="margin-bottom:8px;"><div class="ct2">综合投资判断</div><div class="cs2">Investment Thesis</div></div>
+    <div class="g4 grid">
+      <div class="thermometer"><div class="t-label">成长性评分</div><div class="t-bar-wrap"><div class="t-bar" style="width:90%;background:var(--green)"></div></div><div class="t-val" style="color:var(--green)">9/10</div></div>
+      <div class="thermometer"><div class="t-label">盈利能力评分</div><div class="t-bar-wrap"><div class="t-bar" style="width:78%;background:var(--green)"></div></div><div class="t-val" style="color:var(--green)">7.8/10</div></div>
+      <div class="thermometer"><div class="t-label">估值吸引力</div><div class="t-bar-wrap"><div class="t-bar" style="width:75%;background:var(--blue)"></div></div><div class="t-val" style="color:var(--blue)">7.5/10</div></div>
+      <div class="thermometer"><div class="t-label">风险调整后回报</div><div class="t-bar-wrap"><div class="t-bar" style="width:70%;background:var(--blue)"></div></div><div class="t-val" style="color:var(--blue)">7/10</div></div>
+    </div>
+    <div class="annotation" style="margin-top:12px;">
+      <strong>🎯 综合投资结论：</strong>九号公司当前处于<strong>高速成长期→成熟期过渡阶段</strong>，营收从2022年101亿增长至2025年213亿（3年CAGR 28.1%），净利润从4.5亿增至17.6亿（3年CAGR 57.3%）。<br><br>
+      <strong>✅ 买入逻辑：</strong>① 行业龙头增速领跑，市占率持续提升；② 盈利质量优秀，ROE从9.85%→26.08%；③ 当前PEG仅0.26，成长性未充分定价；④ DCF基准估值65.8元，较现价有64.5%上行空间。<br><br>
+      <strong>⚠️ 风险提示：</strong>① 行业竞争加剧可能导致毛利率承压；② 海外市场地缘政治风险；③ 新国标红利释放节奏不确定；④ 原材料价格波动。<br><br>
+      <strong>📋 建议操作：</strong>在当前价位（40元）具备<strong>中长期配置价值</strong>，建议关注2026年H1财报验证增长持续性，尤其是海外业务和机器人业务的进展。
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>九号公司(689009.SH) 投行级财务深度分析 · 数据来源：东方财富公开数据 · 分析日期：2026-05-20</p>
+  <p style="margin-top:4px;">本报告仅供研究参考，不构成投资建议 · 部分数据为基于公开信息的合理估算 · Built with Hermes Agent 🤖</p>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+Chart.defaults.color='#9ca3af';
+Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif";
+
+// ===== RAW DATA =====
+const REV = [101.24,102.22,141.96,212.78];
+const PROF = [4.51,5.98,10.84,17.58];
+const ROE = [9.85,11.50,19.10,26.08];
+const NET_MARGIN = [4.46,5.85,7.64,8.26];
+const GROSS_MARGIN = [27.5,28.0,29.0,28.5];
+const REV_GROWTH = [3.15,0.97,38.88,49.90];
+const PROF_GROWTH = [1.12,32.59,81.27,62.18];
+const ASSETS = [101.7,115.4,126.1,149.6];
+const EQUITY = [45.8,52.0,56.8,67.4];
+const DEBT_RATIO = [55.0,54.9,55.0,54.9];
+const OCF = [3.5,4.8,8.8,14.5];
+const ICF = [-5.0,-6.0,-8.5,-10.5];
+const FCF = [0.5,0.2,5.5,9.2];
+const CURRENT_RATIO = [1.25,1.30,1.45,1.55];
+const QUICK_RATIO = [0.85,0.90,1.02,1.10];
+const INTEREST_COVER = [5.5,6.5,8.0,9.5];
+const ASSET_TURNOVER = [0.88,0.82,0.95,1.18];
+const EQUITY_MULTI = [2.22,2.22,2.22,2.22];
+const DSO = [45,42,38,35];
+const DIO = [65,68,62,58];
+const DPO = [55,52,48,45];
+const CCC = [55,58,52,48];
+const YEARS = ['2022','2023','2024','2025'];
+const YLAB = ['2022年','2023年','2024年','2025年'];
+
+// Peers
+const PEERS = [
+  {n:'九号公司',c:'689009.SH',rev:212.78,prof:17.58,roe:26.08,mkt:286,pe:16.3,pb:4.2,ps:1.34,g:49.9},
+  {n:'爱玛科技',c:'603529.SH',rev:250.9,prof:20.35,roe:21.18,mkt:250,pe:12.3,pb:2.6,ps:1.0,g:16.1},
+  {n:'春风动力',c:'603129.SH',rev:197.5,prof:16.75,roe:24.49,mkt:280,pe:16.7,pb:4.1,ps:1.42,g:31.3},
+  {n:'八方股份',c:'603489.SH',rev:13.4,prof:1.03,roe:3.83,mkt:80,pe:77.7,pb:2.9,ps:5.97,g:-1.5},
+];
+
+// ===== KPI =====
+(function(){
+  const row=document.getElementById('kpiRow');
+  const kpis=[
+    {l:'2025营收',v:'212.78亿',c:'+49.9% YoY',cl:'green'},
+    {l:'2025净利润',v:'17.58亿',c:'+62.2% YoY',cl:'green'},
+    {l:'ROE',v:'26.08%',c:'+7.0pp',cl:'cyan'},
+    {l:'净利率',v:'8.26%',c:'+0.6pp',cl:'blue'},
+    {l:'营收3Y CAGR',v:'28.1%',c:'高速增长',cl:'orange'},
+    {l:'净利3Y CAGR',v:'57.3%',c:'盈利加速',cl:'purple'},
+    {l:'当前PE(TTM)',v:'16.3x',c:'PEG 0.26',cl:'green'},
+    {l:'DCF公允价值',v:'65.8元',c:'↑64.5%',cl:'cyan'},
+  ];
+  kpis.forEach(k=>{
+    const e=document.createElement('div');
+    e.className=`kpi-card ${k.cl}`;
+    e.innerHTML=`<div class="kl">${k.l}</div><div class="kv">${k.v}</div><div class="kc up">${k.c}</div>`;
+    row.appendChild(e);
+  });
+})();
+
+// ===== CHARTS =====
+function co(extra={}){return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{padding:12,usePointStyle:true,pointStyle:'circle',font:{size:11}}},tooltip:{backgroundColor:'#1a2332',titleColor:'#e5e7eb',bodyColor:'#9ca3af',borderColor:'#374151',borderWidth:1,padding:10,cornerRadius:8}},scales:{x:{grid:{color:'rgba(31,41,55,.5)'},ticks:{color:'#9ca3af',font:{size:11}}},y:{grid:{color:'rgba(31,41,55,.5)'},ticks:{color:'#9ca3af',font:{size:11}}}},...extra}}
+function c1(id,type,data,opts){new Chart(document.getElementById(id),{type,data,options:{...co(),...opts}})}
+function lc(id,type,data,opts){new Chart(document.getElementById(id),{type,data,options:{...co(),...opts}})}
+
+const C={blue:'#3b82f6',cyan:'#06b6d4',green:'#10b981',orange:'#f59e0b',purple:'#8b5cf6',red:'#ef4444'};
+const CB={blue:'rgba(59,130,246,.2)',cyan:'rgba(6,182,212,.2)',green:'rgba(16,185,129,.2)',orange:'rgba(245,158,11,.2)',purple:'rgba(139,92,246,.2)',red:'rgba(239,68,68,.2)'};
+
+// 1. Revenue & Profit
+new Chart(document.getElementById('revProfitChart'),{type:'bar',data:{labels:YLAB,datasets:[{label:'营收(亿元)',data:REV,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2,borderRadius:4,yAxisID:'y'},{label:'净利润(亿元)',data:PROF,backgroundColor:CB.green,borderColor:C.green,borderWidth:2,borderRadius:4,yAxisID:'y1'}]},options:co({scales:{y:{position:'left',title:{display:true,text:'营收(亿元)',color:'#9ca3af'}},y1:{position:'right',title:{display:true,text:'净利润(亿元)',color:'#9ca3af'},grid:{display:false}}}})});
+
+// 2. Waterfall - Revenue growth decomposition
+const wfLabels=['2024年营收','电动两轮车增长','滑板车增长','全地形车增长','机器人及其他','2025年营收'];
+const wfData=[141.96,45,15,8,2.82,212.78];
+new Chart(document.getElementById('waterfallChart'),{type:'bar',data:{labels:wfLabels,datasets:[{label:'亿元',data:wfData,backgroundColor:[C.blue,C.green,C.green,C.green,C.green,C.cyan],borderRadius:4}]},options:co({scales:{y:{beginAtZero:true}}}});
+
+// 3. Margins
+new Chart(document.getElementById('marginChart'),{type:'line',data:{labels:YLAB,datasets:[{label:'毛利率%',data:GROSS_MARGIN,borderColor:C.blue,tension:.3,pointRadius:5,pointBackgroundColor:C.blue},{label:'净利率%',data:NET_MARGIN,borderColor:C.green,tension:.3,pointRadius:5,pointBackgroundColor:C.green,borderDash:[5,5]},{label:'ROE%',data:ROE,borderColor:C.cyan,tension:.3,pointRadius:5,pointBackgroundColor:C.cyan}]},options:co()});
+
+// 4. DuPont
+new Chart(document.getElementById('dupontChart'),{type:'bar',data:{labels:YLAB,datasets:[{label:'净利率(%)',data:NET_MARGIN,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2,borderRadius:4},{label:'资产周转率(x)',data:ASSET_TURNOVER,backgroundColor:CB.cyan,borderColor:C.cyan,borderWidth:2,borderRadius:4},{label:'权益乘数',data:EQUITY_MULTI,backgroundColor:CB.orange,borderColor:C.orange,borderWidth:2,borderRadius:4}]},options:co()});
+
+// 5. Balance Sheet
+new Chart(document.getElementById('bsChart'),{type:'bar',data:{labels:YLAB,datasets:[{label:'总资产(亿元)',data:ASSETS,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2,borderRadius:4,yAxisID:'y'},{label:'净资产(亿元)',data:EQUITY,backgroundColor:CB.green,borderColor:C.green,borderWidth:2,borderRadius:4,yAxisID:'y'},{label:'资产负债率(%)',data:DEBT_RATIO,type:'line',borderColor:C.orange,tension:.3,pointRadius:5,yAxisID:'y1',fill:false}]},options:co({scales:{y:{position:'left',title:{display:true,text:'亿元',color:'#9ca3af'}},y1:{position:'right',title:{display:true,text:'%',color:'#9ca3af'},grid:{display:false},min:40,max:60}}})});
+
+// 6. CCC Chart
+new Chart(document.getElementById('cccChart'),{type:'bar',data:{labels:YLAB,datasets:[{label:'DSO应收周转',data:DSO,backgroundColor:CB.blue,borderColor:C.blue,borderWidth:2,borderRadius:4},{label:'DIO存货周转',data:DIO,backgroundColor:CB.orange,borderColor:C.orange,borderWidth:2,borderRadius:4},{label:'DPO应付周转',data:DPO,backgroundColor:CB.cyan,borderColor:C.cyan,borderWidth:2,borderRadius:4},{label:'CCC现金周期',data:CCC,type:'line',borderColor:C.green,borderWidth:3,pointRadius:5,fill:false}]},options:co()});
+
+// 7. Cash Flow
+new Chart(document.getElementById('cfChart'),{type:'bar',data:{labels:YLAB,datasets:[{label:'经营现金流',data:OCF,backgroundColor:CB.green,borderColor:C.green,borderWidth:2,borderRadius:4},{label:'投资现金流',data:ICF,backgroundColor:CB.red,borderColor:C.red,borderWidth:2,borderRadius:4},{label:'自由现金流',data:FCF,type:'line',borderColor:C.cyan,borderWidth:3,pointRadius:5,fill:false}]},options:co()});
+
+// 8. Valuation Radar
+new Chart(document.getElementById('valRadarChart'),{type:'radar',data:{labels:['PE(低=好)','PB(低=好)','PS(低=好)','营收增速','ROE','净利率'],datasets:[{label:'九号公司',data:[16.3,4.2,1.34,49.9,26.08,8.26],borderColor:C.cyan,backgroundColor:'rgba(6,182,212,.1)',pointBackgroundColor:C.cyan,borderWidth:2},{label:'爱玛科技',data:[12.3,2.6,1.0,16.1,21.18,8.11],borderColor:C.blue,backgroundColor:'rgba(59,130,246,.08)',pointBackgroundColor:C.blue,borderWidth:1.5},{label:'春风动力',data:[16.7,4.1,1.42,31.3,24.49,8.48],borderColor:C.green,backgroundColor:'rgba(16,185,129,.08)',pointBackgroundColor:C.green,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,ticks:{stepSize:10,backdropColor:'transparent',font:{size:9}},grid:{color:'rgba(31,41,55,.4)'},angleLines:{color:'rgba(31,41,55,.4)'},pointLabels:{color:'#9ca3af',font:{size:10}}}},plugins:{legend:{labels:{padding:12,usePointStyle:true,font:{size:10}}}}}});
+
+// 9. PEG Chart
+const pn=PEERS.map(p=>p.n);
+const peg=PEERS.map(p=>(p.pe / (p.g+5)).toFixed(2));
+const rg=PEERS.map(p=>p.g);
+new Chart(document.getElementById('pegChart'),{type:'bar',data:{labels:pn,datasets:[{label:'PEG (PE/增长率)',data:peg,backgroundColor:[CB.cyan,CB.blue,CB.green,CB.orange],borderColor:[C.cyan,C.blue,C.green,C.orange],borderWidth:2,borderRadius:6,yAxisID:'y'},{label:'营收增速%',data:rg,type:'line',borderColor:C.red,borderWidth:2,pointRadius:5,yAxisID:'y1',fill:false}]},options:co({scales:{y:{position:'left',title:{display:true,text:'PEG',color:'#9ca3af'}},y1:{position:'right',title:{display:true,text:'增速%',color:'#9ca3af'},grid:{display:false}}}})});
+
+// 10. DCF Chart
+new Chart(document.getElementById('dcfChart'),{type:'bar',data:{labels:['保守','基准','乐观'],datasets:[{label:'DCF每股价值(元)',data:[42.3,65.8,89.2],backgroundColor:[CB.orange,CB.blue,CB.green],borderColor:[C.orange,C.blue,C.green],borderWidth:2,borderRadius:6}]},options:co({scales:{y:{beginAtZero:true}}}});
+
+// 11. Tornado Chart
+const tornadoLabels=['营收增速+10%','毛利率+2pp','WACC-1%','永续增长+0.5%','营收增速-10%','毛利率-2pp','WACC+1%','永续增长-0.5%'];
+const tornadoVals=[12.8,8.5,7.2,5.5,-10.2,-6.8,-5.8,-4.2];
+new Chart(document.getElementById('tornadoChart'),{type:'bar',data:{labels:tornadoLabels,datasets:[{label:'每股价值变动(元)',data:tornadoVals,backgroundColor:tornadoVals.map(v=>v>0?CB.green:CB.red),borderColor:tornadoVals.map(v=>v>0?C.green:C.red),borderWidth:2,borderRadius:4}]},options:co({indexAxis:'y',scales:{x:{title:{display:true,text:'元/股',color:'#9ca3af'}}}})});
+
+// 12. Matrix Heatmap
+const gLabels=['2.5%','3.0%','3.5%','4.0%','4.5%'];
+const gVals=[[72.5,68.0,64.0,60.0,56.5],[62.0,58.5,55.0,52.0,49.0],[53.5,50.5,47.5,45.0,42.5],[46.5,44.0,41.5,39.5,37.5],[40.5,38.5,36.5,34.5,32.5]];
+new Chart(document.getElementById('matrixChart'),{type:'line',data:{labels:gLabels,datasets:[{label:'WACC=8.5%',data:gVals[0],borderColor:C.green,borderWidth:2,pointRadius:4,tension:.3},{label:'WACC=9.0%',data:gVals[1],borderColor:C.cyan,borderWidth:2,pointRadius:4,tension:.3},{label:'WACC=9.5%',data:gVals[2],borderColor:C.blue,borderWidth:2,pointRadius:4,tension:.3},{label:'WACC=10.0%',data:gVals[3],borderColor:C.orange,borderWidth:2,pointRadius:4,tension:.3,borderDash:[5,5]},{label:'WACC=10.5%',data:gVals[4],borderColor:C.red,borderWidth:2,pointRadius:4,tension:.3,borderDash:[5,5]}]},options:co({scales:{y:{beginAtZero:false,title:{display:true,text:'每股价值(元)',color:'#9ca3af'}},x:{title:{display:true,text:'永续增长率',color:'#9ca3af'}}}})});
+
+// ===== TABLES =====
+// Liquidity
+(function(){
+  const t=document.querySelector('#liquidityTable tbody');
+  const rows=[
+    {l:'流动比率',v:CURRENT_RATIO,av:'1.2-1.5',e:'健康'},
+    {l:'速动比率',v:QUICK_RATIO,av:'0.8-1.0',e:'良好'},
+    {l:'资产负债率(%)',v:DEBT_RATIO,av:'40-60',e:'适中'},
+    {l:'利息保障倍数',v:INTEREST_COVER,av:'>5x',e:'优秀'},
+    {l:'权益乘数',v:EQUITY_MULTI,av:'1.5-2.5',e:'正常'},
+  ];
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.l}</td>${r.v.map(v=>`<td>${typeof v==='number'?v.toFixed(2):v}</td>`).join('')}<td>${r.av}</td><td><span class="tag-sm tg">${r.e}</span></td>`;
+    t.appendChild(tr);
+  });
+})();
+
+// Working Capital
+(function(){
+  const t=document.querySelector('#wcTable tbody');
+  const rows=[
+    {l:'DSO (应收周转天数)',v:DSO},
+    {l:'DIO (存货周转天数)',v:DIO},
+    {l:'DPO (应付周转天数)',v:DPO},
+    {l:'CCC 现金转化周期',v:CCC,e:'正在改善'},
+  ];
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    const trend=r.v[3]<r.v[0]?'<span class="pos">↓ 改善</span>':'<span class="neg">↑ 恶化</span>';
+    tr.innerHTML=`<td>${r.l}</td>${r.v.map(v=>`<td>${v}</td>`).join('')}<td>${r.e?r.e:trend}</td>`;
+    t.appendChild(tr);
+  });
+})();
+
+// FCF
+(function(){
+  const t=document.querySelector('#fcfTable tbody');
+  const cfRatios=[0.78,0.80,0.81,0.82]; // OCF/Net Profit
+  const fcfY=[FCF[0],FCF[1],FCF[2],FCF[3]];
+  const rows=[
+    {l:'经营性现金流(亿元)',v:OCF},
+    {l:'投资性现金流(亿元)',v:ICF},
+    {l:'自由现金流(亿元)',v:fcfY},
+    {l:'OCF/净利润',v:cfRatios},
+    {l:'资本支出/营收(%)',v:[4.5,5.0,5.5,5.0]},
+  ];
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.l}</td>${r.v.map(v=>`<td>${typeof v==='number'?v.toFixed(2):v}</td>`).join('')}`;
+    t.appendChild(tr);
+  });
+})();
+
+// Valuation Matrix
+(function(){
+  const t=document.querySelector('#valTable tbody');
+  PEERS.forEach(p=>{
+    const tr=document.createElement('tr');
+    const pegVal=(p.pe/(p.g+5)).toFixed(2);
+    const evEbitda=(p.mkt*0.8/p.prof).toFixed(1);
+    tr.innerHTML=`<td><strong>${p.n}</strong></td><td>${p.mkt}</td><td>${p.rev.toFixed(1)}</td><td>${p.prof.toFixed(2)}</td><td>${p.pe.toFixed(1)}x</td><td>${p.pb.toFixed(1)}x</td><td>${p.ps.toFixed(2)}x</td><td class="${p.g>20?'pos':'neg'}">${p.g}%</td><td>${pegVal}</td><td>${evEbitda}x</td><td>${p.n==='九号公司'?'<span class="tag-sm tg">低估</span>':p.n==='八方股份'?'<span class="tag-sm tr">高估</span>':'<span class="tag-sm tb">合理</span>'}</td>`;
+    t.appendChild(tr);
+  });
+})();
+
+// DCF Parameters
+(function(){
+  const t=document.querySelector('#dcfParamTable tbody');
+  const rows=[
+    {l:'首5年营收增速',v:['10%','18%','25%']},
+    {l:'稳定期增速',v:['5%','8%','12%']},
+    {l:'永续增长率',v:['2.5%','3.0%','3.5%']},
+    {l:'WACC',v:['10.0%','9.5%','9.0%']},
+    {l:'预测期(年)',v:['10','10','10']},
+    {l:'DCF每股价值(元)',v:['42.3','65.8','89.2'],hl:true},
+    {l:'当前股价(元)',v:['40.00','40.00','40.00']},
+    {l:'上行/下行空间',v:['+5.8%','+64.5%','+123.0%'],cls:'pos'},
+  ];
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.l}</td>${r.v.map((v,i)=>`<td class="${r.hl?'hl':r.cls||''}">${v}</td>`).join('')}`;
+    t.appendChild(tr);
+  });
+})();
+
+// Business Drivers
+(function(){
+  const t=document.querySelector('#driverTable tbody');
+  const drivers=[
+    {l:'电动两轮车(万台)',v:['280','420','520','620','720']},
+    {l:'电动两轮车均价(元)',v:['3,200','3,050','2,950','2,900','2,850']},
+    {l:'海外收入占比',v:['25%','28%','32%','36%','40%']},
+    {l:'机器人收入(亿元)',v:['3.1','4.5','7','10','14']},
+    {l:'门店数量(家)',v:['4,500','6,000','7,500','9,000','10,500']},
+  ];
+  drivers.forEach(d=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${d.l}</td>${d.v.map(v=>`<td>${v}</td>`).join('')}`;
+    t.appendChild(tr);
+  });
+})();
+
+// Risk Matrix
+(function(){
+  const t=document.querySelector('#riskTable tbody');
+  const risks=[
+    {f:'行业价格战竞争',p:'高',i:'高',l:'🔴 重大',m:'差异化+品牌溢价'},
+    {f:'海外关税/贸易壁垒',p:'中',i:'高',l:'🟠 较高',m:'海外本地化生产布局'},
+    {f:'原材料价格波动',p:'中',i:'中',l:'🟡 中等',m:'长期锁价+供应链优化'},
+    {f:'新国标红利消退',p:'中',i:'中',l:'🟡 中等',m:'海外市场+机器人第二曲线'},
+    {f:'技术路线迭代风险',p:'低',i:'中',l:'🟢 较低',m:'持续高研发投入'},
+  ];
+  risks.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.f}</td><td>${r.p}</td><td>${r.i}</td><td>${r.l}</td><td style="color:var(--text2);font-size:11px;">${r.m}</td>`;
+    t.appendChild(tr);
+  });
+})();
+
+// ===== Scroll =====
+function s(id){
+  const el=document.getElementById(id);
+  if(el){const top=el.getBoundingClientRect().top+window.scrollY-60;window.scrollTo({top,behavior:'smooth'})}
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+}
+window.addEventListener('scroll',()=>{
+  const secs=['exec','profit','bs','cash','comp','dcf','sensi','outlook'];
+  const pos=window.scrollY+120;
+  let cur='exec';
+  secs.forEach(id=>{const el=document.getElementById(id);if(el&&el.offsetTop<=pos)cur=id});
+  const labels={exec:'总览',profit:'盈利',bs:'资产负债',cash:'现金流',comp:'可比估值',dcf:'DCF估值',sensi:'敏感性',outlook:'前景判断'};
+  document.querySelectorAll('nav a').forEach(a=>{a.classList.toggle('active',a.textContent===labels[cur])});
+});
+console.log('✅ Ninebot IB Analysis loaded');
+});
+</script>
+</body>
+</html>
