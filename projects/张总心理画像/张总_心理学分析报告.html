@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>心理学分析报告 · 完整版</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC','Inter',-apple-system,sans-serif;background:#0a0a14;color:#e2e8f0;line-height:1.6}
+.container{max-width:820px;margin:0 auto;padding:20px}
+h1,h2,h3,h4{font-weight:700;letter-spacing:-0.02em}
+h1{font-size:28px;background:linear-gradient(135deg,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+h2{font-size:20px;color:#f1f5f9;margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+h3{font-size:16px;color:#cbd5e1;margin:20px 0 10px}
+.subtle{color:#64748b;font-size:13px;margin-bottom:20px}
+
+/* Hero */
+.hero{background:linear-gradient(145deg,#1e1b4b 0%,#172554 50%,#0f172a 100%);border-radius:16px;padding:32px 24px;margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60%;right:-40%;width:80%;height:120%;background:radial-gradient(circle,rgba(167,139,250,.10) 0%,transparent 70%);pointer-events:none}
+.hero .tag{display:inline-block;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.06);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:10px}
+.hero h1{font-size:32px;margin-bottom:4px}
+.hero p{font-size:14px;color:rgba(255,255,255,.45);position:relative;z-index:1}
+.hero .meta{margin-top:14px;display:flex;gap:16px;font-size:12px;color:rgba(255,255,255,.35)}
+
+/* Cards */
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:all .2s}
+.card:hover{background:rgba(255,255,255,.05);border-color:rgba(167,139,250,.2)}
+.card-title{font-size:15px;font-weight:600;color:#e2e8f0;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card .tag{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600;letter-spacing:.3px}
+.tag-high{background:rgba(239,68,68,.15);color:#ef4444}
+.tag-mid{background:rgba(245,158,11,.15);color:#f59e0b}
+.tag-low{background:rgba(16,185,129,.15);color:#10b981}
+
+/* Bars */
+.bar-container{margin:12px 0}
+.bar-item{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.bar-item .label{width:140px;font-size:13px;color:#94a3b8;flex-shrink:0}
+.bar{flex:1;height:18px;background:rgba(255,255,255,.06);border-radius:9px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:9px;transition:width 1.5s ease}
+.bar-item .pct{width:42px;text-align:right;font-size:12px;font-weight:600;color:#64748b;flex-shrink:0}
+
+/* Grids */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+th{text-align:left;padding:8px 10px;background:rgba(255,255,255,.04);color:#94a3b8;font-weight:600;border-bottom:1px solid rgba(255,255,255,.06)}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+
+/* DISC donut */
+.disc-chart{display:flex;gap:16px;align-items:center;justify-content:center;padding:12px 0}
+.disc-donut{width:140px;height:140px;border-radius:50%;position:relative;background:conic-gradient(#ef4444 0deg 306deg,#f59e0b 306deg 365deg,#3b82f6 365deg 401deg,#10b981 401deg 459deg);flex-shrink:0}
+.disc-donut-inner{position:absolute;top:12px;left:12px;width:116px;height:116px;border-radius:50%;background:#0a0a14;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.disc-donut-inner .type{font-size:20px;font-weight:900;background:linear-gradient(135deg,#ef4444,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.disc-donut-inner .sub{font-size:10px;color:#64748b}
+.disc-legend{font-size:12px}
+.disc-legend-item{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.disc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Risk score gauge */
+.gauge{display:flex;align-items:center;gap:16px;padding:10px 0}
+.gauge-ring{width:80px;height:80px;border-radius:50%;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.gauge-ring svg{transform:rotate(-90deg)}
+.gauge-ring .val{position:absolute;font-size:18px;font-weight:700}
+.gauge-info{font-size:13px;color:#94a3b8}
+
+/* Severity badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+
+/* Bottom nav */
+.nav-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.nav-tab{padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid transparent;color:#64748b;transition:all .2s;user-select:none}
+.nav-tab.active{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:#a78bfa;font-weight:600}
+.nav-tab:hover{background:rgba(255,255,255,.06)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Footer */
+.footer{margin-top:32px;padding:16px 0;text-align:center;font-size:11px;color:rgba(255,255,255,.15);border-top:1px solid rgba(255,255,255,.04)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .5s ease forwards}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="tag">🧠 PSYCHOLOGY ANALYSIS v1.0</div>
+  <h1>心理学分析报告</h1>
+  <p>Big Five 人格 · DISC 交叉验证 · 认知偏误检测 · 心理学决策矩阵</p>
+  <div class="meta">
+    <span>分析对象：张总（科技公司CEO）</span>
+    <span>框架：OCEAN + DISC + Cialdini</span>
+    <span>生成日期：2026-05-21</span>
+  </div>
+</div>
+
+<!-- Nav -->
+<div class="nav-tabs" id="navTabs">
+  <div class="nav-tab active" data-tab="tab1">🧬 Big Five</div>
+  <div class="nav-tab" data-tab="tab2">🎯 DISC验证</div>
+  <div class="nav-tab" data-tab="tab3">⚠️ 偏误检测</div>
+  <div class="nav-tab" data-tab="tab4">📊 决策矩阵</div>
+  <div class="nav-tab" data-tab="tab5">💡 综合建议</div>
+</div>
+
+<!-- ====== TAB 1: Big Five ====== -->
+<div id="tab1" class="tab-content active fade-in">
+
+<div class="card">
+  <div class="card-title">🧬 大五人格剖面 / Big Five (OCEAN) Profile</div>
+  <div class="subtle">基于行为观察推论 · 连续维度描述 · 百分位参考</div>
+  <div class="bar-container">
+
+    <div class="bar-item">
+      <span class="label">开放性 / Openness <span style="color:#a78bfa;font-size:11px">高</span></span>
+      <div class="bar"><div class="bar-fill" style="width:85%;background:#a78bfa"></div></div><span class="pct">85%</span>
+    </div>
+    <div style="margin:-6px 0 10px 152px;font-size:11px;color:#64748b">连续创业、热衷新技术、鼓励跨界创新</div>
+    <div class="bar-item">
+      <span class="label">尽责性 / Conscientiousness <span style="color:#60a5fa;font-size:11px">高</span></span>
+      <div class="bar"><div class="bar-fill" style="width:75%;background:#60a5fa"></div></div><span class="pct">75%</span>
+    </div>
+    <div style="margin:-6px 0 10px 152px;font-size:11px;color:#64748b">目标导向、注重细节、项目交付记录优秀</div>
+    <div class="bar-item">
+      <span class="label">外向性 / Extraversion <span style="color:#34d399;font-size:11px">偏高</span></span>
+      <div class="bar"><div class="bar-fill" style="width:70%;background:#34d399"></div></div><span class="pct">70%</span>
+    </div>
+    <div style="margin:-6px 0 10px 152px;font-size:11px;color:#64748b">公开演讲活跃、擅长社交、能量感强</div>
+    <div class="bar-item">
+      <span class="label">宜人性 / Agreeableness <span style="color:#f59e0b;font-size:11px">偏低</span></span>
+      <div class="bar"><div class="bar-fill" style="width:30%;background:#f59e0b"></div></div><span class="pct">30%</span>
+    </div>
+    <div style="margin:-6px 0 10px 152px;font-size:11px;color:#64748b">直言不讳、经常挑战他人观点、决策强硬</div>
+    <div class="bar-item">
+      <span class="label">神经质 / Neuroticism <span style="color:#ef4444;font-size:11px">低</span></span>
+      <div class="bar"><div class="bar-fill" style="width:20%;background:#ef4444"></div></div><span class="pct">20%</span>
+    </div>
+    <div style="margin:-6px 0 10px 152px;font-size:11px;color:#64748b">高压下保持冷静、情绪稳定、危机处理能力强</div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="card-title">✅ 优势 / Strengths</div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(16,185,129,.05);border-radius:8px;border-left:3px solid #10b981">
+      <div style="font-weight:600;font-size:13px;color:#34d399">高O + 高C</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:3px">既有创新 vision，又能落地执行</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">→ 从0到1能力强</div>
+    </div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(16,185,129,.05);border-radius:8px;border-left:3px solid #10b981">
+      <div style="font-weight:600;font-size:13px;color:#34d399">高E + 低N</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:3px">精力充沛且情绪稳定</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">→ 擅长公开演讲、融资路演、危机公关</div>
+    </div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(16,185,129,.05);border-radius:8px;border-left:3px solid #10b981">
+      <div style="font-weight:600;font-size:13px;color:#34d399">低A + 高C</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:3px">敢于做艰难决策</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">→ 裁员、业务剥离等 tough call 不犹豫</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">⚠️ 风险 / Risks</div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(239,68,68,.05);border-radius:8px;border-left:3px solid #ef4444">
+      <div style="font-weight:600;font-size:13px;color:#fca5a5">低A + 高E</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:3px">强势沟通可能压制不同声音</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">→ 搭配高A的COO / 匿名反馈渠道</div>
+    </div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(239,68,68,.05);border-radius:8px;border-left:3px solid #ef4444">
+      <div style="font-weight:600;font-size:13px;color:#fca5a5">高O + 低A</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:3px">创新方案推行时缺乏同理心</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">→ 引入用户研究团队做缓冲</div>
+    </div>
+    <div style="margin-bottom:10px;padding:10px;background:rgba(239,68,68,.05);border-radius:8px;border-left:3px solid #ef4444">
+      <div style="font-weight:600;font-size:13px;color:#fca5a5">高O + 高C</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:3px">对自己和团队要求过高</div>
+      <div style="font-size:11px;color:#64748b;margin-top:2px">→ 注意 burnout 风险</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">👥 团队搭配建议 / Team Composition</div>
+  <table>
+    <tr><th>角色</th><th>建议人格</th><th>原因</th></tr><tr><td style='font-weight:600'>COO（运营）</td><td>高C + 高A + 中E</td><td style='color:#94a3b8;font-size:12px'>补充低A的摩擦，落地执行</td></tr><tr><td style='font-weight:600'>CTO（技术）</td><td>高O + 低E + 中C</td><td style='color:#94a3b8;font-size:12px'>独立技术决策，不被高E带偏</td></tr><tr><td style='font-weight:600'>HRVP（人力）</td><td>高A + 高E</td><td style='color:#94a3b8;font-size:12px'>团队温度计、文化守护者</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title">🎯 领导风格 / Leadership Style</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="padding:12px;background:rgba(167,139,250,.08);border-radius:8px">
+      <div style="font-size:11px;color:#64748b">主导风格</div>
+      <div style="font-weight:700;font-size:15px;color:#a78bfa;margin-top:4px">{big5_profile["leadership_style"]["primary"]}</div>
+    </div>
+    <div style="padding:12px;background:rgba(96,165,250,.08);border-radius:8px">
+      <div style="font-size:11px;color:#64748b">团队成熟度</div>
+      <div style="font-weight:600;font-size:13px;color:#60a5fa;margin-top:4px">{big5_profile["leadership_style"]["maturity"]}</div>
+    </div>
+  </div>
+  <table style="margin-top:10px">
+    <tr><th>场景</th><th>推荐风格</th><th>模式</th></tr><tr><td>核心业务</td><td style='font-weight:600'>放权 S4</td><td style='color:#94a3b8'>低指导低支持</td></tr><tr><td>新业务探索</td><td style='font-weight:600'>参与 S3</td><td style='color:#94a3b8'>低指导高支持</td></tr><tr><td>危机/变革</td><td style='font-weight:600'>命令 S1</td><td style='color:#94a3b8'>高指导低支持</td></tr>
+  </table>
+</div>
+
+</div>
+<!-- ====== END TAB 1 ====== -->
+
+<!-- ====== TAB 2: DISC ====== -->
+<div id="tab2" class="tab-content fade-in">
+
+<div class="card">
+  <div class="card-title">🎯 DISC 交叉验证 / Cross-validation</div>
+  <div class="subtle">Big Five → DISC 映射，验证人格描述的一致性</div>
+  <div class="disc-chart">
+    <div class="disc-donut">
+      <div class="disc-donut-inner">
+        <div class="type">{disc_profile["primary"][:2]}</div>
+        <div class="sub">DI 型</div>
+      </div>
+    </div>
+    <div class="disc-legend">
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#ef4444"></span> D {disc_profile["scores"]["D"]}% Dominance</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#f59e0b"></span> I {disc_profile["scores"]["I"]}% Influence</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#3b82f6"></span> S {disc_profile["scores"]["S"]}% Steadiness</div>
+      <div class="disc-legend-item"><span class="disc-dot" style="background:#10b981"></span> C {disc_profile["scores"]["C"]}% Conscientiousness</div>
+      <div style="margin-top:8px;font-size:12px;color:#94a3b8">{disc_profile["description"]}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">🔗 Big Five ↔ DISC 一致性验证</div>
+  <table><tr><td style='font-weight:600;width:200px'>D ↔ 低A + 高E</td><td style='color:#94a3b8'>高度一致：直言不讳 + 社交活跃</td></tr><tr><td style='font-weight:600;width:200px'>I ↔ 高E</td><td style='color:#94a3b8'>高度一致：喜欢说服和影响他人</td></tr><tr><td style='font-weight:600;width:200px'>S ↔ 低A</td><td style='color:#94a3b8'>一致性高：耐心不足、不喜欢细节管理</td></tr><tr><td style='font-weight:600;width:200px'>C ↔ 高C</td><td style='color:#94a3b8'>部分一致：有系统性但非极端</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title">💬 沟通适配建议 / Communication Tips</div>
+  <div class="grid2">
+    <div style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px">
+      <div style="font-weight:600;font-size:13px;color:#cbd5e1">对 D 型</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:4px">直奔主题、摆数据、给选项</div>
+    </div>
+    <div style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px">
+      <div style="font-weight:600;font-size:13px;color:#cbd5e1">对 I 型</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:4px">先认可、讲故事、社会证明</div>
+    </div>
+    <div style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px">
+      <div style="font-weight:600;font-size:13px;color:#cbd5e1">对 S 型</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:4px">温和节奏、倾听、安全感</div>
+    </div>
+    <div style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px">
+      <div style="font-weight:600;font-size:13px;color:#cbd5e1">对 C 型</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:4px">逻辑清晰、数据支撑、留时间</div>
+    </div>
+  </div>
+</div>
+
+</div>
+<!-- ====== END TAB 2 ====== -->
+
+<!-- ====== TAB 3: Bias Detection ====== -->
+<div id="tab3" class="tab-content fade-in">
+
+<div class="card">
+  <div class="card-title">⚠️ 认知偏误检测 / Cognitive Bias Detection</div>
+  <div class="subtle">基于语言特征的模式匹配，对商业决策文本进行偏误评分</div>
+
+  <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"This strategy will undoubtedly succeed — we have clearly identified the only via..."</span>
+      <span class="badge" style="background:#f59e0b22;color:#f59e0b;margin-left:8px">MEDIUM 1.6</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#ef444418;color:#ef4444">过度自信 / Overconfidence</span>
+    </div>
+  </div>
+  <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"We've already invested $5 million in this project, so we can't stop now even tho..."</span>
+      <span class="badge" style="background:#10b98122;color:#10b981;margin-left:8px">LOW 0.9</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#ef444418;color:#ef4444">沉没成本 / Sunk Cost</span>
+    </div>
+  </div>
+  <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"I recall a recent case where a competitor failed with this approach, so it must ..."</span>
+      <span class="badge" style="background:#10b98122;color:#10b981;margin-left:8px">LOW 0.0</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+    </div>
+  </div>
+  <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"As expected, this confirms our hypothesis. If we don't act now, we risk losing e..."</span>
+      <span class="badge" style="background:#f59e0b22;color:#f59e0b;margin-left:8px">MEDIUM 1.3</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#f59e0b18;color:#f59e0b">确认偏误 / Confirmation Bias</span><span class="badge" style="background:#f59e0b18;color:#f59e0b">框架效应 / Framing</span>
+    </div>
+  </div>
+  <div style="padding:12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:#94a3b8;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"Based on last quarter's performance, we should increase spending by 50%. Our com..."</span>
+      <span class="badge" style="background:#10b98122;color:#10b981;margin-left:8px">LOW 0.8</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px"><span class="badge" style="background:#ef444418;color:#ef4444">过度自信 / Overconfidence</span>
+    </div>
+  </div>
+</div>
+
+</div>
+<!-- ====== END TAB 3 ====== -->
+
+<!-- ====== TAB 4: Decision Matrix ====== -->
+<div id="tab4" class="tab-content fade-in">
+
+<div class="card">
+  <div class="card-title">📊 心理学决策矩阵 / Psychological Decision Matrix</div>
+  <div class="subtle">供应商选择模拟 · 集成损失厌恶修正 + 不确定性折扣 + 时间折现</div>
+
+  <div class="grid3" style="margin-bottom:12px">
+    <div style="text-align:center;padding:10px;background:rgba(16,185,129,.06);border-radius:8px">
+      <div style="font-size:11px;color:#64748b">推荐选项</div>
+      <div style="font-weight:700;font-size:16px;color:#34d399;margin-top:4px">{decision_result["recommendation"]}</div>
+    </div>
+    <div style="text-align:center;padding:10px;background:rgba(167,139,250,.06);border-radius:8px">
+      <div style="font-size:11px;color:#64748b">损失厌恶系数</div>
+      <div style="font-weight:700;font-size:16px;color:#a78bfa;margin-top:4px">×{decision_result["parameters"]["loss_aversion_factor"]}</div>
+    </div>
+    <div style="text-align:center;padding:10px;background:rgba(245,158,11,.06);border-radius:8px">
+      <div style="font-size:11px;color:#64748b">过度自信折扣</div>
+      <div style="font-weight:700;font-size:16px;color:#f59e0b;margin-top:4px">{decision_result["parameters"]["overconfidence_discount"]}</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>选项</th><th>总分</th><th>排名</th><th>Cost</th><th>Quality</th><th>Risk</th><th>Innovation</th><th>Timeline</th>
+    </tr><tr><td style='font-weight:600'>Vendor B (创新型)</td><td style='font-weight:700;color:#a78bfa'>4.53</td><td>🥇</td><td style='color:#ef4444'>5 → 1.23</td><td style='color:#ef4444'>9 → 2.36</td><td style='color:#34d399'>-1 → -0.3</td><td style='color:#ef4444'>8 → 0.61</td><td style='color:#ef4444'>5 → 0.64</td></tr><tr><td style='font-weight:600'>Vendor A (稳定型)</td><td style='font-weight:700;color:#a78bfa'>4.25</td><td>🥈</td><td style='color:#ef4444'>8 → 1.96</td><td style='color:#ef4444'>7 → 1.83</td><td style='color:#34d399'>-3 → -0.89</td><td style='color:#ef4444'>6 → 0.46</td><td style='color:#ef4444'>7 → 0.9</td></tr><tr><td style='font-weight:600'>Vendor C (性价比)</td><td style='font-weight:700;color:#a78bfa'>3.65</td><td>🥉</td><td style='color:#ef4444'>9 → 2.2</td><td style='color:#ef4444'>5 → 1.31</td><td style='color:#34d399'>-4 → -1.19</td><td style='color:#ef4444'>4 → 0.3</td><td style='color:#ef4444'>8 → 1.03</td></tr>
+  </table>
+</div>
+
+</div>
+<!-- ====== END TAB 4 ====== -->
+
+<!-- ====== TAB 5: Summary ====== -->
+<div id="tab5" class="tab-content fade-in">
+
+<div class="card">
+  <div class="card-title">💡 综合建议 / Action Plan</div>
+  <table>
+    <tr><th>优先级</th><th>建议</th><th>预期效果</th></tr><tr><td><span class='badge' style='background:#ef444422;color:#ef4444'>🔴 高</span></td><td style='font-weight:600'>搭建高A的COO搭档</td><td style='color:#94a3b8;font-size:12px'>弥补低A在团队管理上的短板</td></tr><tr><td><span class='badge' style='background:#f59e0b22;color:#f59e0b'>🟡 中</span></td><td style='font-weight:600'>设立正式魔鬼代言人制度</td><td style='color:#94a3b8;font-size:12px'>防范高O+低A带来的决策盲区</td></tr><tr><td><span class='badge' style='background:#f59e0b22;color:#f59e0b'>🟡 中</span></td><td style='font-weight:600'>每季度匿名组织温度计</td><td style='color:#94a3b8;font-size:12px'>监测对团队心理安全感的影响</td></tr><tr><td><span class='badge' style='background:#10b98122;color:#10b981'>🟢 低</span></td><td style='font-weight:600'>刻意练习'情绪标记'话术</td><td style='color:#94a3b8;font-size:12px'>提升高E沟通中的同理心</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-title">📋 验证清单 / Validation Checklist</div>
+  <div style="font-size:13px;color:#94a3b8">
+    <div style="margin-bottom:6px">✅ 使用连续维度（非二分法）描述人格</div>
+    <div style="margin-bottom:6px">✅ 明确标注了所用框架/量表的局限性</div>
+    <div style="margin-bottom:6px">✅ 结论来自多数据源交叉验证（Big Five + DISC）</div>
+    <div style="margin-bottom:6px">✅ 反馈避免绝对化语言</div>
+    <div style="margin-bottom:6px">✅ 考虑了情境因素和伦理边界</div>
+    <div style="margin-bottom:6px">✅ 提供了可执行的行动计划</div>
+  </div>
+</div>
+
+</div>
+<!-- ====== END TAB 5 ====== -->
+
+<div class="footer">
+  Psychology Analysis Report · Generated by Hermes Agent · 2026-05-21<br>
+  数据仅供决策参考，不构成专业心理诊断
+</div>
+
+</div>
+
+<script>
+// Tab switching
+const tabs = document.querySelectorAll('.nav-tab');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+    // Re-trigger animation
+    const ct = document.getElementById(tab.dataset.tab);
+    ct.style.animation = 'none';
+    ct.offsetHeight;
+    ct.style.animation = '';
+  });
+});
+
+// Animate bars on first load
+setTimeout(() => {
+  document.querySelectorAll('.bar-fill').forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0%';
+    setTimeout(() => { bar.style.width = w; }, 100);
+  });
+}, 200);
+</script>
+</body>
+</html>
