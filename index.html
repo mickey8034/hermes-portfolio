@@ -657,7 +657,7 @@ function renderGrid(list){
   const grid = document.getElementById('projectGrid');
   grid.innerHTML = list.map(p => `
     <div class="card" tabindex="0" role="button"
-         onclick="openDialog('${p.id}')" onkeydown="if(event.key==='Enter')openDialog('${p.id}')"
+         onclick="openDialog('${p.id}', event)" onkeydown="if(event.key==='Enter')openDialog('${p.id}')"
          data-filter="${p.filter}" data-name="${p.name}">
       <div class="card-icon">${p.icon}</div>
       <h3>${p.name}</h3>
@@ -691,7 +691,25 @@ function filterProjects(){
 }
 
 // ===== DIALOG =====
-function openDialog(id){
+function openDialog(id, event){
+  // Create ripple effect on the clicked card
+  var card = event ? event.target.closest('.card') : document.querySelector('[data-name*="' + id + '"]');
+  if(card){
+    card.querySelectorAll('.ripple').forEach(function(r){r.remove()});
+    var ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    var rect = card.getBoundingClientRect();
+    var size = Math.max(rect.width, rect.height);
+    var x = event ? event.clientX : rect.left + rect.width/2;
+    var y = event ? event.clientY : rect.top + rect.height/2;
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (x - rect.left - size/2) + 'px';
+    ripple.style.top = (y - rect.top - size/2) + 'px';
+    card.style.position = 'relative';
+    card.style.overflow = 'hidden';
+    card.appendChild(ripple);
+    setTimeout(function(){ripple.remove()}, 600);
+  }
   const p = projects.find(x => x.id === id);
   if(!p) return;
   document.getElementById('dialogIcon').textContent = p.icon;

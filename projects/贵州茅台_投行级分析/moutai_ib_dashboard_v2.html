@@ -1195,7 +1195,7 @@ function drawEarnQuality(){
   const mx=16;
   // dual axis: left for CFO/NI, right for Accruals
   ctx.strokeStyle='rgba(100,116,139,.15)';ctx.lineWidth=0.5;
-  for(let i=0;i<=5;i++){let y=pad.t+mh*(1-i/5);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle=C.dim;ctx.font='9px sans-serif';ctx.textAlign='right';ctx.fillText((mx*i/5-I).toFixed(1),pad.l-4,y+3)}
+  for(let i=0;i<=5;i++){let y=pad.t+mh*(1-i/5);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle=C.dim;ctx.font='9px sans-serif';ctx.textAlign='right';ctx.fillText((mx*i/5).toFixed(1),pad.l-4,y+3)}
 
   // Accruals as bars
   const bw=mw*0.5/5;
@@ -1320,7 +1320,9 @@ function drawFScoreTrend(){
   ctx.strokeStyle='rgba(100,116,139,.15)';ctx.lineWidth=0.5;
   ctx.beginPath();ctx.strokeStyle=C.accent;ctx.lineWidth=2;
   vals.forEach((v,i)=>{let x=pad.l+mw*i/3,y=pad.t+mh*(1-v/mx);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();
-  valArea
+  // fill area under line
+  ctx.lineTo(pad.l+mw,pad.t+mh);ctx.lineTo(pad.l,pad.t+mh);ctx.closePath();
+  ctx.fillStyle='rgba(0,229,255,.08)';ctx.fill();
   vals.forEach((v,i)=>{let x=pad.l+mw*i/3,y=pad.t+mh*(1-v/mx);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle=C.accent;ctx.fill();
     ctx.fillStyle=C.text;ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(v+'/9',x,y-10)});
   years.forEach((v,i)=>{ctx.fillStyle=C.dim;ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(v,pad.l+mw*i/3,pad.t+mh+12)});
