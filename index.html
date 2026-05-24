@@ -753,9 +753,12 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog({
 // Test: show overlay directly with no data filling
 function showDialogTest(){
   var overlay = document.getElementById('dialogOverlay');
+  alert('overlay found: ' + (overlay ? 'YES' : 'NO'));
+  if(!overlay) return;
   overlay.style.display = 'block';
   overlay.classList.add('open');
-  void overlay.offsetHeight; // force reflow
+  void overlay.offsetHeight;
+  alert('display set to block, class added');
 }
 
 // ===== CARD CLICK / TAP DELEGATION =====
