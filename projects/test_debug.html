@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>华阳新能源 — 财务智能大屏 v9</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif}
+body{background:#f5f5f7;color:#1d1d1f;min-height:100vh;overflow-x:hidden}
+body.dark-mode{background:#0d1117;color:#e6edf3}
+/* Filter bar */
+.filter-bar{position:sticky;top:0;z-index:999;background:rgba(245,245,247,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:8px 24px;display:flex;align-items:center;gap:16px;border-bottom:1px solid rgba(0,0,0,0.08)}
+body.dark-mode .filter-bar{background:rgba(13,17,23,0.85);border-color:rgba(255,255,255,0.08)}
+.filter-bar label{font-size:12px;font-weight:500;color:#86868b;white-space:nowrap}
+body.dark-mode .filter-bar label{color:#8b949e}
+.filter-bar select,.filter-bar input{padding:4px 10px;border-radius:6px;border:1px solid #d2d2d7;font-size:13px;background:white;color:#1d1d1f;outline:none}
+body.dark-mode .filter-bar select,body.dark-mode .filter-bar input{background:#21262d;border-color:#30363d;color:#e6edf3}
+.filter-bar select:focus,.filter-bar input:focus{border-color:#0071e3;box-shadow:0 0 0 2px rgba(0,113,227,0.2)}
+#yearRange{width:180px}
+#yearValue{font-size:13px;font-weight:600;color:#0071e3;min-width:40px}
+.filter-info{font-size:11px;color:#86868b;margin-left:auto}
+.filter-btn{padding:4px 12px;border-radius:6px;border:none;background:#0071e3;color:white;font-size:12px;cursor:pointer;transition:all .2s}
+.filter-btn:hover{background:#0077ed;transform:scale(1.02)}
+.dark-toggle{position:relative;width:40px;height:22px;background:#e8e8ed;border-radius:11px;border:none;cursor:pointer;transition:all .3s;margin-left:auto}
+body.dark-mode .dark-toggle{background:#30363d}
+.dark-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:white;transition:all .3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+body.dark-mode .dark-toggle::after{left:20px}
+.fullscreen-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;color:#86868b;transition:all .2s}
+.fullscreen-btn:hover{background:rgba(0,0,0,0.05)}
+body.dark-mode .fullscreen-btn{color:#8b949e}
+body.dark-mode .fullscreen-btn:hover{background:rgba(255,255,255,0.05)}
+.kiosk-btn{background:none;border:1px dashed #d2d2d7;font-size:12px;padding:4px 8px;border-radius:6px;cursor:pointer;color:#86868b}
+body.dark-mode .kiosk-btn{border-color:#30363d;color:#8b949e}
+.kiosk-btn.active{border-color:#ff9f0a;color:#ff9f0a;background:rgba(255,159,10,0.1)}
+/* KPI Row */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:16px 24px}
+.kpi-card{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:12px;padding:16px;border:1px solid rgba(0,0,0,0.06);transition:all .3s}
+body.dark-mode .kpi-card{background:rgba(22,27,34,0.85);border-color:rgba(255,255,255,0.06)}
+.kpi-card:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+body.dark-mode .kpi-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.kpi-label{font-size:12px;font-weight:500;color:#86868b;margin-bottom:4px}
+body.dark-mode .kpi-label{color:#8b949e}
+.kpi-val{font-size:28px;font-weight:700;letter-spacing:-0.5px;transition:all 1s ease-out}
+.kpi-unit{font-size:12px;color:#86868b;display:inline;margin-left:4px}
+.kpi-trend{font-size:11px;font-weight:500;margin-top:4px;padding:2px 6px;border-radius:4px;display:inline-block}
+.kpi-trend.up{color:#30d158;background:rgba(48,209,88,0.1)}
+.kpi-trend.down{color:#ff3b30;background:rgba(255,59,48,0.1)}
+.kpi-trend.danger{color:#ff9f0a;background:rgba(255,159,10,0.1)}
+/* Tab nav */
+.tab-nav{display:flex;gap:4px;padding:12px 24px 0;overflow-x:auto;background:rgba(245,245,247,0.5)}
+body.dark-mode .tab-nav{background:rgba(13,17,23,0.5)}
+.tab-btn{padding:8px 16px;border-radius:8px 8px 0 0;border:none;background:transparent;font-size:13px;font-weight:500;color:#86868b;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:#1d1d1f;background:rgba(0,0,0,0.03)}
+body.dark-mode .tab-btn:hover{color:#e6edf3;background:rgba(255,255,255,0.03)}
+.tab-btn.active{color:#0071e3;background:white;box-shadow:0 -1px 3px rgba(0,0,0,0.05)}
+body.dark-mode .tab-btn.active{color:#58a6ff;background:#161b22;box-shadow:0 -1px 3px rgba(0,0,0,0.2)}
+/* Tab content */
+.tab-panel{display:none;padding:0;animation:fadeIn .3s ease}
+.tab-panel.active{display:block}
+/* Chart grids */
+.chart-grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px;margin-bottom:12px}
+.chart-grid-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 24px;margin-bottom:12px}
+.chart-card{background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);border-radius:12px;padding:16px;border:1px solid rgba(0,0,0,0.06);transition:all .3s}
+body.dark-mode .chart-card{background:rgba(22,27,34,0.85);border-color:rgba(255,255,255,0.06)}
+.chart-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.chart-title{font-size:12px;font-weight:600;color:#86868b;margin-bottom:8px;letter-spacing:0.3px}
+body.dark-mode .chart-title{color:#8b949e}
+.chart-card canvas{width:100%!important;height:auto!important;max-height:300px}
+/* Insight cards */
+.insight-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px 24px}
+.insight-card{border-radius:12px;padding:14px 16px;font-size:12px;line-height:1.6;backdrop-filter:blur(20px)}
+.insight-blue{background:rgba(0,113,227,0.08);border-left:3px solid #0071e3;color:#1d1d1f}
+body.dark-mode .insight-blue{background:rgba(88,166,255,0.1);border-color:#58a6ff;color:#e6edf3}
+.insight-red{background:rgba(255,59,48,0.08);border-left:3px solid #ff3b30;color:#1d1d1f}
+body.dark-mode .insight-red{background:rgba(255,59,48,0.1);border-color:#ff3b30;color:#e6edf3}
+.insight-label{font-weight:700;font-size:13px;display:block;margin-bottom:4px}
+/* Tables */
+.double-table{padding:0 24px;margin-bottom:12px;overflow-x:auto}
+.data-table{width:100%;border-collapse:collapse;font-size:11px;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);border-radius:12px;overflow:hidden}
+body.dark-mode .data-table{background:rgba(22,27,34,0.85)}
+.data-table th{padding:8px 12px;text-align:right;background:rgba(0,0,0,0.02);font-weight:600;border-bottom:1px solid rgba(0,0,0,0.06);cursor:pointer;user-select:none}
+.data-table th:hover{background:rgba(0,113,227,0.05)}
+.data-table th:first-child{text-align:left}
+.data-table td{padding:6px 12px;text-align:right;border-bottom:1px solid rgba(0,0,0,0.03)}
+.data-table td:first-child{text-align:left;font-weight:500;white-space:nowrap}
+.data-table tr:hover{background:rgba(0,113,227,0.03)}
+.data-table .danger{color:#ff3b30;font-weight:600}
+.data-table .warn{color:#ff9f0a;font-weight:600}
+/* Kiosk bar */
+.kiosk-bar{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);backdrop-filter:blur(20px);color:white;padding:8px 20px;border-radius:20px;font-size:12px;z-index:9999;gap:12px;align-items:center}
+.kiosk-bar.show{display:flex}
+.kiosk-bar .kiosk-timer{color:#ff9f0a;font-weight:700}
+/* Keyboard hints */
+.key-hint{position:fixed;bottom:20px;right:20px;z-index:9998;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);color:rgba(255,255,255,0.5);padding:6px 12px;border-radius:8px;font-size:10px;pointer-events:none;transition:opacity .5s}
+.key-hint kbd{display:inline-block;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,0.1);font-size:10px;margin:0 2px}
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+/* Fullscreen */
+:fullscreen .filter-bar{top:0}
+:-webkit-full-screen .filter-bar{top:0}
+/* Responsive */
+@media(max-width:768px){
+  .chart-grid-2col,.chart-grid-3col,.insight-row{grid-template-columns:1fr}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .filter-bar{flex-wrap:wrap;padding:8px 12px;gap:8px}
+  .tab-btn{padding:6px 10px;font-size:11px}
+  .kpi-val{font-size:22px}
+}
+/* Sort indicator */
+.sort-asc::after{content:" \25B2";font-size:9px}
+.sort-desc::after{content:" \25BC";font-size:9px}
+/* YoY comparison */
+.yoy-toggle{display:inline-flex;gap:4px;align-items:center}
+.yoy-toggle button{padding:2px 8px;border-radius:4px;border:1px solid #d2d2d7;background:white;font-size:11px;cursor:pointer;transition:all .2s}
+body.dark-mode .yoy-toggle button{background:#21262d;border-color:#30363d;color:#e6edf3}
+.yoy-toggle button.active{background:#0071e3;color:white;border-color:#0071e3}
+body.dark-mode .yoy-toggle button.active{background:#58a6ff;border-color:#58a6ff}
+</style>
+</head>
+<body>
+
+<div class="filter-bar">
+  <label>年份</label>
+  <input type="range" id="yearRange" min="2011" max="2015" value="2015" step="1">
+  <span id="yearValue">2015</span>
+  <label>指标</label>
+  <select id="filterType">
+    <option value="all">全部</option>
+    <option value="profit">盈利</option>
+    <option value="solvency">偿债</option>
+    <option value="operation">营运</option>
+    <option value="cash">现金流</option>
+  </select>
+  <button class="filter-btn" onclick="resetFilter()">重置</button>
+  <span class="filter-info" id="filterInfo"></span>
+  <button class="kiosk-btn" onclick="toggleKiosk()" title="轮播模式">▶ 轮播</button>
+  <button class="fullscreen-btn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
+  <button class="dark-toggle" onclick="toggleDark()" title="深色模式 (D)"></button>
+</div>
+
+<div class="tab-nav">
+<button class="tab-btn active" onclick="switchTab(0)">概览总览</button><button class="tab-btn" onclick="switchTab(1)">资产负债表</button><button class="tab-btn" onclick="switchTab(2)">利润分析</button><button class="tab-btn" onclick="switchTab(3)">现金流量</button><button class="tab-btn" onclick="switchTab(4)">财务比率</button><button class="tab-btn" onclick="switchTab(5)">两金与信用</button><button class="tab-btn" onclick="switchTab(6)">估值与战略</button>
+</div>
+
+<div id="tabContent">
+<div class="tab-panel active" id="tab0">
+<div class="kpi-row" id="kpi-row-0">
+  <div class="kpi-card"><div class="kpi-label">总资产 (2015)</div><div class="kpi-val" data-target="42.40">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend up">↑ +87.0%</div><canvas id="spark-ta" width="80" height="24"></canvas></div>
+  <div class="kpi-card"><div class="kpi-label">资产负债率</div><div class="kpi-val" data-target="87.46">0</div><div class="kpi-unit">%</div><div class="kpi-trend danger">↑ +19.3pp</div><canvas id="spark-dr" width="80" height="24"></canvas></div>
+  <div class="kpi-card"><div class="kpi-label">营业收入 (2015)</div><div class="kpi-val" data-target="4.72">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend up">↑ +419.4%</div><canvas id="spark-rev" width="80" height="24"></canvas></div>
+  <div class="kpi-card"><div class="kpi-label">净利润 (2015)</div><div class="kpi-val" data-target="-1.90">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend down">↓ -150.8%</div><canvas id="spark-np" width="80" height="24"></canvas></div>
+</div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">营业收入 & 营业成本 (亿元)</div><canvas id="c0_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">净利润 & 总资产趋势</div><canvas id="c0_1"></canvas></div>
+</div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">资产负债结构 (亿元)</div><canvas id="c0_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">营业收入年度增长率</div><canvas id="c0_3"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">毛利率 & 净利率</div><canvas id="c0_4"></canvas></div>
+  <div class="chart-card"><div class="chart-title">在建工程 vs 固定资产</div><canvas id="c0_5"></canvas></div>
+  <div class="chart-card"><div class="chart-title">2015年费用结构</div><canvas id="c0_6"></canvas></div>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>华阳新能源5年间总资产从16.22亿增长至42.40亿（CAGR 27.2%），收入从零爆发至4.72亿。但累计亏损已达2.66亿，资产负债率从50.68%飙升至87.46%，财务杠杆已达危险水平。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>现金余额仅82万元，对22.68亿流动负债。经营现金流2015年虽有改善但不可持续——主要来自应付账款激增而非真实盈利。Z-Score -0.052连续5年处于破产区。</div>
+</div></div><div class="tab-panel" id="tab1">
+<div class="kpi-row" id="kpi-row-1">
+  <div class="kpi-card"><div class="kpi-label">总资产</div><div class="kpi-val" data-target="42.40">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend up">↑ CAGR 27.2%</div></div>
+  <div class="kpi-card"><div class="kpi-label">总负债</div><div class="kpi-val" data-target="37.08">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend danger">↑ +140%</div></div>
+  <div class="kpi-card"><div class="kpi-label">所有者权益</div><div class="kpi-val" data-target="5.32">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend down">↓ -33.5%</div></div>
+  <div class="kpi-card"><div class="kpi-label">在建工程占比</div><div class="kpi-val" data-target="65.5">0</div><div class="kpi-unit">%</div><div class="kpi-trend">↓ -32.8pp</div></div>
+</div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">资产结构演进 (亿元)</div><canvas id="c1_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">负债 & 权益趋势 (亿元)</div><canvas id="c1_1"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">流动资产 vs 非流动资产</div><canvas id="c1_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">2015年资产构成</div><canvas id="c1_3"></canvas></div>
+  <div class="chart-card"><div class="chart-title">CIP & FA 趋势</div><canvas id="c1_4"></canvas></div>
+</div>
+<div class="double-table">
+<table class="data-table"><tr><th>项目(元)</th><th>2011</th><th>2012</th><th>2013</th><th>2014</th><th>2015</th></tr><tr><td>总资产</td><td>16.22亿</td><td>17.22亿</td><td>17.42亿</td><td>22.67亿</td><td>42.40亿</td></tr><tr><td>流动资产</td><td>2770万</td><td>2790万</td><td>3610万</td><td>3.85亿</td><td>13.83亿</td></tr><tr><td>非流动资产</td><td>15.94亿</td><td>16.94亿</td><td>17.06亿</td><td>18.81亿</td><td>28.57亿</td></tr><tr><td>在建工程</td><td>15.88亿</td><td>16.88亿</td><td>17.00亿</td><td>18.75亿</td><td>27.75亿</td></tr><tr><td>固定资产</td><td>420万</td><td>610万</td><td>630万</td><td>580万</td><td>500万</td></tr><tr><td>总负债</td><td>8.22亿</td><td>9.22亿</td><td>9.41亿</td><td>15.45亿</td><td>37.08亿</td></tr><tr><td>流动负债</td><td>8.22亿</td><td>9.22亿</td><td>9.41亿</td><td>7.45亿</td><td>22.68亿</td></tr><tr><td>非流动负债</td><td>0</td><td>0</td><td>0</td><td>8.00亿</td><td>14.40亿</td></tr><tr><td>所有者权益</td><td>8.00亿</td><td>8.01亿</td><td>8.01亿</td><td>7.22亿</td><td>5.32亿</td></tr><tr><td>货币资金</td><td>1500万</td><td>70万</td><td>30万</td><td>180万</td><td>80万</td></tr><tr><td>应收账款</td><td>0</td><td>540万</td><td>2220万</td><td>1.18亿</td><td>1330万</td></tr><tr><td>存货</td><td>10万</td><td>1380万</td><td>680万</td><td>1480万</td><td>3120万</td></tr></table>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>资产结构从2011年CIP占比97.9%逐步多元化：2015年流动资产占比32.6%（vs 2011年1.7%），体现产能投产后的运营资金需求。但固定资产仅502万，占比0.12%，资产周转效率极低。负债从8.22亿增至37.08亿，CAGR 45.7%远超资产增速，财务杠杆快速放大。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>87.46%的资产负债率意味着自有资金仅覆盖12.5%的资产。2015年非流动负债14.4亿但现金仅82万，偿债能力严重不足。在建工程27.75亿（占总资产65.5%）若转固后产能利用率不足，将面临巨额折旧压力。</div>
+</div></div><div class="tab-panel" id="tab2">
+<div class="kpi-row" id="kpi-row-2">
+  <div class="kpi-card"><div class="kpi-label">营业收入</div><div class="kpi-val" data-target="4.72">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend up">↑ 33.1x</div></div>
+  <div class="kpi-card"><div class="kpi-label">毛利率 (2015)</div><div class="kpi-val" data-target="0.67">0</div><div class="kpi-unit">%</div><div class="kpi-trend up">↑ 转正</div></div>
+  <div class="kpi-card"><div class="kpi-label">净利率 (2015)</div><div class="kpi-val" data-target="-40.28">0</div><div class="kpi-unit">%</div><div class="kpi-trend down">亏损</div></div>
+  <div class="kpi-card"><div class="kpi-label">累计亏损</div><div class="kpi-val" data-target="-2.66">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend down">含2014-2015</div></div>
+</div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">收入、成本与毛利 (亿元)</div><canvas id="c2_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">三大费用趋势 (万元)</div><canvas id="c2_1"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">毛利率 & 净利率</div><canvas id="c2_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">2015年费用构成</div><canvas id="c2_3"></canvas></div>
+  <div class="chart-card"><div class="chart-title">营业利润率</div><canvas id="c2_4"></canvas></div>
+</div>
+<div class="double-table">
+<table class="data-table"><tr><th>项目(元)</th><th>2011</th><th>2012</th><th>2013</th><th>2014</th><th>2015</th></tr><tr><td>营业收入</td><td>0</td><td>1390万</td><td>1970万</td><td>9090万</td><td>4.72亿</td></tr><tr><td>营业成本</td><td>0</td><td>1450万</td><td>1990万</td><td>1.17亿</td><td>4.69亿</td></tr><tr><td>管理费用</td><td>0</td><td>1880万</td><td>1440万</td><td>1440万</td><td>3670万</td></tr><tr><td>财务费用</td><td>0</td><td>0</td><td>550万</td><td>1490万</td><td>8080万</td></tr><tr><td>营业利润</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>利润总额</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>净利润</td><td>0</td><td>50万</td><td>0万</td><td>-7590万</td><td>-1.90亿</td></tr></table>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>2015年营收4.72亿是2014年的5.2倍，增长迅猛。毛利率首次转正至0.67%，标志投产初期最困难阶段过去。但管理费用3674万、财务费用8083万合计占收入24.8%，费用率偏高。财务费用暴增（2014年1486万→2015年8083万，+444%），反映债务扩张的利息负担。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>净利率-40.28%，每赚1元收入亏损0.4元。2014-2015年累计亏损2.66亿已侵蚀2011-2013年的微利。财务费用超毛利率的2.5倍，借款利息吞噬了所有毛利还倒贴。如果毛利率不能快速提升至10%以上，亏损将持续扩大。</div>
+</div></div><div class="tab-panel" id="tab3"><div class="kpi-row" id="kpi-row-3"><div class="kpi-card"><div class="kpi-label">经营现金流(2015)</div><div class="kpi-val" data-target="19.65">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend up">↑ 转正</div></div><div class="kpi-card"><div class="kpi-label">投资现金流(2015)</div><div class="kpi-val" data-target="-5.88">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend down">持续流出</div></div><div class="kpi-card"><div class="kpi-label">筹资现金流(2015)</div><div class="kpi-val" data-target="-13.77">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend down">↓ 偿还期</div></div><div class="kpi-card"><div class="kpi-label">期末现金</div><div class="kpi-val" data-target="0.0082">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend danger">⚠ 极低</div></div></div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">三大现金流对比 (亿元)</div><canvas id="c3_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">OCF & 净利润 对比</div><canvas id="c3_1"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">累计经营现金流</div><canvas id="c3_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">现金余额趋势</div><canvas id="c3_3"></canvas></div>
+  <div class="chart-card"><div class="chart-title">现金流质量</div><canvas id="c3_4"></canvas></div>
+</div>
+<div class="double-table">
+<table class="data-table"><tr><th>项目(元)</th><th>2011</th><th>2012</th><th>2013</th><th>2014</th><th>2015</th></tr><tr><td>经营现金流</td><td>0</td><td>-1700万</td><td>610万</td><td>-7.90亿</td><td>19.65亿</td></tr><tr><td>投资现金流</td><td>0</td><td>-10万</td><td>-3.71亿</td><td>-1.30亿</td><td>-5.88亿</td></tr><tr><td>筹资现金流</td><td>0</td><td>310万</td><td>3.48亿</td><td>8.20亿</td><td>-13.77亿</td></tr><tr><td>净增加额</td><td>0</td><td>-1409万</td><td>-1270万</td><td>-1.01亿</td><td>180万</td></tr><tr><td>期初现金</td><td>0</td><td>1500万</td><td>70万</td><td>30万</td><td>180万</td></tr><tr><td>期末现金</td><td>1500万</td><td>70万</td><td>30万</td><td>180万</td><td>80万</td></tr></table>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>2015年经营现金流19.65亿（含应付账款激增），看似改善但需拆解：筹资现金流从2014年+8.20亿转为-13.77亿（偿还借款），说明公司2015年进入债务偿还期。5年累计经营现金流+11.73亿，但投资净流出-12.92亿，资金缺口依赖借款填补。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>现金余额从2011年1503万降至2015年仅82万，5年缩水94.5%。2015年期末现金仅占流动负债0.004%。短期看，82万现金面对22.68亿流动负债——支付能力如履薄冰。经营现金流的质量需关注：2015年正值可能来自应付账款堆积而非真实盈利。</div>
+</div></div><div class="tab-panel" id="tab4"><div class="kpi-row" id="kpi-row-4"><div class="kpi-card"><div class="kpi-label">流动比率</div><div class="kpi-val" data-target="0.61">0</div><div class="kpi-trend up">↑ 5年最高</div></div><div class="kpi-card"><div class="kpi-label">ROE (2015)</div><div class="kpi-val" data-target="-35.78">0</div><div class="kpi-unit">%</div><div class="kpi-trend down">亏损</div></div><div class="kpi-card"><div class="kpi-label">权益乘数</div><div class="kpi-val" data-target="7.97">0</div><div class="kpi-trend danger">↑ 高杠杆</div></div><div class="kpi-card"><div class="kpi-label">资产负债率</div><div class="kpi-val" data-target="87.46">0</div><div class="kpi-unit">%</div><div class="kpi-trend danger">↑ 预警</div></div></div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">流动性比率趋势</div><canvas id="c4_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">盈利能力比率</div><canvas id="c4_1"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">杠杆比率</div><canvas id="c4_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">ROE & ROA 趋势</div><canvas id="c4_3"></canvas></div>
+  <div class="chart-card"><div class="chart-title">杜邦分解 (2015)</div><canvas id="c4_4"></canvas></div>
+</div>
+<div class="double-table">
+<table class="data-table"><tr><th>比率</th><th>2011</th><th>2012</th><th>2013</th><th>2014</th><th>2015</th></tr><tr><td>资产负债率</td><td>50.68%</td><td>53.52%</td><td>54.05%</td><td>68.15%</td><td class="danger">87.46%</td></tr><tr><td>流动比率</td><td>0.03</td><td>0.03</td><td>0.04</td><td>0.52</td><td>0.61</td></tr><tr><td>速动比率</td><td>0.03</td><td>0.02</td><td>0.03</td><td>0.50</td><td>0.60</td></tr><tr><td>毛利率</td><td class="danger">-</td><td>-4.32%</td><td>-1.02%</td><td>-29.04%</td><td>0.68%</td></tr><tr><td>净利率</td><td>-</td><td>3.60%</td><td>0.04%</td><td class="danger">-83.50%</td><td class="danger">-40.29%</td></tr><tr><td>ROE</td><td>0.00%</td><td>0.06%</td><td>0.00%</td><td class="danger">-10.51%</td><td class="danger">-35.80%</td></tr><tr><td>ROA</td><td>0.00%</td><td>0.03%</td><td>0.00%</td><td class="danger">-3.35%</td><td class="danger">-4.49%</td></tr></table>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>2015年ROE -35.78%为连续第二年负值，ROA -4.49%。权益乘数从2011年2.03升至2015年7.97，杠杆放大5倍——但财务杠杆正效应需要ROA>利率，目前ROA远低于5.5%的债务成本，杠杆在放大亏损。杜邦分解显示：亏损的核心驱动因素是净利率过低。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>流动比率0.61仍远低于1.0安全线，意味着流动资产无法覆盖流动负债。速动比率0.60（剔除存货后）同样危险。2013-2015年期间净利率持续为负且没有收窄趋势，如果2016年毛利率无法提升到5%以上，公司将陷入付息能力危机。</div>
+</div></div><div class="tab-panel" id="tab5"><div class="kpi-row" id="kpi-row-5"><div class="kpi-card"><div class="kpi-label">应收账款(2015)</div><div class="kpi-val" data-target="0.13">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend down">↓ -88.7%</div></div><div class="kpi-card"><div class="kpi-label">存货(2015)</div><div class="kpi-val" data-target="0.31">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend up">↑ +111%</div></div><div class="kpi-card"><div class="kpi-label">Z-Score</div><div class="kpi-val" data-target="-0.05">0</div><div class="kpi-trend danger">破产区</div></div><div class="kpi-card"><div class="kpi-label">营运资本</div><div class="kpi-val" data-target="-8.85">0</div><div class="kpi-unit">亿元</div><div class="kpi-trend danger">↑ 负值扩大</div></div></div>
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">两金趋势 (应收账款+存货)</div><canvas id="c5_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">应收/存货占收入比</div><canvas id="c5_1"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">关联方应收占比</div><canvas id="c5_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">营运资本趋势</div><canvas id="c5_3"></canvas></div>
+  <div class="chart-card"><div class="chart-title">Altman Z-Score</div><canvas id="c5_4"></canvas></div>
+</div>
+<div class="double-table">
+<table class="data-table"><tr><th>信用指标</th><th>2011</th><th>2012</th><th>2013</th><th>2014</th><th>2015</th></tr><tr><td>应收账款</td><td>0</td><td>540万</td><td>2220万</td><td>1.18亿</td><td>1330万</td></tr><tr><td>存货</td><td>10万</td><td>1380万</td><td>680万</td><td>1480万</td><td>3120万</td></tr><tr><td>两金合计</td><td>10万</td><td>1920万</td><td>2900万</td><td>1.33亿</td><td>4450万</td></tr><tr><td>两金/收入</td><td class="danger">-</td><td class="danger">138.13%</td><td class="danger">147.21%</td><td class="danger">145.98%</td><td class="danger">9.42%</td></tr><tr><td>Z-Score</td><td>-0.264</td><td>-0.301</td><td>-0.300</td><td>-0.249</td><td>-0.052</td></tr></table>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>两金合计从2011年7.2万激增至2015年4447万——收入规模扩大后运营资金占用自然增加。2015年应收/收入比2.8%（vs 2014年129.7%），大幅改善说明回款周期缩短。营运资本从2012年-8946万（负值）到2015年-88.49亿，负营运资本现象加剧，本质是占用供应商资金运营。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>Altman Z-Score持续为负（2011年-0.264→2015年-0.052），连续5年处于破产风险区。关联方应收占比97%以上——若汉能控股资金链紧张，应收账款回收存在极大不确定性。营运资本-88.49亿意味着公司严重依赖商业信用融资，一旦供应商收紧账期将引发流动性危机。</div>
+</div></div><div class="tab-panel" id="tab6">
+<div class="chart-grid-2col">
+  <div class="chart-card"><div class="chart-title">三情景收入预测 (2016-2020)</div><canvas id="c6_0"></canvas></div>
+  <div class="chart-card"><div class="chart-title">五维健康度评估</div><canvas id="c6_1"></canvas></div>
+</div>
+<div class="chart-grid-3col">
+  <div class="chart-card"><div class="chart-title">资产负债率预测</div><canvas id="c6_2"></canvas></div>
+  <div class="chart-card"><div class="chart-title">现金余额预警</div><canvas id="c6_3"></canvas></div>
+  <div class="chart-card"><div class="chart-title">DCF敏感性矩阵</div><canvas id="c6_4"></canvas></div>
+</div>
+<div class="double-table">
+<table class="data-table"><tr><th>预测指标</th><th>2016</th><th>2017</th><th>2018</th><th>2019</th><th>2020</th></tr><tr><td>乐观收入(亿)</td><td>13.21</td><td>19.82</td><td>25.76</td><td>30.92</td><td>35.55</td></tr><tr><td>基准收入(亿)</td><td>8.50</td><td>12.75</td><td>16.58</td><td>19.89</td><td>22.88</td></tr><tr><td>悲观收入(亿)</td><td>5.66</td><td>7.93</td><td>9.52</td><td>10.47</td><td>11.52</td></tr><tr><td>资产负债率(%)</td><td>92.47</td><td>98.15</td><td>102.71</td><td>106.08</td><td>108.10</td></tr><tr><td>每股价值（元）</td><td colspan="5">基于WACC 9.44%, 终值增长率2.5%</td></tr></table>
+</div>
+<div class="insight-row">
+  <div class="insight-card insight-blue"><span class="insight-label">洞察分析</span>三情景预测收入从2016年5.66亿（悲观）到13.21亿（乐观），基准情景2020年达22.88亿。如果毛利率能按假设逐步提升至12%，EBIT将在2018年首次转正。DCF模型显示每股价值-11.81元——远期现金流的正回报无法覆盖前期的巨额资本支出和债务负担。</div>
+  <div class="insight-card insight-red"><span class="insight-label">风险提示</span>基准情景下资产负债率从2015年87.46%一路升至2020年108.10%——2020年净资产将转负。乐观情景（高增长+快转固）也需到2018年后才有转机。现金余额到2016年底预计归零，融资需求紧迫。建议：尽快引入战略投资者或资产注入以改善资本结构。</div>
+</div></div>
+</div>
+
+<div class="kiosk-bar" id="kioskBar">
+  <span>轮播模式</span>
+  <span class="kiosk-timer" id="kioskTimer"></span>
+  <span style="cursor:pointer" onclick="toggleKiosk()">✕ 退出</span>
+</div>
+
+<div class="key-hint">
+  <kbd>←</kbd> <kbd>→</kbd> 切换Tab &middot; <kbd>F</kbd> 全屏 &middot; <kbd>D</kbd> 深色 &middot; <kbd>K</kbd> 轮播
+</div>
+
+<script>
+
+var YRS = ["2011", "2012", "2013", "2014", "2015"];
+var REV = [0.0, 0.138533419, 0.19676822079999998, 0.9092639726999999, 4.7230843662];
+var COST = [0.0, 0.1449448885, 0.19913099059999997, 1.172903936, 4.6914052368];
+var NP = [0.0, 0.0050034202, 6.77536e-05, -0.7585316529999999, -1.9026380165];
+var TA = [16.2193750601, 17.223548247100002, 17.4196986792, 22.6683080593, 42.3976839611];
+var TL = [8.219375060099999, 9.2185448269, 9.4146104656, 15.448648475399999, 37.0813885337];
+var TE = [8.0, 8.0050034202, 8.0050882136, 7.2196595838999995, 5.3162954274];
+var CA = [0.2770069611, 0.27945159140000003, 0.36071825399999996, 3.8554496970999996, 13.8326858603];
+var NCA = [15.942368099000001, 16.9440966557, 17.0589804252, 18.8128583622, 28.5649981008];
+var CIP = [15.8835166247, 16.8827283273, 16.996187348, 18.7539459997, 27.750776967399997];
+var FA = [0.0415016877, 0.06116997, 0.0626218046, 0.0580477058, 0.0502334491];
+var CASH = [0.1503259238, 0.0070476673, 0.0029206032, 0.0176801576, 0.0081674217];
+var AR = [0.0, 0.053832233099999995, 0.22159530309999997, 1.17914215, 0.1331313602];
+var INV = [0.0007155572999999999, 0.1375644604, 0.068483641, 0.1475593018, 0.31155445519999997];
+var CL = [8.219375060099999, 9.2185448269, 9.4146104656, 7.4486484754, 22.681388533699998];
+var NCL = [0.0, 0.0, 0.0, 8.0, 14.4];
+var OCF = [0.0, -0.170461632, 0.0606157437, -7.903185977100001, 19.652101506199998];
+var ICF = [0.0, -0.0013065893, -3.7154195007, -1.3038052434, -5.881490186900001];
+var FCF = [0.0, 0.031125187000000002, 3.4791944786, 8.1962050594, -13.7724580168];
+var AE2 = [0.0, 1883.8433579999999, 1438.5225289999998, 1436.9164560000002, 3673.526414];
+var FE2 = [0.0, -1.519735, 548.946277, 1486.028238, 8083.263612999999];
+var GM = [0, -4.628103129397241, -1.2007883134754678, -28.994876209285884, 0.6707296957620875];
+var NM = [0, 3.611706284387596, 0.03443320253877094, -83.42260067201275, -40.28380331539122];
+var DR = [50.67627470012599, 53.522913482430454, 54.04577104907974, 68.15086699451294, 87.4608824569811];
+var CR = [0.03370170591736324, 0.030314067637286047, 0.038314729570387084, 0.517603926381149, 0.6098694460326977];
+var QR = [0.033614648532249665, 0.015391488967539535, 0.03104054215177512, 0.49779371486595525, 0.5961333180731112];
+var ROE = [0.0, 0.0625036609900036, 0.0008463816786539852, -10.50647394361283, -35.788793954035555];
+var ROA = [0.0, 0.029049880594972335, 0.0003889481744072945, -3.3462208604880925, -4.48759894112536];
+var EM2 = [2.0274218825125, 2.151597862361648, 2.17607829100563, 3.1398028945645615, 7.975042873385822];
+var TWOG = [0.0007155572999999999, 0.19139669349999996, 0.29007894409999996, 1.3267014518, 0.4446858154];
+var TGR = [0, 138.15922171097213, 147.4216430481644, 145.9093829331483, 9.415157149898128];
+var WC2 = [-7.942368098999999, -8.939093235500001, -9.0538922116, -3.5931987782999997, -8.848702673399998];
+var Z = [-0.264, -0.301, -0.3, -0.249, -0.052];
+var FY = ["2016", "2017", "2018", "2019", "2020"];
+var BREV = [8.5, 12.75, 16.58, 19.89, 22.88];
+var OREV = [13.21, 19.82, 25.76, 30.92, 35.55];
+var PREV = [5.66, 7.93, 9.52, 10.47, 11.52];
+var FDR = [92.47, 98.15, 102.71, 106.08, 108.1];
+var WACCL = ["7.4%", "8.4%", "9.4%", "10.4%", "11.4%"];
+var TGL = ["1.5%", "2.0%", "2.5%", "3.0%", "3.5%"];
+var SM = [[-13.22, -13.8, -14.51, -15.38, -16.47], [-12.05, -12.46, -12.94, -13.5, -14.18], [-11.07, -11.34, -11.66, -12.02, -12.45], [-10.24, -10.41, -10.61, -10.83, -11.09], [-9.53, -9.63, -9.74, -9.87, -10.01]];
+var HL = ["\u76c8\u5229\u80fd\u529b", "\u507f\u503a\u80fd\u529b", "\u6210\u957f\u6f5c\u529b", "\u8fd0\u8425\u6548\u7387", "\u73b0\u91d1\u6d41"];
+var HS = [15, 12, 75, 30, 25];
+
+// State
+let currentTab = 0;
+let darkMode = false;
+let fullscreen = false;
+let kioskActive = false;
+let kioskTimer = null;
+let kioskInterval = 8;
+let charts = {};
+let lazyCharts = {};
+let yearFilter = 2015;
+let sortAsc = {};
+let yoyMode = false;
+let yoyYear1 = 2014;
+let yoyYear2 = 2015;
+
+// ===== COLOR PALETTE =====
+var C = ['#0071e3','#ff9f0a','#30d158','#ff3b30','#bf5af2','#ff6482','#64d2ff'];
+
+// ===== DARK MODE =====
+function toggleDark() {
+    darkMode = !darkMode;
+    document.body.classList.toggle('dark-mode', darkMode);
+    Object.values(charts).forEach(c => {
+        if (c) {
+            const opts = c.options;
+            if (opts.scales) Object.values(opts.scales).forEach(s => {
+                if (s.grid) s.grid.color = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+                if (s.ticks) s.ticks.color = darkMode ? '#8b949e' : '#86868b';
+            });
+            if (opts.plugins?.legend?.labels) opts.plugins.legend.labels.color = darkMode ? '#e6edf3' : '#1d1d1f';
+            c.update();
+        }
+    });
+}
+
+// ===== FULLSCREEN =====
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        fullscreen = true;
+    } else {
+        document.exitFullscreen();
+        fullscreen = false;
+    }
+}
+
+// ===== KIOSK MODE =====
+function toggleKiosk() {
+    kioskActive = !kioskActive;
+    document.getElementById('kioskBar').classList.toggle('show', kioskActive);
+    document.querySelector('.kiosk-btn').classList.toggle('active', kioskActive);
+    if (kioskActive) startKiosk(); else stopKiosk();
+}
+
+function startKiosk() {
+    let remaining = kioskInterval;
+    document.getElementById('kioskTimer').textContent = remaining + 's';
+    kioskTimer = setInterval(() => {
+        remaining--;
+        document.getElementById('kioskTimer').textContent = remaining + 's';
+        if (remaining <= 0) {
+            remaining = kioskInterval;
+            let next = (currentTab + 1) % document.querySelectorAll('.tab-btn').length;
+            switchTab(next);
+        }
+    }, 1000);
+}
+
+function stopKiosk() {
+    if (kioskTimer) { clearInterval(kioskTimer); kioskTimer = null; }
+    document.getElementById('kioskBar').classList.remove('show');
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+    const n = document.querySelectorAll('.tab-btn').length;
+    if (e.key === 'ArrowRight') switchTab(Math.min(currentTab+1, n-1));
+    else if (e.key === 'ArrowLeft') switchTab(Math.max(currentTab-1, 0));
+    else if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+    else if (e.key === 'Escape') { if (fullscreen) toggleFullscreen(); if (kioskActive) toggleKiosk(); }
+    else if (e.key === 'k' || e.key === 'K') toggleKiosk();
+    else if (e.key === 'd' || e.key === 'D') toggleDark();
+});
+
+// ===== SWITCH TAB =====
+function switchTab(idx) {
+    currentTab = idx;
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+    document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+    window.location.hash = '#tab=' + idx;
+
+    // Lazy init charts for this tab
+    initTabCharts(idx);
+
+    // Resize charts
+    Object.values(charts).forEach(c => { if (c) c.resize(); });
+}
+
+// ===== FILTER =====
+function applyFilter() {
+    const yrInput = document.getElementById('yearRange');
+    yearFilter = parseInt(yrInput.value);
+    document.getElementById('yearValue').textContent = yearFilter;
+
+    const type = document.getElementById('filterType').value;
+    document.getElementById('filterInfo').textContent =
+        '显示: ' + yearFilter + '年' + (type !== 'all' ? ' | ' + type : '') + ' | ' +
+        Object.keys(charts).length + '张图表';
+
+    // Update charts that support year filter
+    Object.values(charts).forEach(c => { if (c) c.resize(); });
+}
+
+function resetFilter() {
+    document.getElementById('yearRange').value = 2015;
+    document.getElementById('filterType').value = 'all';
+    applyFilter();
+}
+
+// ===== TABLE SORT =====
+function sortTable(tableId, col) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+    const key = tableId + '_' + col;
+    sortAsc[key] = !sortAsc[key];
+    const asc = sortAsc[key];
+
+    const tbody = table.querySelector('tbody') || table;
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    if (rows.length < 2) return;
+    const headerRow = rows[0];
+    const dataRows = rows.slice(1);
+
+    dataRows.sort((a,b) => {
+        const va = parseFloat(a.cells[col]?.textContent.replace(/[^0-9.-]/g,'') || 0);
+        const vb = parseFloat(b.cells[col]?.textContent.replace(/[^0-9.-]/g,'') || 0);
+        return asc ? va - vb : vb - va;
+    });
+
+    dataRows.forEach(r => tbody.appendChild(r));
+    // Update header sort indicator
+    headerRow.querySelectorAll('th').forEach((th,i) => {
+        th.classList.toggle('sort-asc', i===col && asc);
+        th.classList.toggle('sort-desc', i===col && !asc);
+    });
+}
+
+// ===== KPI COUNT-UP =====
+function animateKPI() {
+    document.querySelectorAll('.kpi-val[data-target]').forEach(el => {
+        const target = parseFloat(el.dataset.target);
+        const duration = 1500;
+        const start = performance.now();
+
+        function update(now) {
+            const pct = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - pct, 3);
+            const current = target * eased;
+            el.textContent = target < 0
+                ? current.toFixed(2)
+                : (target >= 100 ? current.toFixed(1) : current.toFixed(2));
+            if (pct < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    });
+}
+
+// ===== SPARKLINES =====
+function drawSparkline(id, data, color) {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const w = c.width, h = c.height;
+    ctx.clearRect(0,0,w,h);
+    const min = Math.min(...data), max = Math.max(...data), range = max - min || 1;
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    data.forEach((v,i) => {
+        const x = (i / (data.length-1)) * w;
+        const y = h - ((v - min) / range) * (h - 4) - 2;
+        i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+}
+
+// ===== CHART CONFIGS =====
+var CHART_CONFIGS = [
+  // Tab 0 - Overview
+  [
+    { id:'c0_0', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'营业收入', data:REV, backgroundColor:C[0], borderRadius:4 },
+      { label:'营业成本', data:COST, backgroundColor:C[3]+'80', borderRadius:4 },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'¥', dec:2 },
+
+    { id:'c0_1', type:'line', data:{ labels:YRS, datasets:[
+      { label:'净利润(亿)', data:NP, borderColor:C[3], backgroundColor:C[3]+'20', fill:true, tension:0.3, pointRadius:4 },
+      { label:'总资产(亿)', data:TA, borderColor:C[0], backgroundColor:C[0]+'20', fill:true, tension:0.3, pointRadius:4, yAxisID:'y1' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } },
+      y1:{ position:'right', grid:{ drawOnChartArea:false }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c0_2', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'流动资产', data:CA, backgroundColor:C[4], borderRadius:4 },
+      { label:'非流动资产', data:NCA, backgroundColor:C[0], borderRadius:4 },
+    ] }, options:{ scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, ticks:{ callback:v=>v+'亿' } } } }, legend:true, unit:'', dec:2 },
+
+    { id:'c0_3', type:'line', data:{ labels:YRS.slice(1), datasets:[
+      { label:'收入增长率', data:[(REV[1]/REV[0]-1)*100||0, (REV[2]/REV[1]-1)*100||0, (REV[3]/REV[2]-1)*100||0, (REV[4]/REV[3]-1)*100||0],
+        borderColor:C[1], backgroundColor:C[1]+'20', fill:true, tension:0.3, pointRadius:5, pointBackgroundColor:function(ctx){return ctx.parsed.y<0?C[3]:C[1]} },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:1 },
+
+    { id:'c0_4', type:'line', data:{ labels:YRS, datasets:[
+      { label:'毛利率(%)', data:GM, borderColor:C[2], tension:0.3, pointRadius:4, borderWidth:2 },
+      { label:'净利率(%)', data:NM, borderColor:C[3], tension:0.3, pointRadius:4, borderWidth:2, borderDash:[4,3] },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:2 },
+
+    { id:'c0_5', type:'line', data:{ labels:YRS, datasets:[
+      { label:'在建工程', data:CIP, borderColor:C[0], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[0]+'15' },
+      { label:'固定资产', data:FA, borderColor:C[1], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[1]+'15' },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c0_6', type:'doughnut', data:{ labels:['管理费用','财务费用','销售费用'],
+      datasets:[{ data:[36735264.14/1e4,80832636.13/1e4,0], backgroundColor:[C[0],C[1],C[4]] }] }, legend:true, unit:'', dec:0 },
+  ],
+
+  // Tab 1 - Balance Sheet
+  [
+    { id:'c1_0', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'流动资产', data:CA, backgroundColor:C[4], borderRadius:4 },
+      { label:'非流动资产', data:NCA, backgroundColor:C[0], borderRadius:4 },
+    ] }, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c1_1', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'流动负债', data:CL, backgroundColor:C[1]+'99', borderRadius:4 },
+      { label:'非流动负债', data:NCL, backgroundColor:C[1], borderRadius:4 },
+      { label:'所有者权益', data:TE, backgroundColor:C[2], borderRadius:4 },
+    ] }, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c1_2', type:'line', data:{ labels:YRS, datasets:[
+      { label:'流动资产占比', data:CA.map((v,i)=>v/TA[i]*100), borderColor:C[4], tension:0.3, fill:true, backgroundColor:C[4]+'20' },
+      { label:'非流动资产占比', data:NCA.map((v,i)=>v/TA[i]*100), borderColor:C[0], tension:0.3, fill:true, backgroundColor:C[0]+'20' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' }, max:100 } }, unit:'', dec:1 },
+
+    { id:'c1_3', type:'doughnut', data:{ labels:['在建工程','流动资产','固定资产','其他非流动'],
+      datasets:[{ data:[CIP[4]/TA[4]*100,CA[4]/TA[4]*100,FA[4]/TA[4]*100,(NCA[4]-CIP[4]-FA[4])/TA[4]*100],
+        backgroundColor:[C[0],C[4],C[1],C[5]] }] }, legend:true, unit:'%', dec:1 },
+
+    { id:'c1_4', type:'line', data:{ labels:YRS, datasets:[
+      { label:'在建工程(亿)', data:CIP, borderColor:C[0], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[0]+'15' },
+      { label:'固定资产(亿)', data:FA, borderColor:C[1], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[1]+'15' },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+  ],
+
+  // Tab 2 - Income Statement
+  [
+    { id:'c2_0', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'营业收入', data:REV, backgroundColor:C[0], borderRadius:4 },
+      { label:'营业成本', data:COST, backgroundColor:C[3]+'80', borderRadius:4 },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c2_1', type:'line', data:{ labels:YRS, datasets:[
+      { label:'管理费用', data:AE2, borderColor:C[0], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[0]+'15' },
+      { label:'财务费用', data:FE2, borderColor:C[1], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[1]+'15' },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'万' } } }, unit:'', dec:0 },
+
+    { id:'c2_2', type:'line', data:{ labels:YRS, datasets:[
+      { label:'毛利率', data:GM, borderColor:C[2], tension:0.3, pointRadius:4, borderWidth:2 },
+      { label:'净利率', data:NM, borderColor:C[3], tension:0.3, pointRadius:4, borderWidth:2, borderDash:[4,3] },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:2 },
+
+    { id:'c2_3', type:'doughnut', data:{ labels:['管理费','财务费','销售费'],
+      datasets:[{ data:[82.8,100,0], backgroundColor:[C[0],C[1],C[4]] }] }, legend:true, unit:'', dec:0 },
+
+    { id:'c2_4', type:'line', data:{ labels:YRS, datasets:[
+      { label:'营业利润率', data:GM.map((v,i)=>NM[i]), borderColor:C[5], tension:0.3, pointRadius:4,
+        borderDash:[3,3], fill:true, backgroundColor:C[5]+'15' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:2 },
+  ],
+
+  // Tab 3 - Cash Flow
+  [
+    { id:'c3_0', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'经营现金流', data:OCF, backgroundColor:C[2]+'99', borderRadius:4 },
+      { label:'投资现金流', data:ICF, backgroundColor:C[3]+'99', borderRadius:4 },
+      { label:'筹资现金流', data:FCF, backgroundColor:C[1]+'99', borderRadius:4 },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c3_1', type:'line', data:{ labels:YRS, datasets:[
+      { label:'经营现金流', data:OCF, borderColor:C[2], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[2]+'15' },
+      { label:'净利润', data:NP, borderColor:C[3], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[3]+'15', borderDash:[4,3] },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c3_2', type:'line', data:{ labels:YRS, datasets:[
+      { label:'累计经营现金流', data:[OCF[0],OCF[0]+OCF[1],OCF[0]+OCF[1]+OCF[2],OCF[0]+OCF[1]+OCF[2]+OCF[3],OCF.reduce((a,b)=>a+b,0)],
+        borderColor:C[0], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[0]+'15' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c3_3', type:'line', data:{ labels:YRS, datasets:[
+      { label:'现金余额(万)', data:CASH.map(v=>v*1e4), borderColor:C[1], tension:0.3, pointRadius:5,
+        backgroundColor:function(ctx){return ctx.parsed.y<100?C[3]+'40':C[1]+'20'},
+        pointBackgroundColor:function(ctx){return ctx.parsed.y<100?C[3]:C[1]},
+        fill:true },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'万' } } }, unit:'', dec:0 },
+
+    { id:'c3_4', type:'radar', data:{ labels:['经营CF','投资CF','筹资CF','现金余额','OCF/收入'],
+      datasets:[{ data:[OCF[4]/20*100,Math.abs(ICF[4])/20*100,FCF[4]/20*100*-1,CASH[4]*1e4/15000000*100,OCF[4]/REV[4]*100||0],
+        backgroundColor:C[0]+'30', borderColor:C[0], pointBackgroundColor:C[0] }] }, legend:false, unit:'', dec:0 },
+  ],
+
+  // Tab 4 - Ratios
+  [
+    { id:'c4_0', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'流动比率', data:CR, backgroundColor:C[0]+'99', borderRadius:4 },
+      { label:'速动比率', data:QR, backgroundColor:C[4]+'99', borderRadius:4 },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' } } }, unit:'', dec:2 },
+
+    { id:'c4_1', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'毛利率', data:GM, backgroundColor:C[2]+'99', borderRadius:4 },
+      { label:'净利率', data:NM, backgroundColor:C[3]+'99', borderRadius:4 },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:2 },
+
+    { id:'c4_2', type:'line', data:{ labels:YRS, datasets:[
+      { label:'资产负债率', data:DR, borderColor:C[0], tension:0.3, pointRadius:5, fill:true, backgroundColor:C[0]+'15' },
+      { label:'权益乘数', data:EM2, borderColor:C[1], tension:0.3, pointRadius:5, borderDash:[4,3], yAxisID:'y1' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' }, max:100 },
+      y1:{ position:'right', grid:{ drawOnChartArea:false }, ticks:{ callback:v=>v+'x' } } }, unit:'', dec:2 },
+
+    { id:'c4_3', type:'line', data:{ labels:YRS, datasets:[
+      { label:'ROE', data:ROE, borderColor:C[3], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[3]+'15' },
+      { label:'ROA', data:ROA, borderColor:C[0], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[0]+'15', borderDash:[4,3] },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:2 },
+
+    { id:'c4_4', type:'doughnut', data:{ labels:['净利率','资产周转率','权益乘数'],
+      datasets:[{ data:[Math.abs(ROE[4]),Math.abs(ROA[4]/ROE[4]*100||0),EM2[4]*10], backgroundColor:[C[3],C[0],C[1]] }] }, legend:true, unit:'', dec:0 },
+  ],
+
+  // Tab 5 - 两金与信用
+  [
+    { id:'c5_0', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'应收账款', data:AR, backgroundColor:C[1]+'99', borderRadius:4 },
+      { label:'存货', data:INV, backgroundColor:C[4]+'99', borderRadius:4 },
+    ] }, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:3 },
+
+    { id:'c5_1', type:'line', data:{ labels:YRS, datasets:[
+      { label:'两金/收入', data:TGR, borderColor:C[3], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[3]+'15' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' } } }, unit:'', dec:1 },
+
+    { id:'c5_2', type:'doughnut', data:{ labels:['关联方应收','其他应收'],
+      datasets:[{ data:[97,3], backgroundColor:[C[3],C[4]] }] }, legend:true, unit:'%', dec:0 },
+
+    { id:'c5_3', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'营运资本(亿)', data:WC2, backgroundColor:WC2.map(v=>v<0?C[3]+'80':C[2]+'80'), borderRadius:4 },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c5_4', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'Z-Score', data:Z, backgroundColor:Z.map(v=>v<0?C[3]+'99':v<1.8?C[1]+'99':C[2]+'99'), borderRadius:4 },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' } } }, unit:'', dec:3 },
+  ],
+
+  // Tab 6 - Strategy
+  [
+    { id:'c6_0', type:'line', data:{ labels:FY, datasets:[
+      { label:'乐观', data:OREV, borderColor:C[2], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[2]+'15' },
+      { label:'基准', data:BREV, borderColor:C[0], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[0]+'15', borderWidth:3 },
+      { label:'悲观', data:PREV, borderColor:C[3], tension:0.3, pointRadius:4, fill:true, backgroundColor:C[3]+'15' },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'亿' } } }, unit:'', dec:2 },
+
+    { id:'c6_1', type:'radar', data:{ labels:HL,
+      datasets:[{ data:HS, backgroundColor:C[0]+'30', borderColor:C[0], pointBackgroundColor:C[0], pointRadius:5 }] }, legend:false, unit:'', dec:0 },
+
+    { id:'c6_2', type:'line', data:{ labels:['2015','2016','2017','2018','2019','2020'], datasets:[
+      { label:'资产负债率', data:[DR[4],FDR[0],FDR[1],FDR[2],FDR[3],FDR[4]], borderColor:C[3], tension:0.3, pointRadius:4,
+        fill:true, backgroundColor:C[3]+'15' },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'%' }, max:120 } }, unit:'', dec:2 },
+
+    { id:'c6_3', type:'bar', data:{ labels:YRS, datasets:[
+      { label:'现金余额(万)', data:CASH.map(v=>v*1e4), backgroundColor:CASH.map(v=>v*1e4<100?C[3]+'80':C[1]+'80'), borderRadius:4 },
+    ] }, scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'万' } } }, unit:'', dec:0 },
+
+    { id:'c6_4', type:'bar', data:{ labels:WACCL, datasets:[
+      { label:'WACC 7.4%', data:SM.map(r=>r[0]), backgroundColor:C[2]+'99', borderRadius:3 },
+      { label:'WACC 9.4%', data:SM.map(r=>r[2]), backgroundColor:C[1]+'99', borderRadius:3 },
+      { label:'WACC 11.4%', data:SM.map(r=>r[4]), backgroundColor:C[3]+'99', borderRadius:3 },
+    ] }, scales:{ y:{ grid:{ color:'rgba(0,0,0,0.04)' }, ticks:{ callback:v=>v+'元/股' } } }, legend:true, unit:'', dec:2 },
+  ],
+];
+function initTabCharts(idx) {
+    if (lazyCharts[idx]) return;
+    lazyCharts[idx] = true;
+    const configs = CHART_CONFIGS[idx];
+    if (!configs) return;
+    configs.forEach(cfg => {
+        try {
+            const ctx = document.getElementById(cfg.id);
+            if (!ctx) return;
+            const chart = new Chart(ctx, {
+                type: cfg.type,
+                data: cfg.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    animation: { duration: 800, easing: 'easeOutQuart' },
+                    plugins: {
+                        legend: { display: cfg.legend !== false, position: 'bottom',
+                            labels: { boxWidth: 10, padding: 8, font: { size: 10 } }
+                        },
+                        tooltip: {
+                            backgroundColor: darkMode ? '#161b22' : 'white',
+                            titleColor: darkMode ? '#e6edf3' : '#1d1d1f',
+                            bodyColor: darkMode ? '#8b949e' : '#86868b',
+                            borderColor: darkMode ? '#30363d' : '#e8e8ed',
+                            borderWidth: 1,
+                            padding: 8,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: ctx => {
+                                    let v = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed.r;
+                                    if (v === undefined) v = ctx.parsed;
+                                    return (cfg.unit || '') + (typeof v === 'number' ? v.toFixed(cfg.dec || 2) : v);
+                                }
+                            }
+                        }
+                    },
+                    scales: cfg.scales || undefined,
+                }
+            });
+            charts[cfg.id] = chart;
+        } catch(e) { console.warn('Chart ' + cfg.id + ':', e); }
+    });
+}
+
+
+
+console.log('V9_DEBUG: CHART_CONFIGS type =', typeof CHART_CONFIGS);
+console.log('V9_DEBUG: CHART_CONFIGS length =', CHART_CONFIGS ? CHART_CONFIGS.length : 'N/A');
+console.log('V9_DEBUG: C defined =', typeof C);
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('V9_DEBUG: DOMContentLoaded fired, initTabCharts(0) starting...');
+    // Hash-based tab
+    const match = window.location.hash.match(/tab=(\d+)/);
+    if (match) switchTab(parseInt(match[1]));
+
+    // Init tab 0 charts
+    initTabCharts(0);
+
+    // KPI animation
+    animateKPI();
+
+    // Sparklines
+    drawSparkline('spark-rev', [0,0.14,0.20,0.91,4.72], '#0071e3');
+    drawSparkline('spark-dr', [50.68,53.52,54.05,68.15,87.46], '#ff9f0a');
+    drawSparkline('spark-ta', [16.22,17.22,17.42,22.67,42.40], '#30d158');
+    drawSparkline('spark-np', [0,0.005,0.001,-0.76,-1.90], '#ff3b30');
+
+    // Filter init
+    document.getElementById('yearRange').addEventListener('input', applyFilter);
+    applyFilter();
+});
+
+// Matrix chart plugin
+const MatrixPlugin = {
+    id:'matrix',
+    afterDraw(chart) {
+        if (chart.canvas.id !== 'c6_4') return;
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        if (!meta || !meta.data) return;
+        const chartArea = chart.chartArea;
+        const stepX = (chartArea.right - chartArea.left) / 5;
+        const stepY = (chartArea.bottom - chartArea.top) / 5;
+        const data = chart.data.datasets[0].data;
+
+        // Draw labels
+        ctx.save();
+        ctx.font = '10px -apple-system, sans-serif';
+        ctx.fillStyle = darkMode ? '#8b949e' : '#86868b';
+        ctx.textAlign = 'center';
+        WACCL.forEach((l,i) => ctx.fillText(l, chartArea.left + stepX*(i+0.5), chartArea.top - 8));
+        ctx.textAlign = 'right';
+        TGL.forEach((l,i) => ctx.fillText(l, chartArea.left - 8, chartArea.top + stepY*(i+0.5) + 3));
+
+        // Draw cells
+        for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 5; j++) {
+                const idx = i * 5 + j;
+                if (idx >= data.length) continue;
+                const v = data[idx].v;
+                const x = chartArea.left + stepX * i;
+                const y = chartArea.top + stepY * j;
+                const isBase = i === 2 && j === 2;
+
+                ctx.fillStyle = v > -10 ? 'rgba(48,209,88,0.25)' :
+                               v > -12 ? 'rgba(255,159,10,0.25)' : 'rgba(255,59,48,0.25)';
+                if (isBase) ctx.fillStyle = 'rgba(0,113,227,0.3)';
+                ctx.fillRect(x+1, y+1, stepX-2, stepY-2);
+                if (isBase) {
+                    ctx.strokeStyle = '#0071e3';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x+1, y+1, stepX-2, stepY-2);
+                }
+
+                ctx.fillStyle = darkMode ? '#e6edf3' : '#1d1d1f';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(v.toFixed(2), x + stepX/2, y + stepY/2);
+            }
+        }
+        ctx.restore();
+    }
+};
+Chart.register(MatrixPlugin);
+
+</script>
+</body>
+</html>
