@@ -15,6 +15,8 @@
   var savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') document.documentElement.classList.add('dark');
   if (savedTheme === 'light') document.documentElement.classList.remove('dark');
+  var savedScheme = localStorage.getItem('scheme');
+  if(savedScheme && savedScheme !== 'apple') document.documentElement.setAttribute('data-scheme', savedScheme);
 })();
 </script>
 <style>
@@ -64,6 +66,116 @@
   --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.2);
   --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
   --shadow-lg: 0 8px 32px oklch(0 0 0 / 0.4);
+}
+
+/* ===== SCHEME THEMES ===== */
+/* Apple (default) — already defined above */
+/* McKinsey */
+[data-scheme="mckinsey"]{
+  --bg-page: #f5f5f0;
+  --bg-card: rgba(255,255,255,0.85);
+  --bg-card-hover: rgba(255,255,255,0.95);
+  --bg-glass: rgba(255,255,255,0.5);
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a7a;
+  --text-muted: #9a9ab0;
+  --border: rgba(0,94,184,0.15);
+  --border-hover: rgba(0,94,184,0.3);
+  --accent: #005EB8;
+  --accent-glow: rgba(0,94,184,0.1);
+  --accent-gradient: linear-gradient(135deg, #005EB8, #4A90D9);
+  --green: #27AE60;
+  --amber: #F5A623;
+  --red: #C0392B;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+}
+[data-scheme="mckinsey"].dark{
+  --bg-page: #0a0a1a;
+  --bg-card: rgba(20,20,40,0.7);
+  --bg-glass: rgba(20,20,40,0.3);
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888a0;
+  --text-muted: #606078;
+  --border: rgba(74,144,217,0.15);
+  --accent: #4A90D9;
+  --accent-glow: rgba(74,144,217,0.12);
+  --accent-gradient: linear-gradient(135deg, #4A90D9, #7AB8F5);
+}
+/* Morgan Stanley */
+[data-scheme="morganstanley"]{
+  --bg-page: #F2F6FA;
+  --bg-card: rgba(255,255,255,0.85);
+  --bg-card-hover: rgba(255,255,255,0.95);
+  --bg-glass: rgba(255,255,255,0.5);
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a7a;
+  --text-muted: #9a9ab0;
+  --border: rgba(0,90,156,0.15);
+  --border-hover: rgba(0,90,156,0.3);
+  --accent: #005A9C;
+  --accent-glow: rgba(0,90,156,0.1);
+  --accent-gradient: linear-gradient(135deg, #005A9C, #B3D4F0);
+  --green: #27AE60;
+  --amber: #D4AF37;
+  --red: #C0392B;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+}
+[data-scheme="morganstanley"].dark{
+  --bg-page: #0d1520;
+  --bg-card: rgba(20,30,50,0.7);
+  --bg-glass: rgba(20,30,50,0.3);
+  --text-primary: #d8e8f8;
+  --text-secondary: #8898b0;
+  --text-muted: #607088;
+  --border: rgba(179,212,240,0.12);
+  --accent: #7AB8E8;
+  --accent-glow: rgba(179,212,240,0.12);
+  --accent-gradient: linear-gradient(135deg, #005A9C, #7AB8E8);
+}
+/* Linear 深色 */
+[data-scheme="linear"]{
+  --bg-page: #f5f5f7;
+  --bg-card: rgba(255,255,255,0.8);
+  --bg-card-hover: rgba(255,255,255,0.92);
+  --bg-glass: rgba(255,255,255,0.4);
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a7a;
+  --text-muted: #9a9ab0;
+  --border: rgba(0,0,0,0.08);
+  --border-hover: rgba(0,0,0,0.15);
+  --accent: #5E6AD2;
+  --accent-glow: rgba(94,106,210,0.1);
+  --accent-gradient: linear-gradient(135deg, #5E6AD2, #8B95E8);
+  --green: #30D158;
+  --amber: #FF9F0A;
+  --red: #FF453A;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+}
+[data-scheme="linear"].dark{
+  --bg-page: #0d0d0d;
+  --bg-card: rgba(25,25,25,0.8);
+  --bg-card-hover: rgba(35,35,35,0.9);
+  --bg-glass: rgba(25,25,25,0.3);
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --text-muted: #666;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.15);
+  --accent: #8a63d2;
+  --accent-glow: rgba(138,99,210,0.12);
+  --accent-gradient: linear-gradient(135deg, #8a63d2, #b794f4);
+  --green: #30D158;
+  --amber: #FF9F0A;
+  --red: #FF453A;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
 }
 
 html{scroll-behavior:smooth}
@@ -447,6 +559,51 @@ footer a{color:var(--accent);text-decoration:none}
   .header-clock{font-size:0.7rem;padding:3px 8px}
   .header-date{display:none}
 }
+
+/* ===== SCHEME SELECTOR ===== */
+.scheme-section{
+  display:flex;align-items:center;justify-content:center;
+  gap:0.6rem;flex-wrap:wrap;
+  padding:0 1.5rem 1rem;
+  max-width:1200px;margin:0 auto;
+}
+.scheme-label{
+  font-size:0.78rem;font-weight:600;
+  color:var(--text-muted);
+  white-space:nowrap;
+}
+.scheme-group{
+  display:flex;gap:0.3rem;
+  background:var(--bg-glass);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  padding:3px;
+  border-radius:100px;
+  border:1px solid var(--border);
+}
+.scheme-btn{
+  padding:0.3rem 0.7rem;border-radius:100px;
+  border:none;background:transparent;
+  font-size:0.75rem;font-weight:500;
+  font-family:var(--font-sans);
+  color:var(--text-secondary);
+  cursor:pointer;
+  transition:all 0.25s;
+  white-space:nowrap;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.scheme-btn:hover{color:var(--accent)}
+.scheme-btn.active{
+  background:var(--accent);
+  color:white;
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+@media(max-width:640px){
+  .scheme-section{gap:0.4rem;padding:0 0.8rem 0.8rem}
+  .scheme-label{font-size:0.7rem}
+  .scheme-btn{font-size:0.68rem;padding:0.25rem 0.55rem}
+}
 </style>
 </head>
 <body>
@@ -466,7 +623,7 @@ footer a{color:var(--accent);text-decoration:none}
 <!-- Hero -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge" onclick="alert('JS OK')">✨ Agent 出品 · 数据分析作品集</div>
+    <div class="hero-badge">✨ Mickey8034 Agent 出品 · 数据分析作品集</div>
     <h1>Hermes Portfolio</h1>
     <p>基于 Hermes Agent 深度分析生成的咨询级报告与可视化仪表板</p>
     <div class="hero-stats">
@@ -502,6 +659,17 @@ footer a{color:var(--accent);text-decoration:none}
   <button class="filter-btn" data-filter="dashboard" onclick="setFilter('dashboard',this)">📊 数据大屏</button>
 </section>
 
+<!-- Scheme Selector -->
+<section class="scheme-section">
+  <span class="scheme-label">🎨 主题方案</span>
+  <div class="scheme-group">
+    <button class="scheme-btn active" data-scheme="apple" onclick="setScheme('apple',this)">🍎 Apple</button>
+    <button class="scheme-btn" data-scheme="mckinsey" onclick="setScheme('mckinsey',this)">🏛 McKinsey</button>
+    <button class="scheme-btn" data-scheme="morganstanley" onclick="setScheme('morganstanley',this)">💼 MS 投行</button>
+    <button class="scheme-btn" data-scheme="linear" onclick="setScheme('linear',this)">🌙 线性深色</button>
+  </div>
+</section>
+
 <!-- Grid -->
 <section class="grid-section">
   <div class="grid" id="projectGrid"></div>
@@ -534,7 +702,6 @@ footer a{color:var(--accent);text-decoration:none}
 <footer>
   <p>Powered by <a href="https://hermes-agent.nousresearch.com" target="_blank">Hermes Agent</a> · Built with <a href="https://github.com/GoogleChrome/modern-web-guidance" target="_blank">Modern Web Guidance</a></p>
   <p style="margin-top:0.3rem">© 2026 · 数据安全 · Cloudflare Access 保护</p>
-  <p style="margin-top:0.5rem"><button onclick="showDialogTest()" style="padding:8px 20px;border-radius:8px;border:1px solid #0071e3;background:#0071e3;color:#fff;font-size:14px;cursor:pointer;touch-action:manipulation">测试弹窗</button></p>
 </footer>
 
 <script>
@@ -752,50 +919,10 @@ function closeDialog(e){
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog({target:document.getElementById('dialogOverlay')}) });
 
-// Test: show overlay directly with no data filling
-function showDialogTest(){
-  var overlay = document.getElementById('dialogOverlay');
-  alert('overlay found: ' + (overlay ? 'YES' : 'NO'));
-  if(!overlay) return;
-  overlay.style.display = 'block';
-  overlay.classList.add('open');
-  void overlay.offsetHeight;
-  alert('display set to block, class added');
-}
+// ===== CARD CLICK =====
+// inline onclick on card elements handles all taps/clicks
+// close via ✕ button only (no overlay tap-to-close to avoid event issues on iOS)
 
-// ===== CARD CLICK / TAP DELEGATION =====
-// touchend for mobile (immediate, no ghost click)
-var _touchStartX = 0, _touchStartY = 0;
-
-document.getElementById('projectGrid').addEventListener('touchstart', function(e){
-  var t = e.touches[0];
-  _touchStartX = t.clientX;
-  _touchStartY = t.clientY;
-}, {passive: true});
-
-document.getElementById('projectGrid').addEventListener('touchend', function(e){
-  var t = e.changedTouches[0];
-  var dx = Math.abs(t.clientX - _touchStartX);
-  var dy = Math.abs(t.clientY - _touchStartY);
-  // Only handle taps (finger moved < 10px = not a scroll/swipe)
-  if(dx < 10 && dy < 10){
-    var card = e.target.closest('.card');
-    if(!card) return;
-    var id = card.getAttribute('data-id');
-    if(!id) return;
-    e.preventDefault(); // prevent ghost click
-    openDialog(id);
-  }
-});
-
-// click fallback for desktop / non-touch devices
-document.getElementById('projectGrid').addEventListener('click', function(e){
-  var card = e.target.closest('.card');
-  if(!card) return;
-  var id = card.getAttribute('data-id');
-  if(!id) return;
-  openDialog(id);
-});
 
 document.getElementById('projectGrid').addEventListener('keydown', function(e){
   if(e.key !== 'Enter') return;
@@ -837,6 +964,26 @@ function toggleTheme(){
   localStorage.setItem('color-scheme', meta.content);
 }
 
+// ===== SCHEME =====
+function setScheme(scheme, btn){
+  const root = document.documentElement;
+  root.removeAttribute('data-scheme');
+  if(scheme !== 'apple') root.setAttribute('data-scheme', scheme);
+  // Update button states
+  document.querySelectorAll('.scheme-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  localStorage.setItem('scheme', scheme);
+}
+
+function restoreScheme(){
+  const saved = localStorage.getItem('scheme');
+  if(!saved || saved === 'apple') return;
+  document.documentElement.setAttribute('data-scheme', saved);
+  document.querySelectorAll('.scheme-btn').forEach(b => {
+    if(b.getAttribute('data-scheme') === saved) b.classList.add('active');
+  });
+}
+
 // ===== UPDATE STATS =====
 function updateStats(){
   const totalProj = projects.length;
@@ -848,6 +995,7 @@ function updateStats(){
 }
 
 // ===== INIT =====
+restoreScheme();
 updateStats();
 renderGrid(projects);
 </script>
