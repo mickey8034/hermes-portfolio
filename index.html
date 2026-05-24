@@ -758,27 +758,11 @@ function closeDialog(e){
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog({target:document.getElementById('dialogOverlay')}) });
 
 // ===== CARD CLICK DELEGATION (no inline onclick, works on all mobile browsers) =====
-function addRipple(card, x, y){
-  card.querySelectorAll('.ripple').forEach(function(r){r.remove()});
-  var ripple = document.createElement('span');
-  ripple.className = 'ripple';
-  var rect = card.getBoundingClientRect();
-  var size = Math.max(rect.width, rect.height);
-  ripple.style.width = ripple.style.height = size + 'px';
-  ripple.style.left = (x - rect.left - size/2) + 'px';
-  ripple.style.top = (y - rect.top - size/2) + 'px';
-  card.style.position = 'relative';
-  card.style.overflow = 'hidden';
-  card.appendChild(ripple);
-  setTimeout(function(){ripple.remove()}, 600);
-}
-
 document.getElementById('projectGrid').addEventListener('click', function(e){
   var card = e.target.closest('.card');
   if(!card) return;
   var id = card.getAttribute('data-id');
   if(!id) return;
-  addRipple(card, e.clientX, e.clientY);
   openDialog(id);
 });
 
