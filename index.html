@@ -509,7 +509,7 @@ footer a{color:var(--accent);text-decoration:none}
 
 <!-- Dialog Overlay -->
 <div class="dialog-overlay" id="dialogOverlay" onclick="closeDialog(event)">
-  <div class="dialog" onclick="event.stopPropagation()">
+  <div class="dialog" id="dialogContent">
     <div class="dialog-header">
       <div class="dialog-title">
         <span class="icon" id="dialogIcon">📁</span>
@@ -738,8 +738,11 @@ function openDialog(id){
 
   // Open dialog
   var overlay = document.getElementById('dialogOverlay');
-  overlay.style.display = 'grid';
-  overlay.classList.add('open');
+  // Use setTimeout to ensure reflow after alert on iOS
+  setTimeout(function(){
+    overlay.style.display = 'grid';
+    overlay.classList.add('open');
+  }, 50);
 
   window.__scrollY = window.scrollY;
   document.documentElement.style.overflow = 'hidden';
@@ -850,6 +853,9 @@ function updateStats(){
 // ===== INIT =====
 updateStats();
 renderGrid(projects);
+
+// Dialog content: stop click from reaching overlay
+document.getElementById('dialogContent').addEventListener('click', function(e){ e.stopPropagation(); });
 </script>
 </body>
 </html>
