@@ -705,56 +705,49 @@ function filterProjects(){
 
 // ===== DIALOG =====
 function openDialog(id){
-  try {
-    const p = projects.find(x => x.id === id);
-    if(!p) { alert('DEBUG: project not found: ' + id); return; }
-    document.getElementById('dialogIcon').textContent = p.icon;
-    document.getElementById('dialogTitle').textContent = p.name;
-    document.getElementById('dialogDesc').textContent = p.desc;
+  const p = projects.find(x => x.id === id);
+  if(!p) return;
+  document.getElementById('dialogIcon').textContent = p.icon;
+  document.getElementById('dialogTitle').textContent = p.name;
+  document.getElementById('dialogDesc').textContent = p.desc;
 
-    const list = document.getElementById('dialogFiles');
-    if(p.filesList && p.filesList.length > 0){
-      list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => {
-        const status = f.uploaded
-          ? '<span class="status" style="background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)">✅ 已上传</span>'
-          : '<span class="status">待上传</span>';
-        if(!f.uploaded){
-          return `
-            <li class="file-item" style="cursor:default">
-              <span>📄</span>
-              <span class="name" style="flex:1;color:var(--text-muted)">${f.name}</span>
-              ${status}
-            </li>
-          `;
-        }
-        const href = `projects/${p.id}/${encodeURIComponent(f.name)}`;
+  const list = document.getElementById('dialogFiles');
+  if(p.filesList && p.filesList.length > 0){
+    list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => {
+      const status = f.uploaded
+        ? '<span class="status" style="background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)">✅ 已上传</span>'
+        : '<span class="status">待上传</span>';
+      if(!f.uploaded){
         return `
-          <a href="${href}" target="_blank" rel="noopener" class="file-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.5rem">
+          <li class="file-item" style="cursor:default">
             <span>📄</span>
-            <span class="name" style="flex:1">${f.name}</span>
+            <span class="name" style="flex:1;color:var(--text-muted)">${f.name}</span>
             ${status}
-          </a>
+          </li>
         `;
-      }).join('') + '</ul>';
-    } else {
-      list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
-    }
-
-    // DEBUG: confirm we reach here
-    document.getElementById('totalFiles').textContent = 'OK';
-
-    // Direct style approach - bypass CSS transitions
-    var overlay = document.getElementById('dialogOverlay');
-    overlay.style.opacity = '1';
-    overlay.style.visibility = 'visible';
-    overlay.classList.add('open');
-
-    window.__scrollY = window.scrollY;
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
-  } catch(err) {
-    alert('DEBUG openDialog Error: ' + err.message);
+      }
+      const href = `projects/${p.id}/${encodeURIComponent(f.name)}`;
+      return `
+        <a href="${href}" target="_blank" rel="noopener" class="file-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.5rem">
+          <span>📄</span>
+          <span class="name" style="flex:1">${f.name}</span>
+          ${status}
+        </a>
+      `;
+    }).join('') + '</ul>';
+  } else {
+    list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
   }
+
+  // Open dialog
+  var overlay = document.getElementById('dialogOverlay');
+  overlay.style.opacity = '1';
+  overlay.style.visibility = 'visible';
+  overlay.classList.add('open');
+
+  window.__scrollY = window.scrollY;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
 }
 
 function closeDialog(e){
@@ -772,19 +765,38 @@ function closeDialog(e){
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDialog({target:document.getElementById('dialogOverlay')}) });
 
-// ===== CARD CLICK DELEGATION =====
-document.getElementById('projectGrid').addEventListener('click', function(e){
-  try {
+// ===== CARD CLICK / TAP DELEGATION =====
+// touchend for mobile (immediate, no ghost click)
+var _touchStartX = 0, _touchStartY = 0;
+
+document.getElementById('projectGrid').addEventListener('touchstart', function(e){
+  var t = e.touches[0];
+  _touchStartX = t.clientX;
+  _touchStartY = t.clientY;
+}, {passive: true});
+
+document.getElementById('projectGrid').addEventListener('touchend', function(e){
+  var t = e.changedTouches[0];
+  var dx = Math.abs(t.clientX - _touchStartX);
+  var dy = Math.abs(t.clientY - _touchStartY);
+  // Only handle taps (finger moved < 10px = not a scroll/swipe)
+  if(dx < 10 && dy < 10){
     var card = e.target.closest('.card');
     if(!card) return;
     var id = card.getAttribute('data-id');
     if(!id) return;
-    // DEBUG: confirm click fires
-    document.getElementById('totalProjects').textContent = '⟳';
+    e.preventDefault(); // prevent ghost click
     openDialog(id);
-  } catch(err) {
-    alert('DEBUG Error: ' + err.message + ' | ' + err.stack);
   }
+});
+
+// click fallback for desktop / non-touch devices
+document.getElementById('projectGrid').addEventListener('click', function(e){
+  var card = e.target.closest('.card');
+  if(!card) return;
+  var id = card.getAttribute('data-id');
+  if(!id) return;
+  openDialog(id);
 });
 
 document.getElementById('projectGrid').addEventListener('keydown', function(e){
