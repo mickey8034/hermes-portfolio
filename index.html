@@ -736,13 +736,11 @@ function openDialog(id){
     list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
   }
 
-  // Open dialog
+  // Show overlay BEFORE alert so it's already visible when alert dismissed
   var overlay = document.getElementById('dialogOverlay');
-  // Use setTimeout to ensure reflow after alert on iOS
-  setTimeout(function(){
-    overlay.style.display = 'grid';
-    overlay.classList.add('open');
-  }, 50);
+  overlay.style.display = 'grid';
+  overlay.classList.add('open');
+  void overlay.offsetHeight; // force reflow on iOS
 
   window.__scrollY = window.scrollY;
   document.documentElement.style.overflow = 'hidden';
