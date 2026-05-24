@@ -470,7 +470,7 @@ footer a{color:var(--accent);text-decoration:none}
 <!-- Hero -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">✨ Agent 出品 · 数据分析作品集</div>
+    <div class="hero-badge" onclick="alert('JS OK')">✨ Agent 出品 · 数据分析作品集</div>
     <h1>Hermes Portfolio</h1>
     <p>基于 Hermes Agent 深度分析生成的咨询级报告与可视化仪表板</p>
     <div class="hero-stats">
@@ -671,7 +671,7 @@ const projects = [
 function renderGrid(list){
   const grid = document.getElementById('projectGrid');
   grid.innerHTML = list.map(p => `
-    <div class="card" tabindex="0" role="button" data-id="${p.id}" data-filter="${p.filter}" data-name="${p.name}">
+    <div class="card" tabindex="0" role="button" onclick="openDialog('${p.id}')" data-id="${p.id}" data-filter="${p.filter}" data-name="${p.name}">
       <div class="card-icon">${p.icon}</div>
       <h3>${p.name}</h3>
       <p>${p.desc}</p>
@@ -705,6 +705,7 @@ function filterProjects(){
 
 // ===== DIALOG =====
 function openDialog(id){
+  alert('open: ' + id);
   const p = projects.find(x => x.id === id);
   if(!p) return;
   document.getElementById('dialogIcon').textContent = p.icon;
