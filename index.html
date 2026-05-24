@@ -341,19 +341,18 @@ body{
 .dialog-overlay{
   position:fixed;inset:0;z-index:200;
   background:rgba(0,0,0,0.6);
-  display:none;place-items:center;
-  padding:1rem;
+  display:none;
+  overflow-y:auto;
 }
-.dialog-overlay.open{display:grid}
+.dialog-overlay.open{display:block}
 
 .dialog{
   background:#fff;
   color:#1d1d1f;
   border:1px solid rgba(0,0,0,0.12);
-  border-radius:var(--radius-lg);
-  max-width:560px;width:100%;
-  max-height:85vh;overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
+  border-radius:12px;
+  max-width:560px;width:90%;
+  margin:8vh auto;
   padding:2rem;
 }
 :root.dark .dialog{
@@ -361,7 +360,6 @@ body{
   color:#f5f5f7;
   border-color:rgba(255,255,255,0.12);
 }
-.dialog-overlay.open .dialog{display:grid}
 .dialog-header{
   display:flex;align-items:flex-start;justify-content:space-between;
   margin-bottom:1.5rem;
@@ -508,7 +506,7 @@ footer a{color:var(--accent);text-decoration:none}
 </section>
 
 <!-- Dialog Overlay -->
-<div class="dialog-overlay" id="dialogOverlay" onclick="closeDialog(event)">
+<div class="dialog-overlay" id="dialogOverlay">
   <div class="dialog" id="dialogContent">
     <div class="dialog-header">
       <div class="dialog-title">
@@ -701,46 +699,33 @@ function filterProjects(){
 
 // ===== DIALOG =====
 function openDialog(id){
-  alert('open: ' + id);
   const p = projects.find(x => x.id === id);
   if(!p) return;
+
+  // Fill content FIRST
   document.getElementById('dialogIcon').textContent = p.icon;
   document.getElementById('dialogTitle').textContent = p.name;
   document.getElementById('dialogDesc').textContent = p.desc;
 
-  const list = document.getElementById('dialogFiles');
+  var list = document.getElementById('dialogFiles');
   if(p.filesList && p.filesList.length > 0){
     list.innerHTML = '<ul class="file-list">' + p.filesList.map(f => {
-      const status = f.uploaded
-        ? '<span class="status" style="background:oklch(0.55 0.18 150 / 0.12);color:var(--green);border-color:oklch(0.55 0.18 150 / 0.25)">✅ 已上传</span>'
+      var status = f.uploaded
+        ? '<span class="status" style="background:rgba(0,200,83,0.15);color:rgb(0,150,50);border-color:rgba(0,200,83,0.3)">已上传</span>'
         : '<span class="status">待上传</span>';
       if(!f.uploaded){
-        return `
-          <li class="file-item" style="cursor:default">
-            <span>📄</span>
-            <span class="name" style="flex:1;color:var(--text-muted)">${f.name}</span>
-            ${status}
-          </li>
-        `;
+        return '<li class="file-item" style="cursor:default"><span>📄</span><span class="name" style="flex:1;color:#999">' + f.name + '</span>' + status + '</li>';
       }
-      const href = `projects/${p.id}/${encodeURIComponent(f.name)}`;
-      return `
-        <a href="${href}" target="_blank" rel="noopener" class="file-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.5rem">
-          <span>📄</span>
-          <span class="name" style="flex:1">${f.name}</span>
-          ${status}
-        </a>
-      `;
+      return '<a href="projects/' + p.id + '/' + encodeURIComponent(f.name) + '" target="_blank" rel="noopener" class="file-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.5rem"><span>📄</span><span class="name" style="flex:1">' + f.name + '</span>' + status + '</a>';
     }).join('') + '</ul>';
   } else {
-    list.innerHTML = `<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件<br>如需上传请通知 Hermes</div>`;
+    list.innerHTML = '<div class="empty-state"><span class="big-icon">📭</span>尚未上传文件</div>';
   }
 
-  // Show overlay BEFORE alert so it's already visible when alert dismissed
+  // Then show overlay - use basic block (oldest compatible)
   var overlay = document.getElementById('dialogOverlay');
-  overlay.style.display = 'grid';
+  overlay.style.display = 'block';
   overlay.classList.add('open');
-  void overlay.offsetHeight; // force reflow on iOS
 
   window.__scrollY = window.scrollY;
   document.documentElement.style.overflow = 'hidden';
@@ -851,9 +836,6 @@ function updateStats(){
 // ===== INIT =====
 updateStats();
 renderGrid(projects);
-
-// Dialog content: stop click from reaching overlay
-document.getElementById('dialogContent').addEventListener('click', function(e){ e.stopPropagation(); });
 </script>
 </body>
 </html>
