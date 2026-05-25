@@ -293,53 +293,87 @@
   padding-bottom: 2.8rem;
   margin-bottom: 0;
 }
-/* Cloud 1 — 左大朵：缓缓右移 */
+/* Cloud 1 — 大朵棉团 · 左 */
 [data-scheme="kingdee"] .hero::before{
   content: '';
   position: absolute;
-  width: 320px;
+  width: 90px;
   height: 80px;
-  background: rgba(255,255,255,0.13);
-  border-radius: 200px/55px;
-  top: 15%;
-  left: -40px;
-  filter: blur(28px);
+  background: rgba(255,255,255,0.14);
+  border-radius: 50%;
+  top: 10%;
+  left: 3%;
+  filter: blur(26px);
+  box-shadow:
+    70px -5px 0 -5px rgba(255,255,255,0.12),
+    -55px 12px 0 -8px rgba(255,255,255,0.11),
+    120px 8px 0 -12px rgba(255,255,255,0.09),
+    30px 45px 0 -10px rgba(255,255,255,0.08),
+    -85px -8px 0 -18px rgba(255,255,255,0.07),
+    155px -15px 0 -20px rgba(255,255,255,0.07);
   pointer-events: none;
   mask-image: none;
   -webkit-mask-image: none;
-  opacity: 1;
-  animation: cloudDrift1 28s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift1 28s ease-in-out infinite alternate;
+  animation: cloudDrift1 32s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift1 32s ease-in-out infinite alternate;
 }
-/* Cloud 2 — 右上飘：缓缓左移 */
+/* Cloud 2 — 中朵棉团 · 右 */
 [data-scheme="kingdee"] .hero::after{
   content: '';
   position: absolute;
-  width: 240px;
-  height: 50px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 130px/35px;
-  top: 35%;
-  right: 3%;
-  filter: blur(20px);
+  width: 75px;
+  height: 65px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  top: 30%;
+  right: 4%;
+  filter: blur(22px);
+  box-shadow:
+    60px 5px 0 -5px rgba(255,255,255,0.10),
+    -45px 10px 0 -8px rgba(255,255,255,0.09),
+    100px -10px 0 -14px rgba(255,255,255,0.08),
+    20px 40px 0 -10px rgba(255,255,255,0.07),
+    -70px -5px 0 -16px rgba(255,255,255,0.06);
   pointer-events: none;
-  animation: cloudDrift2 22s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift2 22s ease-in-out infinite alternate;
+  animation: cloudDrift2 26s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift2 26s ease-in-out infinite alternate;
 }
-/* Cloud 3 — 小朵浮云：缓缓右移 */
+/* Cloud 3 — 小朵棉团 · 左上 */
 [data-scheme="kingdee"] .hero-content::before{
   content: '';
   position: absolute;
-  width: 140px;
-  height: 30px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 80px/22px;
-  top: -60px;
-  right: 20%;
-  filter: blur(14px);
+  width: 55px;
+  height: 50px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 50%;
+  top: -30px;
+  left: 8%;
+  filter: blur(16px);
+  box-shadow:
+    40px 8px 0 -5px rgba(255,255,255,0.09),
+    -30px -5px 0 -8px rgba(255,255,255,0.07),
+    65px -12px 0 -12px rgba(255,255,255,0.06);
   pointer-events: none;
-  animation: cloudDrift3 18s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift3 18s ease-in-out infinite alternate;
+  animation: cloudDrift3 20s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift3 20s ease-in-out infinite alternate;
+}
+/* Cloud 4 — 小朵棉团 · 右上 */
+[data-scheme="kingdee"] .hero-content::after{
+  content: '';
+  position: absolute;
+  width: 45px;
+  height: 40px;
+  background: rgba(255,255,255,0.09);
+  border-radius: 50%;
+  top: -15px;
+  right: 6%;
+  filter: blur(14px);
+  box-shadow:
+    35px 6px 0 -4px rgba(255,255,255,0.08),
+    -25px -3px 0 -7px rgba(255,255,255,0.06);
+  pointer-events: none;
+  animation: cloudDrift4 16s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift4 16s ease-in-out infinite alternate;
 }
 /* Hero badge: 半透明白 */
 [data-scheme="kingdee"] .hero-badge{
@@ -420,15 +454,19 @@
 /* ===== 云层流动动画 ===== */
 @keyframes cloudDrift1{
   0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(60px); -webkit-transform: translateX(60px) }
+  100%{ transform: translateX(70px); -webkit-transform: translateX(70px) }
 }
 @keyframes cloudDrift2{
   0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(-40px); -webkit-transform: translateX(-40px) }
+  100%{ transform: translateX(-50px); -webkit-transform: translateX(-50px) }
 }
 @keyframes cloudDrift3{
   0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(30px); -webkit-transform: translateX(30px) }
+  100%{ transform: translateX(40px); -webkit-transform: translateX(40px) }
+}
+@keyframes cloudDrift4{
+  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
+  100%{ transform: translateX(-30px); -webkit-transform: translateX(-30px) }
 }
 
 /* ===== NEBULA DEEP SPACE ===== */
