@@ -283,16 +283,46 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
 }
-/* Kingdee-style blue accent top bar on hero */
+/* ===== KINGDEE — Premium Dark Navy Hero ===== */
+/* Hero: deep navy gradient banner */
 [data-scheme="kingdee"] .hero{
-  border-bottom: 3px solid var(--accent);
+  background: linear-gradient(180deg, #0a1628 0%, #1a3058 100%);
+  border-bottom: 2px solid rgba(212,162,76,0.3);
+  padding-bottom: 2.8rem;
+  margin-bottom: 0;
 }
 [data-scheme="kingdee"] .hero::before{
-  opacity: 0.04;
+  opacity: 0.05;
   mask-image: none;
   -webkit-mask-image: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,162,76,0.15), transparent 70%);
 }
-/* Kingdee-style card with subtle shadow */
+/* Hero badge: subtle translucent */
+[data-scheme="kingdee"] .hero-badge{
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.8);
+  border-color: rgba(255,255,255,0.12);
+}
+/* Hero title: pure white, no gradient */
+[data-scheme="kingdee"] .hero h1{
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+}
+/* Hero subtitle: soft white */
+[data-scheme="kingdee"] .hero p{
+  color: rgba(255,255,255,0.65);
+}
+/* Stats: white numbers + light labels */
+[data-scheme="kingdee"] .stat-num{
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+}
+[data-scheme="kingdee"] .stat-label{
+  color: rgba(255,255,255,0.5);
+}
+/* Cards: light glass */
 [data-scheme="kingdee"] .card{
   border: 1px solid rgba(33,131,233,0.08);
   box-shadow: 0 1px 3px rgba(0,0,0,0.03);
@@ -305,12 +335,7 @@
 [data-scheme="kingdee"] .card:hover::before{
   opacity: 0.05;
 }
-/* Kingdee-style blue badge */
-[data-scheme="kingdee"] .hero-badge{
-  background: rgba(33,131,233,0.1);
-  border-color: rgba(33,131,233,0.2);
-}
-/* Kingdee-style filter buttons */
+/* Filter buttons */
 [data-scheme="kingdee"] .filter-btn:hover{
   border-color: var(--accent);
   color: var(--accent);
@@ -319,38 +344,19 @@
   background: var(--accent);
   border-color: var(--accent);
 }
-/* Kingdee-style footer */
+/* Footer */
 [data-scheme="kingdee"] footer{
   border-top: 1px solid rgba(33,131,233,0.12);
 }
-/* Kingdee background image */
+/* Body background: NCPA reflection with lighter overlay */
 [data-scheme="kingdee"] body{
   background:
-    linear-gradient(rgba(33,131,233,0.25) 0%, rgba(245,247,250,0.6) 35%, rgba(245,247,250,0.7) 100%),
+    linear-gradient(rgba(33,131,233,0.15) 0%, rgba(245,247,250,0.5) 25%, rgba(245,247,250,0.8) 100%),
     url(images/ncpa-reflection.jpg);
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
   background-attachment: scroll;
-}
-/* Kingdee hero text contrast fix */
-[data-scheme="kingdee"] .hero{
-  background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom: 3px solid var(--accent);
-  margin-bottom: 0;
-}
-[data-scheme="kingdee"] .hero-badge{
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-[data-scheme="kingdee"] .hero h1{
-  -webkit-text-fill-color: var(--accent);
-}
-[data-scheme="kingdee"] .hero p{
-  color: var(--text-primary);
 }
 
 /* ===== NEBULA DEEP SPACE ===== */
