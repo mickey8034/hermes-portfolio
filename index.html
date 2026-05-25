@@ -966,14 +966,19 @@ footer a{color:var(--accent);text-decoration:none}
   white-space:nowrap;
 }
 .scheme-group{
-  display:flex;gap:0.3rem;
+  display:flex;gap:0.3rem;flex-wrap:nowrap;
   background:var(--bg-glass);
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
   padding:3px;
   border-radius:100px;
   border:1px solid var(--border);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
 }
+.scheme-group::-webkit-scrollbar{display:none}
 .scheme-btn{
   padding:0.3rem 0.7rem;border-radius:100px;
   border:none;background:transparent;
