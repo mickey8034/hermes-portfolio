@@ -369,6 +369,99 @@
   background-attachment: scroll;
 }
 
+/* ===== TEMPLE OF HEAVEN — 天坛皇穹 ===== */
+[data-scheme="temple"]{
+  --bg-page: #e8e0d8;
+  --bg-card: rgba(255,255,255,0.88);
+  --bg-card-hover: rgba(255,255,255,0.96);
+  --bg-glass: rgba(255,255,255,0.5);
+  --text-primary: #2c1810;
+  --text-secondary: #6b4c3b;
+  --text-muted: #9a8a80;
+  --border: rgba(192,57,43,0.12);
+  --border-hover: rgba(192,57,43,0.3);
+  --accent: #c0392b;
+  --accent-glow: rgba(192,57,43,0.08);
+  --accent-gradient: linear-gradient(135deg, #c0392b, #d4a24c);
+  --green: #27ae60;
+  --amber: #d4a24c;
+  --red: #c0392b;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+}
+[data-scheme="temple"] .hero{
+  position: relative;
+  background: transparent;
+  border-bottom: none;
+  overflow: visible;
+  padding-bottom: 2.8rem;
+  margin-bottom: 0;
+}
+[data-scheme="temple"] .hero-badge{
+  background: rgba(192,57,43,0.15);
+  color: #fff;
+  border-color: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+[data-scheme="temple"] .hero h1{
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3), 0 0 40px rgba(0,0,0,0.1);
+}
+[data-scheme="temple"] .hero p{
+  color: #ffffff;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.2);
+}
+[data-scheme="temple"] .stat-num{
+  background: none;
+  -webkit-text-fill-color: #ffffff;
+  color: #ffffff;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.25);
+}
+[data-scheme="temple"] .stat-label{
+  color: rgba(255,255,255,0.7);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.15);
+}
+[data-scheme="temple"] .card{
+  border: 1px solid rgba(192,57,43,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+[data-scheme="temple"] .card:hover{
+  border-color: rgba(192,57,43,0.2);
+  box-shadow: 0 4px 20px rgba(192,57,43,0.08), 0 1px 3px rgba(192,57,43,0.03);
+  transform: translateY(-2px);
+}
+[data-scheme="temple"] .card:hover::before{opacity:0.05}
+[data-scheme="temple"] .filter-btn:hover{
+  border-color: var(--accent);
+  color: var(--accent);
+}
+[data-scheme="temple"] .filter-btn.active{
+  background: var(--accent);
+  border-color: var(--accent);
+}
+[data-scheme="temple"] footer{
+  border-top: 1px solid rgba(192,57,43,0.12);
+}
+[data-scheme="temple"] body{
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.12) 0%,
+      rgba(0,0,0,0.05) 20%,
+      rgba(0,0,0,0.03) 40%,
+      rgba(0,0,0,0.08) 60%,
+      rgba(0,0,0,0.18) 80%,
+      rgba(0,0,0,0.35) 100%
+    ),
+    url(images/temple-of-heaven.jpg);
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
 
 /* ===== NEBULA DEEP SPACE ===== */
 [data-scheme="nebula"]{
@@ -963,6 +1056,7 @@ footer a{color:var(--accent);text-decoration:none}
     <button class="scheme-btn" data-scheme="kingdee" onclick="setScheme('kingdee',this)">🏢 金蝶企业蓝</button>
     <button class="scheme-btn" data-scheme="nebula" onclick="setScheme('nebula',this)">🌌 深空星云</button>
     <button class="scheme-btn" data-scheme="starry-night" onclick="setScheme('starry-night',this)">🌠 星空帆影</button>
+    <button class="scheme-btn" data-scheme="temple" onclick="setScheme('temple',this)">🏛️ 天坛皇穹</button>
   </div>
 </section>
 
