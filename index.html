@@ -569,7 +569,8 @@ body{
   background:var(--bg-page);
   color:var(--text-primary);
   line-height:1.6;
-  min-height:100dvh;
+  min-height:100vh;
+  overflow-x:hidden;
   transition:background 0.4s ease,color 0.4s ease;
 }
 
@@ -583,7 +584,7 @@ body{
 .hero::before{
   content:'';
   position:absolute;
-  inset:0;
+  top:0;right:0;bottom:0;left:0;
   background:var(--accent-gradient);
   opacity:0.06;
   mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
@@ -602,6 +603,7 @@ body{
   font-size:clamp(1.8rem, 5vw, 2.8rem);
   font-weight:800;letter-spacing:-0.02em;
   margin-bottom:0.5rem;
+  color:var(--accent);
   background:var(--accent-gradient);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -762,7 +764,7 @@ body{
 }
 .card::before{
   content:'';
-  position:absolute;inset:0;
+  position:absolute;top:0;right:0;bottom:0;left:0;
   background:var(--accent-gradient);
   opacity:0;transition:opacity 0.4s;
   border-radius:inherit;
