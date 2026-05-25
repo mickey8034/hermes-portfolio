@@ -353,6 +353,106 @@
   color: var(--text-primary);
 }
 
+/* ===== NEBULA DEEP SPACE ===== */
+[data-scheme="nebula"]{
+  --bg-page: #070512;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.08);
+  --bg-glass: rgba(255,255,255,0.03);
+  --text-primary: #e0e6f5;
+  --text-secondary: #8899bb;
+  --text-muted: #5a6a8a;
+  --border: rgba(74,123,255,0.12);
+  --border-hover: rgba(74,123,255,0.3);
+  --accent: #4a7bff;
+  --accent-glow: rgba(74,123,255,0.12);
+  --accent-gradient: linear-gradient(135deg, #4a7bff, #e8953a);
+  --green: #30D158;
+  --amber: #e8953a;
+  --red: #FF453A;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+}
+[data-scheme="nebula"].dark{
+  --bg-page: #04030a;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.05);
+  --text-primary: #c0cce8;
+  --text-secondary: #5a6a8a;
+  --text-muted: #3a4a6a;
+}
+/* Nebula - Bubble Nebula background */
+[data-scheme="nebula"] body::before{display:none}
+[data-scheme="nebula"] .hero::before{display:none}
+[data-scheme="nebula"] body{
+  background:
+    linear-gradient(rgba(7,5,18,0.55) 0%, rgba(7,5,18,0.75) 100%),
+    url(images/nebula.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+[data-scheme="nebula"] .hero{
+  background: rgba(7,5,18,0.3);
+}
+[data-scheme="nebula"] .card:hover{
+  border-color: rgba(74,123,255,0.3);
+  box-shadow: 0 8px 40px rgba(74,123,255,0.12), 0 0 60px rgba(232,149,58,0.06);
+}
+[data-scheme="nebula"] .card:hover::before{opacity:0.06}
+
+/* ===== STARRY NIGHT — Milky Way Sailboat ===== */
+[data-scheme="starry-night"]{
+  --bg-page: #0a0820;
+  --bg-card: rgba(255,255,255,0.05);
+  --bg-card-hover: rgba(255,255,255,0.09);
+  --bg-glass: rgba(255,255,255,0.04);
+  --text-primary: #e4e2f0;
+  --text-secondary: #9290b0;
+  --text-muted: #626080;
+  --border: rgba(212,162,76,0.12);
+  --border-hover: rgba(212,162,76,0.3);
+  --accent: #d4a24c;
+  --accent-glow: rgba(212,162,76,0.12);
+  --accent-gradient: linear-gradient(135deg, #d4a24c, #6a7bcf);
+  --green: #30D158;
+  --amber: #d4a24c;
+  --red: #FF453A;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+}
+[data-scheme="starry-night"].dark{
+  --bg-page: #060518;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.06);
+  --text-primary: #c8c6e0;
+  --text-secondary: #6a6890;
+  --text-muted: #4a4868;
+}
+/* Starry Night - Milky Way reflection with sailboat */
+[data-scheme="starry-night"] body::before{display:none}
+[data-scheme="starry-night"] .hero::before{display:none}
+[data-scheme="starry-night"] body{
+  background:
+    linear-gradient(rgba(10,8,32,0.5) 0%, rgba(10,8,32,0.75) 100%),
+    url(images/milky-way.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+[data-scheme="starry-night"] .hero{
+  background: rgba(10,8,32,0.3);
+}
+[data-scheme="starry-night"] .card:hover{
+  border-color: rgba(212,162,76,0.3);
+  box-shadow: 0 8px 40px rgba(212,162,76,0.1), 0 0 60px rgba(212,162,76,0.04);
+}
+[data-scheme="starry-night"] .card:hover::before{opacity:0.06}
+
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font-sans);
@@ -844,6 +944,8 @@ footer a{color:var(--accent);text-decoration:none}
     <button class="scheme-btn" data-scheme="linear" onclick="setScheme('linear',this)">🌙 线性深色</button>
     <button class="scheme-btn" data-scheme="space" onclick="setScheme('space',this)">🚀 太空深空</button>
     <button class="scheme-btn" data-scheme="kingdee" onclick="setScheme('kingdee',this)">🏢 金蝶企业蓝</button>
+    <button class="scheme-btn" data-scheme="nebula" onclick="setScheme('nebula',this)">🌌 深空星云</button>
+    <button class="scheme-btn" data-scheme="starry-night" onclick="setScheme('starry-night',this)">🌠 星空帆影</button>
   </div>
 </section>
 
