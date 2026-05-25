@@ -283,44 +283,92 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
 }
-/* ===== KINGDEE — Premium Dark Navy Hero ===== */
-/* Hero: deep navy gradient banner */
+/* ===== KINGDEE — 蓝天白云 · 浑然一体 ===== */
+/* Hero: transparent sky, subtle white floor for text */
 [data-scheme="kingdee"] .hero{
-  background: linear-gradient(180deg, #0a1628 0%, #1a3058 100%);
-  border-bottom: 2px solid rgba(212,162,76,0.3);
+  position: relative;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    transparent 45%,
+    rgba(255,255,255,0.08) 70%,
+    rgba(255,255,255,0.2) 100%
+  );
+  border-bottom: none;
+  overflow: visible;
   padding-bottom: 2.8rem;
   margin-bottom: 0;
 }
+/* Cloud 1 — 左大朵 */
 [data-scheme="kingdee"] .hero::before{
-  opacity: 0.05;
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 80px;
+  background: rgba(255,255,255,0.13);
+  border-radius: 200px/55px;
+  top: 15%;
+  left: -40px;
+  filter: blur(28px);
+  pointer-events: none;
   mask-image: none;
   -webkit-mask-image: none;
-  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,162,76,0.15), transparent 70%);
+  opacity: 1;
 }
-/* Hero badge: subtle translucent */
-[data-scheme="kingdee"] .hero-badge{
+/* Cloud 2 — 右上飘 */
+[data-scheme="kingdee"] .hero::after{
+  content: '';
+  position: absolute;
+  width: 240px;
+  height: 50px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 130px/35px;
+  top: 35%;
+  right: 3%;
+  filter: blur(20px);
+  pointer-events: none;
+}
+/* Cloud 3 — 小朵浮云（box-shadow 叠加） */
+[data-scheme="kingdee"] .hero-content::before{
+  content: '';
+  position: absolute;
+  width: 140px;
+  height: 30px;
   background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.8);
-  border-color: rgba(255,255,255,0.12);
+  border-radius: 80px/22px;
+  top: -60px;
+  right: 20%;
+  filter: blur(14px);
+  pointer-events: none;
 }
-/* Hero title: pure white, no gradient */
+/* Hero badge: semi-transparent white */
+[data-scheme="kingdee"] .hero-badge{
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+/* Hero title: white with soft shadow for sky readability */
 [data-scheme="kingdee"] .hero h1{
   background: none;
   -webkit-text-fill-color: #ffffff;
   color: #ffffff;
+  text-shadow: 0 2px 16px rgba(0,20,60,0.2);
 }
-/* Hero subtitle: soft white */
+/* Hero subtitle */
 [data-scheme="kingdee"] .hero p{
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 8px rgba(0,20,60,0.1);
 }
-/* Stats: white numbers + light labels */
+/* Stats */
 [data-scheme="kingdee"] .stat-num{
   background: none;
   -webkit-text-fill-color: #ffffff;
   color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0,20,60,0.15);
 }
 [data-scheme="kingdee"] .stat-label{
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.55);
 }
 /* Cards: light glass */
 [data-scheme="kingdee"] .card{
@@ -348,10 +396,17 @@
 [data-scheme="kingdee"] footer{
   border-top: 1px solid rgba(33,131,233,0.12);
 }
-/* Body background: NCPA reflection with lighter overlay */
+/* Body: 湛蓝天空 → 自然过渡 */
 [data-scheme="kingdee"] body{
   background:
-    linear-gradient(rgba(33,131,233,0.15) 0%, rgba(245,247,250,0.5) 25%, rgba(245,247,250,0.8) 100%),
+    linear-gradient(
+      rgba(33,131,233,0.35) 0%,
+      rgba(33,131,233,0.25) 20%,
+      rgba(80,160,230,0.12) 40%,
+      rgba(200,222,240,0.25) 60%,
+      rgba(235,242,250,0.6) 80%,
+      rgba(248,249,252,1) 100%
+    ),
     url(images/ncpa-reflection.jpg);
   background-size: cover;
   background-position: center bottom;
