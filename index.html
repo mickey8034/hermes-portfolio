@@ -293,7 +293,7 @@
   padding-bottom: 2.8rem;
   margin-bottom: 0;
 }
-/* Cloud 1 — 左大朵 */
+/* Cloud 1 — 左大朵：缓缓右移 */
 [data-scheme="kingdee"] .hero::before{
   content: '';
   position: absolute;
@@ -308,8 +308,10 @@
   mask-image: none;
   -webkit-mask-image: none;
   opacity: 1;
+  animation: cloudDrift1 28s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift1 28s ease-in-out infinite alternate;
 }
-/* Cloud 2 — 右上飘 */
+/* Cloud 2 — 右上飘：缓缓左移 */
 [data-scheme="kingdee"] .hero::after{
   content: '';
   position: absolute;
@@ -321,8 +323,10 @@
   right: 3%;
   filter: blur(20px);
   pointer-events: none;
+  animation: cloudDrift2 22s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift2 22s ease-in-out infinite alternate;
 }
-/* Cloud 3 — 小朵浮云 */
+/* Cloud 3 — 小朵浮云：缓缓右移 */
 [data-scheme="kingdee"] .hero-content::before{
   content: '';
   position: absolute;
@@ -334,6 +338,8 @@
   right: 20%;
   filter: blur(14px);
   pointer-events: none;
+  animation: cloudDrift3 18s ease-in-out infinite alternate;
+  -webkit-animation: cloudDrift3 18s ease-in-out infinite alternate;
 }
 /* Hero badge: 半透明白 */
 [data-scheme="kingdee"] .hero-badge{
@@ -409,6 +415,20 @@
   background-position: center bottom;
   background-repeat: no-repeat;
   background-attachment: scroll;
+}
+
+/* ===== 云层流动动画 ===== */
+@keyframes cloudDrift1{
+  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
+  100%{ transform: translateX(60px); -webkit-transform: translateX(60px) }
+}
+@keyframes cloudDrift2{
+  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
+  100%{ transform: translateX(-40px); -webkit-transform: translateX(-40px) }
+}
+@keyframes cloudDrift3{
+  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
+  100%{ transform: translateX(30px); -webkit-transform: translateX(30px) }
 }
 
 /* ===== NEBULA DEEP SPACE ===== */
