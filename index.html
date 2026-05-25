@@ -297,18 +297,15 @@
 [data-scheme="kingdee"] .hero::before{
   content: '';
   position: absolute;
-  width: 120px;
+  width: 200px;
   height: 100px;
-  background: rgba(255,255,255,0.25);
-  border-radius: 50%;
-  top: 8%;
-  left: 5%;
-  filter: blur(18px);
-  box-shadow:
-    80px 0px 0 -8px rgba(255,255,255,0.20),
-    -60px 15px 0 -12px rgba(255,255,255,0.18),
-    140px 10px 0 -18px rgba(255,255,255,0.15),
-    35px 55px 0 -15px rgba(255,255,255,0.14);
+  background:
+    radial-gradient(70px at 30% 50%, rgba(255,255,255,0.28) 0%, transparent 70%),
+    radial-gradient(55px at 55% 40%, rgba(255,255,255,0.22) 0%, transparent 70%),
+    radial-gradient(65px at 70% 55%, rgba(255,255,255,0.20) 0%, transparent 70%),
+    radial-gradient(45px at 45% 30%, rgba(255,255,255,0.18) 0%, transparent 70%);
+  top: 6%;
+  left: 2%;
   pointer-events: none;
   mask-image: none;
   -webkit-mask-image: none;
@@ -319,17 +316,14 @@
 [data-scheme="kingdee"] .hero::after{
   content: '';
   position: absolute;
-  width: 100px;
+  width: 160px;
   height: 80px;
-  background: rgba(255,255,255,0.20);
-  border-radius: 50%;
-  top: 28%;
-  right: 5%;
-  filter: blur(16px);
-  box-shadow:
-    65px 8px 0 -10px rgba(255,255,255,0.16),
-    -50px 12px 0 -14px rgba(255,255,255,0.14),
-    110px -8px 0 -20px rgba(255,255,255,0.12);
+  background:
+    radial-gradient(55px at 35% 50%, rgba(255,255,255,0.24) 0%, transparent 70%),
+    radial-gradient(45px at 60% 45%, rgba(255,255,255,0.18) 0%, transparent 70%),
+    radial-gradient(50px at 50% 30%, rgba(255,255,255,0.16) 0%, transparent 70%);
+  top: 26%;
+  right: 3%;
   pointer-events: none;
   animation: cloudDrift2 26s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift2 26s ease-in-out infinite alternate;
@@ -338,16 +332,13 @@
 [data-scheme="kingdee"] .hero-content::before{
   content: '';
   position: absolute;
-  width: 70px;
-  height: 60px;
-  background: rgba(255,255,255,0.18);
-  border-radius: 50%;
-  top: -40px;
-  left: 12%;
-  filter: blur(12px);
-  box-shadow:
-    45px 10px 0 -8px rgba(255,255,255,0.15),
-    -35px -5px 0 -12px rgba(255,255,255,0.12);
+  width: 100px;
+  height: 50px;
+  background:
+    radial-gradient(35px at 40% 50%, rgba(255,255,255,0.20) 0%, transparent 70%),
+    radial-gradient(30px at 60% 40%, rgba(255,255,255,0.16) 0%, transparent 70%);
+  top: -30px;
+  left: 10%;
   pointer-events: none;
   animation: cloudDrift3 20s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift3 20s ease-in-out infinite alternate;
@@ -356,16 +347,13 @@
 [data-scheme="kingdee"] .hero-content::after{
   content: '';
   position: absolute;
-  width: 55px;
-  height: 45px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 50%;
-  top: -20px;
-  right: 8%;
-  filter: blur(10px);
-  box-shadow:
-    40px 8px 0 -6px rgba(255,255,255,0.13),
-    -30px -3px 0 -10px rgba(255,255,255,0.10);
+  width: 80px;
+  height: 40px;
+  background:
+    radial-gradient(28px at 45% 50%, rgba(255,255,255,0.18) 0%, transparent 70%),
+    radial-gradient(22px at 60% 45%, rgba(255,255,255,0.14) 0%, transparent 70%);
+  top: -15px;
+  right: 5%;
   pointer-events: none;
   animation: cloudDrift4 16s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift4 16s ease-in-out infinite alternate;
