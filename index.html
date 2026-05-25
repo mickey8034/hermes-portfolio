@@ -215,7 +215,13 @@
   display:none;
 }
 [data-scheme="space"] body{
-  background: #070b1a;
+  background:
+    linear-gradient(rgba(7,11,26,0.5), rgba(7,11,26,0.8)),
+    url(images/earthrise.jpg);
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 /* Earth glow for space theme hero */
 [data-scheme="space"] .hero::before{
