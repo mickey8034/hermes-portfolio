@@ -293,68 +293,6 @@
   padding-bottom: 2.8rem;
   margin-bottom: 0;
 }
-/* ===== 云朵 — 实div，全兼容 ===== */
-.cloud{
-  display: none;
-  position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-}
-[data-scheme="kingdee"] .cloud{
-  display: block;
-}
-.cloud-1{
-  width: 60px; height: 55px;
-  background: rgba(255,255,255,0.65);
-  border-radius: 50%;
-  top: 5%; left: 3%;
-  box-shadow:
-    35px -10px 0 -2px rgba(255,255,255,0.55),
-    55px 10px 0 -8px rgba(255,255,255,0.45),
-    70px -8px 0 -14px rgba(255,255,255,0.35),
-    15px 22px 0 -5px rgba(255,255,255,0.40),
-    40px 28px 0 -12px rgba(255,255,255,0.30),
-    -20px 5px 0 -4px rgba(255,255,255,0.40);
-  animation: cloudDrift1 32s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift1 32s ease-in-out infinite alternate;
-}
-.cloud-2{
-  width: 45px; height: 42px;
-  background: rgba(255,255,255,0.55);
-  border-radius: 50%;
-  top: 25%; right: 5%;
-  box-shadow:
-    25px -6px 0 -2px rgba(255,255,255,0.45),
-    40px 8px 0 -8px rgba(255,255,255,0.38),
-    50px -5px 0 -13px rgba(255,255,255,0.28),
-    12px 18px 0 -5px rgba(255,255,255,0.35),
-    -15px 8px 0 -4px rgba(255,255,255,0.32);
-  animation: cloudDrift2 26s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift2 26s ease-in-out infinite alternate;
-}
-.cloud-3{
-  width: 35px; height: 32px;
-  background: rgba(255,255,255,0.50);
-  border-radius: 50%;
-  top: 12%; left: 22%;
-  box-shadow:
-    20px -4px 0 -1px rgba(255,255,255,0.42),
-    30px 6px 0 -7px rgba(255,255,255,0.35),
-    10px 14px 0 -4px rgba(255,255,255,0.30);
-  animation: cloudDrift3 20s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift3 20s ease-in-out infinite alternate;
-}
-.cloud-4{
-  width: 28px; height: 26px;
-  background: rgba(255,255,255,0.45);
-  border-radius: 50%;
-  top: 18%; right: 15%;
-  box-shadow:
-    16px -3px 0 -1px rgba(255,255,255,0.38),
-    25px 5px 0 -6px rgba(255,255,255,0.32);
-  animation: cloudDrift4 16s ease-in-out infinite alternate;
-  -webkit-animation: cloudDrift4 16s ease-in-out infinite alternate;
-}
 /* Hero badge: 半透明白 */
 [data-scheme="kingdee"] .hero-badge{
   background: rgba(255,255,255,0.1);
@@ -431,23 +369,6 @@
   background-attachment: scroll;
 }
 
-/* ===== 云层流动动画 ===== */
-@keyframes cloudDrift1{
-  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(70px); -webkit-transform: translateX(70px) }
-}
-@keyframes cloudDrift2{
-  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(-50px); -webkit-transform: translateX(-50px) }
-}
-@keyframes cloudDrift3{
-  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(40px); -webkit-transform: translateX(40px) }
-}
-@keyframes cloudDrift4{
-  0%{ transform: translateX(0); -webkit-transform: translateX(0) }
-  100%{ transform: translateX(-30px); -webkit-transform: translateX(-30px) }
-}
 
 /* ===== NEBULA DEEP SPACE ===== */
 [data-scheme="nebula"]{
@@ -993,10 +914,6 @@ footer a{color:var(--accent);text-decoration:none}
 
 <!-- Hero -->
 <section class="hero">
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
-  <div class="cloud cloud-4"></div>
   <div class="hero-content">
     <div class="hero-badge">✨ Mickey8034 Agent 出品 · 数据分析作品集</div>
     <h1>Hermes Portfolio</h1>
