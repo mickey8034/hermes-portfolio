@@ -293,68 +293,52 @@
   padding-bottom: 2.8rem;
   margin-bottom: 0;
 }
-/* Cloud 1 — 大朵棉团 · 左 */
-[data-scheme="kingdee"] .hero::before{
-  content: '';
+/* ===== 云朵 — 实div，全兼容 ===== */
+.cloud{
+  display: none;
   position: absolute;
-  width: 200px;
-  height: 100px;
-  background:
-    radial-gradient(70px at 30% 50%, rgba(255,255,255,0.28) 0%, transparent 70%),
-    radial-gradient(55px at 55% 40%, rgba(255,255,255,0.22) 0%, transparent 70%),
-    radial-gradient(65px at 70% 55%, rgba(255,255,255,0.20) 0%, transparent 70%),
-    radial-gradient(45px at 45% 30%, rgba(255,255,255,0.18) 0%, transparent 70%);
-  top: 6%;
-  left: 2%;
   pointer-events: none;
-  mask-image: none;
-  -webkit-mask-image: none;
+  border-radius: 50%;
+}
+[data-scheme="kingdee"] .cloud{
+  display: block;
+}
+.cloud-1{
+  width: 200px; height: 100px;
+  background:
+    radial-gradient(70px at 30% 50%, rgba(255,255,255,0.30) 0%, transparent 70%),
+    radial-gradient(55px at 55% 40%, rgba(255,255,255,0.24) 0%, transparent 70%),
+    radial-gradient(65px at 70% 55%, rgba(255,255,255,0.22) 0%, transparent 70%),
+    radial-gradient(45px at 45% 30%, rgba(255,255,255,0.20) 0%, transparent 70%);
+  top: 6%; left: 2%;
   animation: cloudDrift1 32s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift1 32s ease-in-out infinite alternate;
 }
-/* Cloud 2 — 中朵棉团 · 右 */
-[data-scheme="kingdee"] .hero::after{
-  content: '';
-  position: absolute;
-  width: 160px;
-  height: 80px;
+.cloud-2{
+  width: 160px; height: 80px;
   background:
-    radial-gradient(55px at 35% 50%, rgba(255,255,255,0.24) 0%, transparent 70%),
-    radial-gradient(45px at 60% 45%, rgba(255,255,255,0.18) 0%, transparent 70%),
-    radial-gradient(50px at 50% 30%, rgba(255,255,255,0.16) 0%, transparent 70%);
-  top: 26%;
-  right: 3%;
-  pointer-events: none;
+    radial-gradient(55px at 35% 50%, rgba(255,255,255,0.26) 0%, transparent 70%),
+    radial-gradient(45px at 60% 45%, rgba(255,255,255,0.20) 0%, transparent 70%),
+    radial-gradient(50px at 50% 30%, rgba(255,255,255,0.18) 0%, transparent 70%);
+  top: 26%; right: 3%;
   animation: cloudDrift2 26s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift2 26s ease-in-out infinite alternate;
 }
-/* Cloud 3 — 小朵棉团 · 左上 */
-[data-scheme="kingdee"] .hero-content::before{
-  content: '';
-  position: absolute;
-  width: 100px;
-  height: 50px;
+.cloud-3{
+  width: 100px; height: 50px;
   background:
-    radial-gradient(35px at 40% 50%, rgba(255,255,255,0.20) 0%, transparent 70%),
-    radial-gradient(30px at 60% 40%, rgba(255,255,255,0.16) 0%, transparent 70%);
-  top: -30px;
-  left: 10%;
-  pointer-events: none;
+    radial-gradient(35px at 40% 50%, rgba(255,255,255,0.22) 0%, transparent 70%),
+    radial-gradient(30px at 60% 40%, rgba(255,255,255,0.18) 0%, transparent 70%);
+  top: -30px; left: 10%;
   animation: cloudDrift3 20s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift3 20s ease-in-out infinite alternate;
 }
-/* Cloud 4 — 小朵棉团 · 右上 */
-[data-scheme="kingdee"] .hero-content::after{
-  content: '';
-  position: absolute;
-  width: 80px;
-  height: 40px;
+.cloud-4{
+  width: 80px; height: 40px;
   background:
-    radial-gradient(28px at 45% 50%, rgba(255,255,255,0.18) 0%, transparent 70%),
-    radial-gradient(22px at 60% 45%, rgba(255,255,255,0.14) 0%, transparent 70%);
-  top: -15px;
-  right: 5%;
-  pointer-events: none;
+    radial-gradient(28px at 45% 50%, rgba(255,255,255,0.20) 0%, transparent 70%),
+    radial-gradient(22px at 60% 45%, rgba(255,255,255,0.16) 0%, transparent 70%);
+  top: -15px; right: 5%;
   animation: cloudDrift4 16s ease-in-out infinite alternate;
   -webkit-animation: cloudDrift4 16s ease-in-out infinite alternate;
 }
@@ -996,6 +980,10 @@ footer a{color:var(--accent);text-decoration:none}
 
 <!-- Hero -->
 <section class="hero">
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  <div class="cloud cloud-4"></div>
   <div class="hero-content">
     <div class="hero-badge">✨ Mickey8034 Agent 出品 · 数据分析作品集</div>
     <h1>Hermes Portfolio</h1>
