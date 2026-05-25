@@ -215,21 +215,13 @@
   display:none;
 }
 [data-scheme="space"] body{
-  background: #070b1a;
-  position: relative;
-}
-[data-scheme="space"] body::after{
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: -1;
   background:
-    linear-gradient(rgba(7,11,26,0.6), rgba(7,11,26,0.85)),
+    linear-gradient(rgba(7,11,26,0.55), rgba(7,11,26,0.75)),
     url(images/ncpa-reflection.jpg);
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
-  filter: blur(6px);
+  background-attachment: scroll;
 }
 /* Earth glow for space theme hero */
 [data-scheme="space"] .hero::before{
