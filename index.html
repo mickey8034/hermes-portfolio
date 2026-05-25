@@ -333,6 +333,25 @@
   background-repeat: no-repeat;
   background-attachment: scroll;
 }
+/* Kingdee hero text contrast fix */
+[data-scheme="kingdee"] .hero{
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 3px solid var(--accent);
+  margin-bottom: 0;
+}
+[data-scheme="kingdee"] .hero-badge{
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+[data-scheme="kingdee"] .hero h1{
+  -webkit-text-fill-color: var(--accent);
+}
+[data-scheme="kingdee"] .hero p{
+  color: var(--text-primary);
+}
 
 html{scroll-behavior:smooth}
 body{
