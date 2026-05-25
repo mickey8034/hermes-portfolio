@@ -284,15 +284,10 @@
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
 }
 /* ===== KINGDEE — 蓝天白云 · 浑然一体 ===== */
-/* Hero: transparent sky, subtle white floor for text */
+/* Hero: 完全透明，背景由 body 一管到底 */
 [data-scheme="kingdee"] .hero{
   position: relative;
-  background: linear-gradient(180deg,
-    transparent 0%,
-    transparent 45%,
-    rgba(255,255,255,0.08) 70%,
-    rgba(255,255,255,0.2) 100%
-  );
+  background: transparent;
   border-bottom: none;
   overflow: visible;
   padding-bottom: 2.8rem;
@@ -327,7 +322,7 @@
   filter: blur(20px);
   pointer-events: none;
 }
-/* Cloud 3 — 小朵浮云（box-shadow 叠加） */
+/* Cloud 3 — 小朵浮云 */
 [data-scheme="kingdee"] .hero-content::before{
   content: '';
   position: absolute;
@@ -340,35 +335,36 @@
   filter: blur(14px);
   pointer-events: none;
 }
-/* Hero badge: semi-transparent white */
+/* Hero badge: 半透明白 */
 [data-scheme="kingdee"] .hero-badge{
   background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.85);
+  color: #ffffff;
   border-color: rgba(255,255,255,0.15);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-/* Hero title: white with soft shadow for sky readability */
+/* Hero title: 纯白+阴影，天空下可读 */
 [data-scheme="kingdee"] .hero h1{
   background: none;
   -webkit-text-fill-color: #ffffff;
   color: #ffffff;
-  text-shadow: 0 2px 16px rgba(0,20,60,0.2);
+  text-shadow: 0 2px 20px rgba(0,20,60,0.25), 0 0 40px rgba(0,20,60,0.1);
 }
 /* Hero subtitle */
 [data-scheme="kingdee"] .hero p{
-  color: rgba(255,255,255,0.8);
-  text-shadow: 0 1px 8px rgba(0,20,60,0.1);
+  color: #ffffff;
+  text-shadow: 0 1px 12px rgba(0,20,60,0.2);
 }
 /* Stats */
 [data-scheme="kingdee"] .stat-num{
   background: none;
   -webkit-text-fill-color: #ffffff;
   color: #ffffff;
-  text-shadow: 0 2px 12px rgba(0,20,60,0.15);
+  text-shadow: 0 2px 16px rgba(0,20,60,0.2);
 }
 [data-scheme="kingdee"] .stat-label{
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.6);
+  text-shadow: 0 1px 8px rgba(0,20,60,0.1);
 }
 /* Cards: light glass */
 [data-scheme="kingdee"] .card{
@@ -396,15 +392,16 @@
 [data-scheme="kingdee"] footer{
   border-top: 1px solid rgba(33,131,233,0.12);
 }
-/* Body: 湛蓝天空 → 自然过渡 */
+/* Body: 湛蓝天空 → 大剧院 → 自然收尾 */
 [data-scheme="kingdee"] body{
   background:
     linear-gradient(
-      rgba(33,131,233,0.35) 0%,
-      rgba(33,131,233,0.25) 20%,
-      rgba(80,160,230,0.12) 40%,
-      rgba(200,222,240,0.25) 60%,
-      rgba(235,242,250,0.6) 80%,
+      rgba(33,131,233,0.4) 0%,
+      rgba(33,131,233,0.28) 15%,
+      rgba(80,160,230,0.15) 30%,
+      rgba(200,222,240,0.2) 50%,
+      rgba(235,242,250,0.5) 70%,
+      rgba(248,249,252,0.85) 85%,
       rgba(248,249,252,1) 100%
     ),
     url(images/ncpa-reflection.jpg);
