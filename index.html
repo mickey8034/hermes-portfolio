@@ -215,13 +215,7 @@
   display:none;
 }
 [data-scheme="space"] body{
-  background:
-    linear-gradient(rgba(7,11,26,0.55), rgba(7,11,26,0.75)),
-    url(images/ncpa-reflection.jpg);
-  background-size: cover;
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
+  background: #070b1a;
 }
 /* Earth glow for space theme hero */
 [data-scheme="space"] .hero::before{
@@ -322,6 +316,16 @@
 /* Kingdee-style footer */
 [data-scheme="kingdee"] footer{
   border-top: 1px solid rgba(33,131,233,0.12);
+}
+/* Kingdee background image */
+[data-scheme="kingdee"] body{
+  background:
+    linear-gradient(rgba(245,247,250,0.7) 0%, rgba(245,247,250,0.9) 100%),
+    url(images/ncpa-reflection.jpg);
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 
 html{scroll-behavior:smooth}
