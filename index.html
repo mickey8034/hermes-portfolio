@@ -319,17 +319,27 @@
   text-shadow:0 0 20px rgba(3,214,212,0.3);
 }
 [data-scheme="planet"] .card{
-  background:rgba(44,45,85,0.5);
-  border-color:rgba(0,255,252,0.08);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  background:rgba(255,255,255,0.88);
+  border-color:rgba(0,255,252,0.15);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+[data-scheme="planet"] .card,
+[data-scheme="planet"] .card *{
+  color:var(--text-primary) !important;
 }
 [data-scheme="planet"] .card h3{
   background:none;
   -webkit-background-clip:border-box;
   background-clip:border-box;
-  -webkit-text-fill-color:#f0f0f8 !important;
-  color:#f0f0f8 !important;
+  -webkit-text-fill-color:#1a1a2e !important;
+  color:#1a1a2e !important;
+}
+[data-scheme="planet"] .card p{
+  color:#444466 !important;
+}
+[data-scheme="planet"] .card .file-count{
+  color:#666688 !important;
 }
 [data-scheme="planet"] .card:hover{
   border-color:rgba(0,255,252,0.25);
