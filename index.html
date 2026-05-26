@@ -245,6 +245,113 @@
   opacity: 0.06;
 }
 
+/* ===== PLANET AESTHETICS (ChenXiDesign inspired) ===== */
+[data-scheme="planet"]{
+  --bg-page: #2C2D55;
+  --bg-card: rgba(255,255,255,0.06);
+  --bg-card-hover: rgba(255,255,255,0.1);
+  --bg-glass: rgba(44,45,85,0.6);
+  --text-primary: #f0f0f8;
+  --text-secondary: #c0c4d8;
+  --text-muted: #8888aa;
+  --border: rgba(0,255,252,0.12);
+  --border-hover: rgba(0,255,252,0.3);
+  --accent: #03D6D4;
+  --accent-glow: rgba(3,214,212,0.12);
+  --accent-gradient: linear-gradient(135deg, #03D6D4, #7403D9);
+  --green: #00d4aa;
+  --amber: #d4a000;
+  --red: #d4406a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+}
+[data-scheme="planet"].dark{
+  --bg-page: #1a1b33;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.06);
+  --bg-glass: rgba(26,27,51,0.7);
+  --text-primary: #e0e0f0;
+  --text-secondary: #a0a4c0;
+  --text-muted: #666688;
+  --border: rgba(0,255,252,0.08);
+  --border-hover: rgba(0,255,252,0.2);
+}
+[data-scheme="planet"] body::before{
+  display:none;
+}
+[data-scheme="planet"] .hero::before{
+  display:none;
+}
+[data-scheme="planet"] body{
+  background:
+    linear-gradient(rgba(44,45,85,0.3), rgba(44,45,85,0.6)),
+    url(images/deep-space-bg.jpg) center/cover no-repeat scroll;
+  background-attachment:scroll;
+}
+[data-scheme="planet"] .hero{
+  background:transparent;
+}
+[data-scheme="planet"] .hero h1{
+  background:none;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:#ffffff;
+  color:#ffffff;
+  font-weight:700;
+  text-shadow:
+    0 2px 20px rgba(0,0,0,0.5),
+    0 0 60px rgba(3,214,212,0.15),
+    0 0 120px rgba(116,3,217,0.1);
+}
+[data-scheme="planet"] .hero p{
+  color:rgba(240,240,248,0.85);
+  text-shadow:0 2px 12px rgba(0,0,0,0.4);
+}
+[data-scheme="planet"] .stat-num{
+  background:none;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:#03D6D4;
+  color:#03D6D4;
+  text-shadow:0 0 20px rgba(3,214,212,0.3);
+}
+[data-scheme="planet"] .card{
+  background:rgba(44,45,85,0.5);
+  border-color:rgba(0,255,252,0.08);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+[data-scheme="planet"] .card h3{
+  background:none;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:#f0f0f8 !important;
+  color:#f0f0f8 !important;
+}
+[data-scheme="planet"] .card:hover{
+  border-color:rgba(0,255,252,0.25);
+  box-shadow:0 8px 40px rgba(3,214,212,0.1), 0 0 60px rgba(116,3,217,0.05);
+}
+[data-scheme="planet"] .card:hover::before{
+  opacity:0.08;
+  background:linear-gradient(135deg, rgba(3,214,212,0.1), rgba(116,3,217,0.1));
+}
+[data-scheme="planet"] .scheme-btn.active{
+  border-color:#03D6D4;
+  box-shadow:0 0 20px rgba(3,214,212,0.2);
+}
+[data-scheme="planet"] .dialog-content{
+  background:rgba(44,45,85,0.95);
+  border-color:rgba(0,255,252,0.15);
+}
+[data-scheme="planet"] footer{
+  border-top-color:rgba(0,255,252,0.08);
+}
+[data-scheme="planet"] footer p{
+  color:rgba(240,240,248,0.4);
+}
+
 /* ===== KINGDEE ENTERPRISE BLUE ===== */
 [data-scheme="kingdee"]{
   --bg-page: #f5f7fa;
@@ -1066,6 +1173,7 @@ footer a{color:var(--accent);text-decoration:none}
     <button class="scheme-btn" data-scheme="morganstanley" onclick="setScheme('morganstanley',this)">💼 MS 投行</button>
     <button class="scheme-btn" data-scheme="linear" onclick="setScheme('linear',this)">🌙 线性深色</button>
     <button class="scheme-btn" data-scheme="space" onclick="setScheme('space',this)">🚀 太空深空</button>
+    <button class="scheme-btn" data-scheme="planet" onclick="setScheme('planet',this)">🌟 星球美学</button>
     <button class="scheme-btn" data-scheme="kingdee" onclick="setScheme('kingdee',this)">🏢 金蝶企业蓝</button>
     <button class="scheme-btn" data-scheme="nebula" onclick="setScheme('nebula',this)">🌌 深空星云</button>
     <button class="scheme-btn" data-scheme="starry-night" onclick="setScheme('starry-night',this)">🌠 星空帆影</button>
